@@ -1,5 +1,6 @@
 import './HomePage.scss'
 import Header from '../../components/Header/Header'
+import { Link } from 'react-router-dom'
 
 const HomePage = () => {
     return (
@@ -7,8 +8,12 @@ const HomePage = () => {
             <Header />
             <main className='home-main'>
                 <section className='home-firstpage'>
-                    <button type='button' className='button black'> CONNEXION </button>
-                    <button type='button' className='button white'> INSCRIPTION </button>
+                    <button type='button' className='button black'> 
+                        <Link to={'/login'} className='white'> CONNEXION </Link> 
+                    </button>
+                    <button type='button' className='button white'> 
+                        <Link to={'/register'} className='black'> INSCRIPTION </Link> 
+                    </button>
                     <div className="show-more">
                         <p> Voir plus </p>
                         <i className="icon fa-solid fa-chevron-down"></i>

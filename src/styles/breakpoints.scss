@@ -1,0 +1,51 @@
+$breakpoint-phone: 576px;
+$breakpoint-tablet: 768px;
+$breakpoint-small-screen: 992px;
+$breakpoint-large-screen: 1200px;
+
+@mixin breakpoint-phone {
+    @media (min-width: $breakpoint-phone) {
+      @content;
+    }
+  }
+  
+@mixin breakpoint-tablet {
+    @media (min-width: $breakpoint-tablet) {
+        @content;
+    }
+}
+
+@mixin breakpoint-small-screen {
+    @media (min-width: $breakpoint-phone) {
+      @content;
+    }
+  }
+  
+@mixin breakpoint-large-screen {
+    @media (min-width: $breakpoint-tablet) {
+        @content;
+    }
+}
+
+//   To use media query : 
+// @import breakpoint.scss in you're file
+// Copy the code below and paste it below you're class style : 
+
+@include breakpoint-phone {
+    //My styles
+}
+
+@include breakpoint-tablet() {
+    //My styles
+}
+
+@include breakpoint-small-screen() {
+    //My styles
+}
+
+@include breakpoint-large-screen() {
+    //My styles
+}
+
+//Example : 
+

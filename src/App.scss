@@ -1,17 +1,22 @@
-//Global style
+@import './styles/variables.scss';
+
+//GLOBAL STYLE
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-//Fonts
+//FONTS
 //Headings
 h1, h2, h3 {
     font-family: 'Montserrat', Arial, sans-serif;
+    color:$color-black;
 }
 
 //Content
 p, a, label, button {
     font-family: 'Roboto' , Arial ,  sans-serif;
+    color:$color-black;
 }

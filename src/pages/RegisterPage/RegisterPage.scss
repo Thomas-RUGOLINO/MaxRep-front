@@ -1,1 +1,100 @@
 @import '../../styles/variables.scss';
+@import '../../styles/breakpoints.scss';
+
+.register-main {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('/assets/images/wallpaper-haltero.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+
+    .register-form {
+        width: clamp(300px, 90% , 500px);
+        margin: auto auto;
+        display: flex;
+        justify-content: center;
+        border-radius: 10px;
+        background-color: rgba(255,255,255,0.95);
+        box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.50);
+
+        .form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            &__title {
+                margin-top: 20px;
+                margin-bottom: 50px;
+            }
+
+            &__errors {
+                margin-bottom: 20px;
+
+                .error-message {
+                    color:$color-red
+                }
+            }
+    
+            &__inputs {
+                margin-bottom: 40px;
+                width: 100%;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+
+                .input {
+                    border-color: $color-grey;
+
+                    input, select {
+                        width: 80%;
+                        border: none;
+                        border-bottom: 1px solid $color-grey;
+                        border-color: grey;
+                        padding: 10px 0 7px 30px;
+                        background-color: rgba(255,255,255,0);
+
+                        &::placeholder {
+                            color: grey;
+                        }
+
+                        //Handle color when input is focused
+                        &:focus {
+                            outline: 1px solid $color-red;
+                            border-bottom: 1px solid $color-red;
+                        }
+                    }
+
+                    .icon  {
+                        position: relative;
+                        top: 0px;
+                        left:20px;
+                        color: grey;
+                    }
+                }
+            }
+
+            &__buttons {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-bottom: 40px;
+
+                button {
+                    width: 80%;
+                    padding: 10px;
+                    background-color: $color-black;
+                    border: none;
+                    color: $color-white;
+                }
+            }
+
+            
+        }
+    }
+}

@@ -6,16 +6,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-image: url('../../../public/assets/images/wallpaper-haltero.jpg');
+    background-image: url('/assets/images/wallpaper-haltero.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
-    @include breakpoint-phone { //Test
-        background-color: red;
-    }
 
     .register-form {
-        width: 80%;
+        width: clamp(300px, 90% , 500px);
         margin: auto auto;
         display: flex;
         justify-content: center;
@@ -31,7 +28,15 @@
 
             &__title {
                 margin-top: 20px;
-                margin-bottom: 40px;
+                margin-bottom: 50px;
+            }
+
+            &__errors {
+                margin-bottom: 20px;
+
+                .error-message {
+                    color:$color-red
+                }
             }
     
             &__inputs {
@@ -40,7 +45,7 @@
                 text-align: center;
                 display: flex;
                 flex-direction: column;
-                gap: 20px;
+                gap: 15px;
 
                 .input {
                     border-color: $color-grey;

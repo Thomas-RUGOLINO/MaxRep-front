@@ -2,7 +2,7 @@
 @import '../../styles/breakpoints.scss';
 
 .register-main {
-    min-height: 100vh;
+    min-height: 90vh; //because header's height = 10vh
     display: flex;
     justify-content: center;
     align-items: center;

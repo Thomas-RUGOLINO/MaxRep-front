@@ -13,8 +13,8 @@ const RegisterPage = () => {
         passwordConfirm: '',
         lastname: '', 
         firstname:'',
-        birthdate: '',
-        gender:''
+        birthDate: '',
+        gender:'man'
     });
 
     const [errorMessage, setErrorMessage] = useState<string>('');
@@ -37,7 +37,7 @@ const RegisterPage = () => {
         e.preventDefault();
         console.log(userInfos);
         setErrorMessage(''); //Init empty error messages
-        
+
         //Comparing passwords
         if (userInfos.password !== userInfos.passwordConfirm) {
             return setErrorMessage('Les mots de passe ne correspondent pas !')
@@ -45,9 +45,9 @@ const RegisterPage = () => {
         
         //Push userInfos to backend
         try {
-            const response = await axios.post('' , {userInfos});
+            const response = await axios.post('https://maxrep-back.onrender.com/api/register' , userInfos);
             //!Get status and handle it -> redirect to login if status 201 or error message if not
-            console.log('response: ' , response.data);
+            console.log('response: ' , response);
 
         } catch (error) {
             console.log(error);
@@ -127,8 +127,8 @@ const RegisterPage = () => {
                                 <i className="icon fa-solid fa-calendar-days"></i>
                                 <input 
                                     type="date" 
-                                    name="birthdate" 
-                                    value={userInfos.birthdate} 
+                                    name="birthDate" 
+                                    value={userInfos.birthDate} 
                                     onChange={handleInputChange} 
                                     placeholder='Votre date de naissance' 
                                 />
@@ -136,8 +136,8 @@ const RegisterPage = () => {
                             <div className='input'> 
                                 <i className="icon fa-solid fa-venus-mars"></i>
                                 <select name="gender" id="" value={userInfos.gender} onChange={handleInputChange} required>
-                                    <option value="man"> Homme </option>
-                                    <option value="woman"> Femme </option>
+                                    <option value="male"> Homme </option>
+                                    <option value="female"> Femme </option>
                                     <option value="non-binary"> Non binaire </option>
                                 </select>
                             </div>

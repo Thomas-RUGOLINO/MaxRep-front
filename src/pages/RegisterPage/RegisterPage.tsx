@@ -32,11 +32,35 @@ const RegisterPage = () => {
                         <div className="form__inputs">
                             <div className='input'> 
                                 <i className="icon fa-solid fa-at"></i>
-                                <input type="email" placeholder='Entrer votre email' />
+                                <input type="email" placeholder='Votre email' />
                             </div>
                             <div className='input'> 
                                 <i className="icon fa-solid fa-unlock"></i>
-                                <input type="password" placeholder='Entrer votre mot de passe' />
+                                <input type="password" placeholder='Votre mot de passe' />
+                            </div>
+                            <div className='input'> 
+                                <i className="icon fa-solid fa-unlock"></i>
+                                <input type="password" placeholder='Confirmer votre mot de passe' />
+                            </div>
+                            <div className='input'> 
+                                <i className="icon fa-solid fa-user"></i>
+                                <input type="text" placeholder='Votre nom' />
+                            </div>
+                            <div className='input'> 
+                                <i className="icon fa-solid fa-user"></i>
+                                <input type="text" placeholder='Votre prénom' />
+                            </div>
+                            <div className='input'> 
+                                <i className="icon fa-solid fa-calendar-days"></i>
+                                <input type="date" placeholder='Votre date de naissance' />
+                            </div>
+                            <div className='input'> 
+                                <i className="icon fa-solid fa-venus-mars"></i>
+                                <select name="" id="">
+                                    <option value="man"> Homme </option>
+                                    <option value="woman"> Femme </option>
+                                    <option value="non-binary"> Non binaire </option>
+                                </select>
                             </div>
                         </div>
                         <div className="form__buttons">

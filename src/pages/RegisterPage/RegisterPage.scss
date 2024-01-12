@@ -36,26 +36,24 @@
 
                 .input {
                     border-color: $color-grey;
-                    position: relative;
 
-                    input {
+                    input, select {
                         width: 80%;
                         border: none;
                         border-bottom: 1px solid $color-grey;
                         border-color: grey;
-                        padding: 0 0 5px 25px;
+                        padding: 10px 0 5px 30px;
                     }
 
-                    input::placeholder {
+                    input::placeholder, select::placeholder {
                         color: grey;
                     }
 
                     .icon  {
-                        position: absolute;
-                        top: 0;
+                        position: relative;
+                        top: 0px;
+                        left:20px;
                         color: grey;
-                        vertical-align: baseline;
-
                     }
                 }
             }

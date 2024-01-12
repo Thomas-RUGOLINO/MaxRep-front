@@ -1,6 +1,7 @@
-import { useEffect } from 'react'
 import './RegisterPage.scss'
 import axios from 'axios'
+import { useEffect } from 'react'
+import Header from '../../components/Header/Header'
 
 const RegisterPage = () => {
 
@@ -20,9 +21,24 @@ const RegisterPage = () => {
     }
 
     return (
-        <>
-            <h1> Register page </h1>
-        </>
+        <div className='mobile-page register-page'>
+            <Header />
+            <main className='register-main'>
+                <section className='register-form'>
+                    <form action="">
+                        <div className="form__title">
+                            <h3> Inscription </h3>
+                        </div>
+                        <div className="form__inputs">
+                            <input type="email" placeholder='Entrer votre email' />
+                        </div>
+                        <div className="form__buttons">
+                            <button type='submit'> Inscription </button>
+                        </div>
+                    </form>
+                </section>
+            </main>
+        </div>
     )
 }
 

@@ -13,7 +13,7 @@ const RegisterPage = () => {
         passwordConfirm: '',
         lastname: '', 
         firstname:'',
-        birthdate: '',
+        birthDate: '',
         gender:''
     });
 
@@ -37,7 +37,7 @@ const RegisterPage = () => {
         e.preventDefault();
         console.log(userInfos);
         setErrorMessage(''); //Init empty error messages
-        
+
         //Comparing passwords
         if (userInfos.password !== userInfos.passwordConfirm) {
             return setErrorMessage('Les mots de passe ne correspondent pas !')
@@ -127,8 +127,8 @@ const RegisterPage = () => {
                                 <i className="icon fa-solid fa-calendar-days"></i>
                                 <input 
                                     type="date" 
-                                    name="birthdate" 
-                                    value={userInfos.birthdate} 
+                                    name="birthDate" 
+                                    value={userInfos.birthDate} 
                                     onChange={handleInputChange} 
                                     placeholder='Votre date de naissance' 
                                 />

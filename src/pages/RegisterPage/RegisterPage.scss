@@ -1,1 +1,82 @@
 @import '../../styles/variables.scss';
+
+.register-main {
+    background-color: black;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .register-form {
+        background-color: white;
+        width: 80%;
+        margin: auto auto;
+        display: flex;
+        justify-content: center;
+        border-radius: 10px;
+
+        .form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            &__title {
+                margin-top: 20px;
+                margin-bottom: 40px;
+            }
+    
+            &__inputs {
+                margin-bottom: 40px;
+                width: 100%;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+
+                .input {
+                    border-color: $color-grey;
+                    position: relative;
+
+                    input {
+                        width: 80%;
+                        border: none;
+                        border-bottom: 1px solid $color-grey;
+                        border-color: grey;
+                        padding: 0 0 5px 25px;
+                    }
+
+                    input::placeholder {
+                        color: grey;
+                    }
+
+                    .icon  {
+                        position: absolute;
+                        top: 0;
+                        color: grey;
+                        vertical-align: baseline;
+
+                    }
+                }
+            }
+
+            &__buttons {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-bottom: 40px;
+
+                button {
+                    width: 80%;
+                    padding: 10px;
+                    background-color: $color-black;
+                    border: none;
+                    color: $color-white;
+                }
+            }
+
+            
+        }
+    }
+}

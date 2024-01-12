@@ -21,19 +21,26 @@ const RegisterPage = () => {
     }
 
     return (
-        <div className='mobile-page register-page'>
+        <div className='register-page'>
             <Header />
             <main className='register-main'>
                 <section className='register-form'>
-                    <form action="">
+                    <form className='form' action="" method='post'>
                         <div className="form__title">
                             <h3> Inscription </h3>
                         </div>
                         <div className="form__inputs">
-                            <input type="email" placeholder='Entrer votre email' />
+                            <div className='input'> 
+                                <i className="icon fa-solid fa-at"></i>
+                                <input type="email" placeholder='Entrer votre email' />
+                            </div>
+                            <div className='input'> 
+                                <i className="icon fa-solid fa-unlock"></i>
+                                <input type="password" placeholder='Entrer votre mot de passe' />
+                            </div>
                         </div>
                         <div className="form__buttons">
-                            <button type='submit'> Inscription </button>
+                            <button type='submit'> INSCRIPTION </button>
                         </div>
                     </form>
                 </section>

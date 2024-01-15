@@ -3,7 +3,8 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../../components/Header/Header'
+import Header from '../../components/Header/Header';
+import ErrorPage from '../ErrorPage/ErrorPage';
 
 interface DecodedToken {
     id: number; 
@@ -43,6 +44,7 @@ const LoginPage = () => {
         //Push userInfos to backend
         try {
             const response = await axios.post('https://maxrep-back.onrender.com/api/login' , userInfos);
+            console.log(response);
 
             if (response.status === 200) {
                 const token = response.data;
@@ -56,12 +58,13 @@ const LoginPage = () => {
                 return response.data;
 
             } else {
-                return console.log('Connexion impossible'); //! Display an error message on form
+                //Return error status & message
+                return <ErrorPage status={500} message={response.data.error} />
             }
 
         } catch (error) {
             console.log(error);
-            return console.log('Connexion impossible'); //! Display an error message on form
+            return <ErrorPage status={500} message={'Server error / Erreur serveur'} /> //Return error status & message
         }
     }
 

@@ -34,7 +34,7 @@ const LoginPage = () => {
         
         //Push userInfos to backend
         try {
-            const response = await axios.post('https://maxrep-back.onrender.com/api/register' , userInfos);
+            const response = await axios.post('https://maxrep-back.onrender.com/api/login' , userInfos);
             //!Get status and handle it -> get token if status 201 or error message authentification failed
             console.log('response: ' , response);
 

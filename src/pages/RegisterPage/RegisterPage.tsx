@@ -1,6 +1,6 @@
 import './RegisterPage.scss'
 import axios from 'axios'
-// import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header/Header'
 import { useState } from 'react'
 
@@ -16,6 +16,8 @@ const RegisterPage = () => {
         birthDate: '',
         gender:'man'
     });
+
+    const navigate = useNavigate();
 
     const [errorMessage, setErrorMessage] = useState<string>('');
 
@@ -35,7 +37,6 @@ const RegisterPage = () => {
     const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
         e.preventDefault();
-        console.log(userInfos);
         setErrorMessage(''); //Init empty error messages
 
         //Comparing passwords
@@ -46,12 +47,17 @@ const RegisterPage = () => {
         //Push userInfos to backend
         try {
             const response = await axios.post('https://maxrep-back.onrender.com/api/register' , userInfos);
-            //!Get status and handle it -> redirect to login if status 201 or error message if not
-            console.log('response: ' , response);
+            
+            if (response.status === 201) {
+                navigate(`/login`);
+
+            } else {
+                return console.log('Register failed'); //! Display an error message on form
+            }
 
         } catch (error) {
             console.log(error);
-            //!Define and display error message
+            return console.log('Register failed'); //! Display an error message on form
         }
     }
 

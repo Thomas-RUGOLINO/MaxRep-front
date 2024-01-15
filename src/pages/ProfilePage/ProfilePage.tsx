@@ -28,13 +28,24 @@ const ProfilePage = () => {
                 });
                 console.log(response);
 
+                //== Case response is forbidden 
+                if (response.status === 403) {
+                    //! Afficher page erreur 403
+                }
+                
+                //== Case response is ok
+                if (response.status === 200) {
+                    //! Traitement de la data et maj du state
+                } 
+
             } catch (error) {
                 console.error(error);
+                //! Affiche page erreur 500 'Erreur serveur'
             }
 
         } else {
             //! Si pas de token envoyer sur une page d'erreur
-            console.log('No token')
+            console.log('No token');
         }
     }
 

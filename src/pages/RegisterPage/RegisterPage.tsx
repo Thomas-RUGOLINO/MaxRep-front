@@ -16,16 +16,14 @@ const RegisterPage = () => {
         birthDate: '',
         gender:'man'
     });
+    const [errorMessage, setErrorMessage] = useState<string>('');
 
     const navigate = useNavigate();
-
-    const [errorMessage, setErrorMessage] = useState<string>('');
 
     //UTILS
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 
         e.preventDefault();
-        console.log('name: ' , e.target.name , 'targetvalue: ' , e.target.value )
         
         //Edit userInfos with new target value for changed input
         setUserInfos({
@@ -49,15 +47,16 @@ const RegisterPage = () => {
             const response = await axios.post('https://maxrep-back.onrender.com/api/register' , userInfos);
             
             if (response.status === 201) {
+                //! Add pop up ?
                 navigate(`/login`);
 
             } else {
-                return console.log('Register failed'); //! Display an error message on form
+                return console.log(response); //! Display back end error message
             }
 
         } catch (error) {
             console.log(error);
-            return console.log('Register failed'); //! Display an error message on form
+            return console.log('Erreur serveur / Server error'); //! Display an error message on form
         }
     }
 

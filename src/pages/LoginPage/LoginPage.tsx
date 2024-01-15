@@ -27,7 +27,6 @@ const LoginPage = () => {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 
         e.preventDefault();
-        console.log('name: ' , e.target.name , 'targetvalue: ' , e.target.value )
         
         //Edit userInfos with new target value for changed input
         setUserInfos({
@@ -39,13 +38,11 @@ const LoginPage = () => {
     const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
         e.preventDefault();
-        console.log(userInfos);
         setErrorMessage(''); //Init empty error messages
         
         //Push userInfos to backend
         try {
             const response = await axios.post('https://maxrep-back.onrender.com/api/login' , userInfos);
-            console.log('token: ' , response.data);
 
             if (response.status === 200) {
                 const token = response.data;

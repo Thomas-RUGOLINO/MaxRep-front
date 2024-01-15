@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage/HomePage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import RegisterPage from './pages/RegisterPage/RegisterPage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
+import ErrorPage from './pages/ErrorPage/ErrorPage';
 
 const App = () => {
 
@@ -14,6 +15,7 @@ const App = () => {
         <Route path='/login' element={<LoginPage />} /> 
         <Route path='/register' element={<RegisterPage />} /> 
         <Route path='/profile/:id' element={<ProfilePage />} /> 
+        <Route path='*' element= {<ErrorPage status={404} message='Not Found / Non trouvé' />} />
       </Routes>
     </>
   )

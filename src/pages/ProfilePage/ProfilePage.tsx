@@ -3,6 +3,7 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { useEffect, useState } from 'react';
 import Header from '../../components/Header/Header';
+import NavMenu from '../../components/NavMenu/NavMenu';
 import ErrorPage from '../ErrorPage/ErrorPage';
 
 interface DecodedTokenProps {
@@ -67,6 +68,7 @@ const ProfilePage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
 
+    //! Remettre lorsque la page est prête à être testée 
     //Handle if there is an error 
     // if (error) {
     //     return <ErrorPage status={error.status} message={error.message} />
@@ -77,6 +79,7 @@ const ProfilePage = () => {
     return (
         <> 
         <Header />
+        <NavMenu />
         <div className='profile-page'>
             <header className="profile-header">
                 <h2> Profil </h2>

@@ -2,6 +2,7 @@ import './RegisterPage.scss'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header/Header'
+import ErrorPage from '../ErrorPage/ErrorPage';
 import { useState } from 'react'
 
 const RegisterPage = () => {
@@ -45,18 +46,19 @@ const RegisterPage = () => {
         //Push userInfos to backend
         try {
             const response = await axios.post('https://maxrep-back.onrender.com/api/register' , userInfos);
+            console.log(response);
             
             if (response.status === 201) {
                 //! Add pop up ?
                 navigate(`/login`);
 
             } else {
-                return console.log(response); //! Display back end error message
+                setErrorMessage("Cet utilisateur existe déjà !")
             }
 
         } catch (error) {
             console.log(error);
-            return console.log('Erreur serveur / Server error'); //! Display an error message on form
+            return <ErrorPage status={500} message={'Server error / Erreur serveur'} /> //Return error status & message
         }
     }
 

@@ -1,7 +1,15 @@
 import './LoginPage.scss'
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header/Header'
+
+interface DecodedToken {
+    id: number; 
+    firstname: string;
+    lastname: string;
+}
 
 const LoginPage = () => {
 
@@ -10,6 +18,8 @@ const LoginPage = () => {
         email:'',
         password:'',
     });
+
+    const navigate = useNavigate();
     
     const [errorMessage, setErrorMessage] = useState<string>('');
 
@@ -17,7 +27,6 @@ const LoginPage = () => {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 
         e.preventDefault();
-        console.log('name: ' , e.target.name , 'targetvalue: ' , e.target.value )
         
         //Edit userInfos with new target value for changed input
         setUserInfos({
@@ -29,18 +38,30 @@ const LoginPage = () => {
     const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
         e.preventDefault();
-        console.log(userInfos);
         setErrorMessage(''); //Init empty error messages
         
         //Push userInfos to backend
         try {
-            const response = await axios.post('https://maxrep-back.onrender.com/api/register' , userInfos);
-            //!Get status and handle it -> get token if status 201 or error message authentification failed
-            console.log('response: ' , response);
+            const response = await axios.post('https://maxrep-back.onrender.com/api/login' , userInfos);
+
+            if (response.status === 200) {
+                const token = response.data;
+                localStorage.setItem('userToken' , token);
+
+                //Get userId from userToken 
+                const decodedToken: DecodedToken = jwtDecode<DecodedToken>(token);
+                const userId = decodedToken.id;
+                navigate(`/profile/${userId}`);
+
+                return response.data;
+
+            } else {
+                return console.log('Connexion impossible'); //! Display an error message on form
+            }
 
         } catch (error) {
             console.log(error);
-            //!Define and display error message
+            return console.log('Connexion impossible'); //! Display an error message on form
         }
     }
 

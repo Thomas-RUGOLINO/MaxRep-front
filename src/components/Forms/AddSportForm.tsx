@@ -3,18 +3,17 @@ import Button from '../Button/Button';
 
 interface AddSportFormProps { 
     userId: number,
-    sportId: number,
     onClose: () => void
 }
 
-const AddSportForm = ({userId, sportId, onClose}: AddSportFormProps) => { 
+const AddSportForm = ({userId, onClose}: AddSportFormProps) => { 
 
     //! Gérer la validation des données du formulaire    
     //! Prévoir liste des sports en fonction de la catégorie choisie
 
     const handleSubmit = (e: { preventDefault: () => void; }) => { 
         e.preventDefault();
-        console.log('submit userId :' , userId , sportId);
+        console.log('submit userId :' , userId);
     }
 
     return (

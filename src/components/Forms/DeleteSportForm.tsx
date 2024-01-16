@@ -3,7 +3,7 @@ import Button from '../Button/Button';
 
 interface DeleteSportFormProps { 
     userId: number,
-    sportId: number,
+    sportId: number | null,
     onClose: () => void
 }
 
@@ -17,7 +17,7 @@ const DeleteSportForm = ({userId, sportId, onClose}: DeleteSportFormProps) => {
     return (
         <form className='form DeleteSportForm' method='post' onSubmit={handleSubmit}>
             <div className="form__fields">
-                <p> Êtes-vous sur de vouloir supprimer ce sport ? </p>
+                <p style={{textAlign: 'center'}}> Êtes-vous sur de vouloir supprimer ce sport ? </p>
             </div>
             <div className="form__buttons">
                 <Button text='Valider' color='black' type='submit' />

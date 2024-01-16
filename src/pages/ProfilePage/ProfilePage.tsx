@@ -49,6 +49,7 @@ const ProfilePage = () => {
     const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState<boolean>(false);
     const [isAddSportModalOpen, setIsAddSportModalOpen] = useState<boolean>(false);
     const [isDeleteSportModalOpen, setIsDeleteSportModalOpen] = useState<boolean>(false);
+    const [selectedSportId, setSelectedSportId] = useState<number | null>(null);
 
     //Get user profile infos
     const getUserProfile = async () => {  //! ==> Déplacer cette fonction dans le dossier services
@@ -100,7 +101,10 @@ const ProfilePage = () => {
     const closeEditProfileModal = () => { setIsEditProfileModalOpen(false); };
     const openAddSportModal = () => { setIsAddSportModalOpen(true); };
     const closeAddSportModal = () => { setIsAddSportModalOpen(false); };
-    const openDeleteSportModal = () => { setIsDeleteSportModalOpen(true); };
+    const openDeleteSportModal = (sportId: number) => { 
+        setSelectedSportId(sportId)
+        setIsDeleteSportModalOpen(true); 
+    };
     const closeDeleteSportModal = () => { setIsDeleteSportModalOpen(false); };
 
     useEffect(() => {
@@ -185,7 +189,7 @@ const ProfilePage = () => {
                                                 <td> <i className="icon-table fa-solid fa-chart-line"></i> </td>
                                                 <td> {sport.name} </td>
                                                 <td> Aucune </td>
-                                                <td> <i onClick={openDeleteSportModal} className="icon-table fa-solid fa-xmark"></i> </td>
+                                                <td> <i onClick={() => openDeleteSportModal(sport.id)} className="icon-table fa-solid fa-xmark"></i> </td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -204,14 +208,13 @@ const ProfilePage = () => {
                 <Modal title='Ajouter un sport' isOpen={isAddSportModalOpen} onClose={closeAddSportModal}> 
                     <AddSportForm
                         userId={userInfos.id}
-                        sportId={1}
                         onClose={closeAddSportModal}
                     />
                 </Modal>
                 <Modal title='Supprimer le sport' isOpen={isDeleteSportModalOpen} onClose={closeDeleteSportModal}> 
                     <DeleteSportForm
                         userId={userInfos.id}
-                        sportId={1}
+                        sportId={selectedSportId}
                         onClose={closeDeleteSportModal}
                     />
                 </Modal>

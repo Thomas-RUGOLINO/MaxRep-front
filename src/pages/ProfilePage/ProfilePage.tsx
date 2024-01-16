@@ -4,6 +4,9 @@ import { jwtDecode } from 'jwt-decode';
 import { useEffect, useState } from 'react';
 import Header from '../../components/Header/Header';
 import NavMenu from '../../components/NavMenu/NavMenu';
+import Modal from '../../components/Modal/Modal';
+import EditProfileForm from '../../components/Forms/EditProfileForm';
+import AddSportForm from '../../components/Forms/AddSportForm';
 import ErrorPage from '../ErrorPage/ErrorPage';
 import calculateAgeFromBirthDate from '../../utils/calculateAgeFromBirthDate';
 import formatUserName from '../../utils/formatUserName';
@@ -42,8 +45,11 @@ const ProfilePage = () => {
     const [userInfos, setUserInfos] = useState<UserInfosProps | null>(null);
     //! Add a loader state
     const [error, setError] = useState<ErrorProps | null>(null);
+    const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState<boolean>(false);
+    const [isAddSportModalOpen, setIsAddSportModalOpen] = useState<boolean>(false);
 
-    const getUserProfile = async () => {
+    //Get user profile infos
+    const getUserProfile = async () => {  //! ==> Déplacer cette fonction dans le dossier services
 
         const token = localStorage.getItem('userToken');
 
@@ -87,6 +93,12 @@ const ProfilePage = () => {
         }
     }
 
+    //Handle modals
+    const openEditProfileModal = () => { setIsEditProfileModalOpen(true); }; //! Passer les userInfos dans le state du form
+    const closeEditProfileModal = () => { setIsEditProfileModalOpen(false); };
+    const openAddSportModal = () => { setIsAddSportModalOpen(true); };
+    const closeAddSportModal = () => { setIsAddSportModalOpen(false); };
+
     useEffect(() => {
         getUserProfile();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -118,7 +130,7 @@ const ProfilePage = () => {
                             <div className="container">
                                 <div className="container__header">
                                     <h3> Infos </h3>
-                                    <i className="icon fa-solid fa-pen-to-square"></i>
+                                    <i onClick={openEditProfileModal} className="icon fa-solid fa-pen-to-square"></i>
                                 </div>
                                 <div className="container__content">
                                     <div className="info age">
@@ -152,7 +164,7 @@ const ProfilePage = () => {
                             <div className="container">
                                 <div className="container__header">
                                     <h3> Sports </h3>
-                                    <i className="icon fa-regular fa-square-plus"></i>
+                                    <i onClick={openAddSportModal} className="icon fa-regular fa-square-plus"></i>
                                 </div>
                                 <table className="sports-table" cellSpacing="10">
                                     <thead>
@@ -178,6 +190,12 @@ const ProfilePage = () => {
                         </section>
                     </main>
                 </div>
+                <Modal title='Editer mes infos' isOpen={isEditProfileModalOpen} onClose={closeEditProfileModal}> 
+                    <EditProfileForm />
+                </Modal>
+                <Modal title='Ajouter un sport' isOpen={isAddSportModalOpen} onClose={closeAddSportModal}> 
+                    <AddSportForm />
+                </Modal>
             </>
             )}
         

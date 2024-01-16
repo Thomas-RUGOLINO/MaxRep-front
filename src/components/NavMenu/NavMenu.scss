@@ -1,0 +1,49 @@
+@import '../../styles/breakpoints.scss';
+@import '../../styles/variables.scss';
+
+.nav {
+    background-color: black;
+    height: 65px;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    z-index: 100;
+    padding: 0.5rem 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 2px 2px 0 0;
+
+    &__item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+
+        .active & {
+            i, p {
+                color:$color-red;
+            }
+        }
+
+        &:hover i, &:hover p {
+            color:rgb(175, 171, 171);
+        }
+
+        p, i {
+            color: $color-white;
+            transition: color 150ms ease-out;
+            
+        }
+
+        i {
+            font-size: 1.5rem;
+        }
+    
+        p {
+            font-size: 0.7rem;
+        }
+
+    }
+}

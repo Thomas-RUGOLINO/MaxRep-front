@@ -46,9 +46,11 @@ const ProfilePage = () => {
     const [userInfos, setUserInfos] = useState<UserInfosProps | null>(null);
     //! Add a loader state
     const [error, setError] = useState<ErrorProps | null>(null);
+    //Modal states
     const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState<boolean>(false);
     const [isAddSportModalOpen, setIsAddSportModalOpen] = useState<boolean>(false);
     const [isDeleteSportModalOpen, setIsDeleteSportModalOpen] = useState<boolean>(false);
+    //Delete sport modal state
     const [selectedSportId, setSelectedSportId] = useState<number | null>(null);
 
     //Get user profile infos
@@ -97,12 +99,12 @@ const ProfilePage = () => {
     }
 
     //Handle modals
-    const openEditProfileModal = () => { setIsEditProfileModalOpen(true); }; //! Passer les userInfos dans le state du form
+    const openEditProfileModal = () => { setIsEditProfileModalOpen(true); };
     const closeEditProfileModal = () => { setIsEditProfileModalOpen(false); };
     const openAddSportModal = () => { setIsAddSportModalOpen(true); };
     const closeAddSportModal = () => { setIsAddSportModalOpen(false); };
     const openDeleteSportModal = (sportId: number) => { 
-        setSelectedSportId(sportId)
+        setSelectedSportId(sportId); //Set selected sport id to delete
         setIsDeleteSportModalOpen(true); 
     };
     const closeDeleteSportModal = () => { setIsDeleteSportModalOpen(false); };
@@ -198,6 +200,8 @@ const ProfilePage = () => {
                         </section>
                     </main>
                 </div>
+
+                {/* Modals are displayed on user's clicks */}
                 <Modal title='Editer mes infos' isOpen={isEditProfileModalOpen} onClose={closeEditProfileModal}> 
                     <EditProfileForm 
                         userId={userInfos.id}

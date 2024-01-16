@@ -12,6 +12,7 @@ const DeleteSportForm = ({userId, sportId, onClose}: DeleteSportFormProps) => {
     const handleSubmit = (e: { preventDefault: () => void; }) => { 
         e.preventDefault();
         console.log('submit userId :' , userId , sportId);
+        //! Ajouter axios et gérer les erreurs et les validation de formulaires
     }
 
     return (

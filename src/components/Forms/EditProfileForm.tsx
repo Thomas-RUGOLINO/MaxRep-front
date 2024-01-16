@@ -5,7 +5,7 @@ import Button from '../Button/Button';
 interface EditProfileFormProps { 
     userId: number,
     userCurrentInfos: UserCurrentInfosProps,
-    onClose: () => void
+    onClose: () => void //Function to close modal with form button
 }
 
 interface UserCurrentInfosProps { 
@@ -24,19 +24,18 @@ const EditProfileForm = ({userId, userCurrentInfos, onClose}: EditProfileFormPro
     //Local state for handle inputs
     const [userNewInfos, setUserNewInfos] = useState<UserCurrentInfosProps>(userCurrentInfos);
 
-    const handleChange = (e: { target: { name: string; value: unknown; }; }) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => {
         setUserNewInfos({
             ...userNewInfos,
             [e.target.name]: e.target.value
         })
     }
 
-    const handleSubmit = (e: { preventDefault: () => void; }) => { 
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => { 
         e.preventDefault();
         console.log('submit new infos :' , userId, userNewInfos);
+        //! Ajouter axios et gérer les erreurs et les validation de formulaires
     }
-
-    //! Gérer la validation des données du formulaire
 
     return (
         <form className='form editProfileForm' method='post' onSubmit={handleSubmit}>

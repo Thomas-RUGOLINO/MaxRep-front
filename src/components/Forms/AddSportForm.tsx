@@ -8,12 +8,12 @@ interface AddSportFormProps {
 
 const AddSportForm = ({userId, onClose}: AddSportFormProps) => { 
 
-    //! Gérer la validation des données du formulaire    
     //! Prévoir liste des sports en fonction de la catégorie choisie
 
     const handleSubmit = (e: { preventDefault: () => void; }) => { 
         e.preventDefault();
         console.log('submit userId :' , userId);
+        //! Ajouter axios et gérer les erreurs et les validation de formulaires
     }
 
     return (

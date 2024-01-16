@@ -1,15 +1,8 @@
 import './LoginPage.scss'
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header/Header';
-
-interface DecodedToken {
-    id: number; 
-    firstname: string;
-    lastname: string;
-}
 
 const LoginPage = () => {
 
@@ -48,11 +41,7 @@ const LoginPage = () => {
             if (response.status === 200) {
                 const token = response.data;
                 localStorage.setItem('userToken' , token);
-
-                //Get userId from userToken 
-                const decodedToken: DecodedToken = jwtDecode<DecodedToken>(token);
-                const userId = decodedToken.id;
-                navigate(`/profile/${userId}`);
+                navigate(`/profile`);
 
                 return response.data;
 

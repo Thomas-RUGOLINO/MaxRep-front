@@ -39,7 +39,7 @@ const RegisterPage = () => {
 
         //Comparing passwords
         if (userInfos.password !== userInfos.passwordConfirm) {
-            setErrorMessage('Les mots de passe ne correspondent pas !')
+            setErrorMessage('Les mots de passe ne correspondent pas !');
         }
         
         //Push userInfos to backend

@@ -191,7 +191,9 @@ const ProfilePage = () => {
                     </main>
                 </div>
                 <Modal title='Editer mes infos' isOpen={isEditProfileModalOpen} onClose={closeEditProfileModal}> 
-                    <EditProfileForm />
+                    <EditProfileForm 
+                        onClose={closeEditProfileModal}
+                    />
                 </Modal>
                 <Modal title='Ajouter un sport' isOpen={isAddSportModalOpen} onClose={closeAddSportModal}> 
                     <AddSportForm />

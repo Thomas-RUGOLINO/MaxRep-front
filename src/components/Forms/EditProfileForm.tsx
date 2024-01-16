@@ -1,11 +1,14 @@
 import './Form.scss';
+import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import { useState } from 'react';
 import Button from '../Button/Button';
 
 interface EditProfileFormProps { 
     userId: number,
     userCurrentInfos: UserCurrentInfosProps,
-    onClose: () => void //Function to close modal with form button
+    onClose: () => void, //Function to close modal with form button
+    onProfileUpdate: () => void //Function to update profile infos in parent component
 }
 
 interface UserCurrentInfosProps { 
@@ -19,7 +22,13 @@ interface UserCurrentInfosProps {
     weight: number
 }
 
-const EditProfileForm = ({userId, userCurrentInfos, onClose}: EditProfileFormProps) => { 
+interface DecodedTokenProps {
+    id: number; 
+    firstname: string;
+    lastname: string;
+}
+
+const EditProfileForm = ({userId, userCurrentInfos, onClose, onProfileUpdate}: EditProfileFormProps) => { 
 
     //Local state for handle inputs
     const [userNewInfos, setUserNewInfos] = useState<UserCurrentInfosProps>(userCurrentInfos);
@@ -31,11 +40,37 @@ const EditProfileForm = ({userId, userCurrentInfos, onClose}: EditProfileFormPro
         })
     }
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => { 
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => { 
         e.preventDefault();
         console.log('submit new infos :' , userId, userNewInfos);
-        //! Ajouter axios et gérer les erreurs et les validation de formulaires
-    }
+
+        const token = localStorage.getItem('userToken');
+
+        if (token) {
+            const decodedTokenProps: DecodedTokenProps = jwtDecode<DecodedTokenProps>(token);
+            const userId = decodedTokenProps.id;
+
+            try {
+                const response = await axios.patch(`https://maxrep-back.onrender.com/api/profile/${userId}`, userNewInfos, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`, // Remplace ${token} par la valeur de ton token
+                        // Autres en-têtes si nécessaire
+                    }
+                });
+                console.log(response);
+                if (response.status === 200) {
+                    onProfileUpdate();
+                    onClose();
+                }
+    
+            } catch (error) {
+                console.log(error);
+            }
+
+        } else {
+            console.log('no token');
+        }        
+    }    
 
     return (
         <form className='form editProfileForm' method='post' onSubmit={handleSubmit}>

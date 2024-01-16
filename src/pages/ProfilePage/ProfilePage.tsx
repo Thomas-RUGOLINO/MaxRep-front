@@ -98,6 +98,11 @@ const ProfilePage = () => {
         }
     }
 
+    const handleProfileUpdate = () => {
+        // Appelle getUserProfile pour recharger les informations
+        getUserProfile();
+    };
+
     //Handle modals
     const openEditProfileModal = () => { setIsEditProfileModalOpen(true); };
     const closeEditProfileModal = () => { setIsEditProfileModalOpen(false); };
@@ -191,7 +196,7 @@ const ProfilePage = () => {
                                                 <td> <i className="icon-table fa-solid fa-chart-line"></i> </td>
                                                 <td> {sport.name} </td>
                                                 <td> Aucune </td>
-                                                <td> <i onClick={() => openDeleteSportModal(sport.id)} className="icon-table fa-solid fa-xmark"></i> </td>
+                                                <td> <i onClick={() => openDeleteSportModal(sport.id)} className="icon-table fa-solid fa-circle-xmark"></i> </td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -207,6 +212,7 @@ const ProfilePage = () => {
                         userId={userInfos.id}
                         userCurrentInfos={userInfos}
                         onClose={closeEditProfileModal}
+                        onProfileUpdate={handleProfileUpdate}
                     />
                 </Modal>
                 <Modal title='Ajouter un sport' isOpen={isAddSportModalOpen} onClose={closeAddSportModal}> 

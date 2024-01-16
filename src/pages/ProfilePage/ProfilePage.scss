@@ -95,6 +95,10 @@
     &__header {
         display: flex;
         justify-content: center;
+
+        i {
+            cursor: pointer;
+        }
     }
 
     &__content {

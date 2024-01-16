@@ -7,6 +7,7 @@ import NavMenu from '../../components/NavMenu/NavMenu';
 import Modal from '../../components/Modal/Modal';
 import EditProfileForm from '../../components/Forms/EditProfileForm';
 import AddSportForm from '../../components/Forms/AddSportForm';
+import DeleteSportForm from '../../components/Forms/DeleteSportForm';
 import ErrorPage from '../ErrorPage/ErrorPage';
 import calculateAgeFromBirthDate from '../../utils/calculateAgeFromBirthDate';
 import formatUserName from '../../utils/formatUserName';
@@ -47,6 +48,7 @@ const ProfilePage = () => {
     const [error, setError] = useState<ErrorProps | null>(null);
     const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState<boolean>(false);
     const [isAddSportModalOpen, setIsAddSportModalOpen] = useState<boolean>(false);
+    const [isDeleteSportModalOpen, setIsDeleteSportModalOpen] = useState<boolean>(false);
 
     //Get user profile infos
     const getUserProfile = async () => {  //! ==> Déplacer cette fonction dans le dossier services
@@ -98,6 +100,8 @@ const ProfilePage = () => {
     const closeEditProfileModal = () => { setIsEditProfileModalOpen(false); };
     const openAddSportModal = () => { setIsAddSportModalOpen(true); };
     const closeAddSportModal = () => { setIsAddSportModalOpen(false); };
+    const openDeleteSportModal = () => { setIsDeleteSportModalOpen(true); };
+    const closeDeleteSportModal = () => { setIsDeleteSportModalOpen(false); };
 
     useEffect(() => {
         getUserProfile();
@@ -181,7 +185,7 @@ const ProfilePage = () => {
                                                 <td> <i className="icon-table fa-solid fa-chart-line"></i> </td>
                                                 <td> {sport.name} </td>
                                                 <td> Aucune </td>
-                                                <td> <i className="icon-table fa-solid fa-xmark"></i> </td>
+                                                <td> <i onClick={openDeleteSportModal} className="icon-table fa-solid fa-xmark"></i> </td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -192,11 +196,21 @@ const ProfilePage = () => {
                 </div>
                 <Modal title='Editer mes infos' isOpen={isEditProfileModalOpen} onClose={closeEditProfileModal}> 
                     <EditProfileForm 
+                        onSubmit={() => console.log('submit profile')}
                         onClose={closeEditProfileModal}
                     />
                 </Modal>
                 <Modal title='Ajouter un sport' isOpen={isAddSportModalOpen} onClose={closeAddSportModal}> 
-                    <AddSportForm />
+                    <AddSportForm
+                        onSubmit={() => console.log('submit sport')}
+                        onClose={closeAddSportModal}
+                    />
+                </Modal>
+                <Modal title='Supprimer le sport' isOpen={isDeleteSportModalOpen} onClose={closeDeleteSportModal}> 
+                    <DeleteSportForm
+                        onSubmit={() => console.log('suppr sport')}
+                        onClose={closeDeleteSportModal}
+                    />
                 </Modal>
             </>
             )}

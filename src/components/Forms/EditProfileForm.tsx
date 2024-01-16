@@ -2,15 +2,18 @@ import './Form.scss';
 import Button from '../Button/Button';
 
 interface EditProfileFormProps { 
+    onSubmit: () => void,
     onClose: () => void
 }
 
-const EditProfileForm = ({onClose}: EditProfileFormProps) => { 
+const EditProfileForm = ({onSubmit, onClose}: EditProfileFormProps) => { 
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => { 
         e.preventDefault();
-        console.log('submit form')
+        onSubmit();
     }
+
+    //! Gérer la validation des données du formulaire
 
     return (
         <form className='form editProfileForm' method='post' onSubmit={handleSubmit}>
@@ -53,7 +56,7 @@ const EditProfileForm = ({onClose}: EditProfileFormProps) => {
                 </div>
             </div>
             <div className="form__buttons">
-                <Button text='Enregistrer' color='black' onClick={() => handleSubmit} />
+                <Button text='Enregistrer' color='black' onClick={onSubmit} />
                 <Button text='Annuler' color='red' onClick={onClose} />
             </div>
             

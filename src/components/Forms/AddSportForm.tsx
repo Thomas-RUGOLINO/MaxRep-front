@@ -2,17 +2,23 @@ import './Form.scss'
 import Button from '../Button/Button';
 
 interface AddSportFormProps { 
-    onSubmit: () => void,
+    userId: number,
+    sportId: number,
     onClose: () => void
 }
 
-const AddSportForm = ({onSubmit, onClose}: AddSportFormProps) => { 
+const AddSportForm = ({userId, sportId, onClose}: AddSportFormProps) => { 
 
-    //! Gérer la validation des données du formulaire
+    //! Gérer la validation des données du formulaire    
     //! Prévoir liste des sports en fonction de la catégorie choisie
-    
+
+    const handleSubmit = (e: { preventDefault: () => void; }) => { 
+        e.preventDefault();
+        console.log('submit userId :' , userId , sportId);
+    }
+
     return (
-        <form className='form addSportForm' method='post'>
+        <form className='form addSportForm' method='post' onSubmit={handleSubmit}>
             <div className="form__fields">
                 <div className="field">
                     <label htmlFor="category"> Sélectionner une catégorie </label>
@@ -30,8 +36,8 @@ const AddSportForm = ({onSubmit, onClose}: AddSportFormProps) => {
                 </div>
             </div>
             <div className="form__buttons">
-                <Button text='Ajouter' color='black' onClick={onSubmit} />
-                <Button text='Annuler' color='red' onClick={onClose} />
+                <Button text='Ajouter' color='black' type='submit' />
+                <Button text='Annuler' color='red' onClick={onClose} type='button' />
             </div>
         </form>
     )

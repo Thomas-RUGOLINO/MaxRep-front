@@ -196,19 +196,22 @@ const ProfilePage = () => {
                 </div>
                 <Modal title='Editer mes infos' isOpen={isEditProfileModalOpen} onClose={closeEditProfileModal}> 
                     <EditProfileForm 
-                        onSubmit={() => console.log('submit profile')}
+                        userId={userInfos.id}
+                        userCurrentInfos={userInfos}
                         onClose={closeEditProfileModal}
                     />
                 </Modal>
                 <Modal title='Ajouter un sport' isOpen={isAddSportModalOpen} onClose={closeAddSportModal}> 
                     <AddSportForm
-                        onSubmit={() => console.log('submit sport')}
+                        userId={userInfos.id}
+                        sportId={1}
                         onClose={closeAddSportModal}
                     />
                 </Modal>
                 <Modal title='Supprimer le sport' isOpen={isDeleteSportModalOpen} onClose={closeDeleteSportModal}> 
                     <DeleteSportForm
-                        onSubmit={() => console.log('suppr sport')}
+                        userId={userInfos.id}
+                        sportId={1}
                         onClose={closeDeleteSportModal}
                     />
                 </Modal>

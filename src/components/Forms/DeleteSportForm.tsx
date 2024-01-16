@@ -2,20 +2,26 @@ import './Form.scss'
 import Button from '../Button/Button';
 
 interface DeleteSportFormProps { 
-    onSubmit: () => void,
+    userId: number,
+    sportId: number,
     onClose: () => void
 }
 
-const DeleteSportForm = ({onSubmit, onClose}: DeleteSportFormProps) => { 
+const DeleteSportForm = ({userId, sportId, onClose}: DeleteSportFormProps) => { 
+
+    const handleSubmit = (e: { preventDefault: () => void; }) => { 
+        e.preventDefault();
+        console.log('submit userId :' , userId , sportId);
+    }
 
     return (
-        <form className='form DeleteSportForm' method='post'>
+        <form className='form DeleteSportForm' method='post' onSubmit={handleSubmit}>
             <div className="form__fields">
                 <p> Êtes-vous sur de vouloir supprimer ce sport ? </p>
             </div>
             <div className="form__buttons">
-                <Button text='Valider' color='black' onClick={onSubmit} />
-                <Button text='Annuler' color='red' onClick={onClose} />
+                <Button text='Valider' color='black' type='submit' />
+                <Button text='Annuler' color='red' onClick={onClose} type='button' />
             </div>
         </form>
     )

@@ -24,17 +24,27 @@ interface UserInfosProps {
     country: string,
     height: number,
     weight: number,
+    sessions: UserSessionProps[],
     sports: UserSportsProps[]
 }
 
 interface UserSportsProps { 
     id:number,
-    name:string
+    name:string,
+    unit:string
 }
 
 interface ErrorProps {
     status:number,
     message:string
+}
+
+interface UserSessionProps {
+    id: number,
+    score: number,
+    sport_id: number,
+    user_id: number, 
+    date:string
 }
 
 const ProfilePage = () => {
@@ -85,7 +95,21 @@ const ProfilePage = () => {
         } else {
             setError({status:401, message:'Unauthorized / Non autorisé'});
         }
+
+        
     }
+
+    const getMostRecentSessionDate = (userId:number, sportId:number) => {
+
+        if (userInfos) {
+            const filteredSessions = userInfos.sessions
+            .filter(session => session.user_id === userId && session.sport_id === sportId)
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // Sorting by desc date
+
+        console.log(filteredSessions);
+        return filteredSessions.length > 0 ? filteredSessions[0].score : null;
+        }
+    };
 
     useEffect(() => {
         getUserProfile();
@@ -168,7 +192,11 @@ const ProfilePage = () => {
                                             <tr key={sport.id}>
                                                 <td> <i className="icon-table fa-solid fa-chart-line"></i> </td>
                                                 <td> {sport.name} </td>
-                                                <td> Aucune </td>
+                                                <td>
+                                                     {getMostRecentSessionDate(userInfos.id, sport.id) ? 
+                                                    (`${getMostRecentSessionDate(userInfos.id, sport.id)} ${sport.unit}`
+                                                    ) : ("Aucune donnée")}
+                                                </td>
                                                 <td> <i className="icon-table fa-solid fa-xmark"></i> </td>
                                             </tr>
                                         ))}

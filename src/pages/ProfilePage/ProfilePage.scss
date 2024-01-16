@@ -3,7 +3,7 @@
 
 .profile-page {
     max-width: 95%;
-    margin: 0 auto;
+    margin: 0 auto 100px; //100px to handle sticky menu and allow to scroll to the bottom of the page
 
     .profile-header {
         display: flex;

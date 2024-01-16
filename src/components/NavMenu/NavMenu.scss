@@ -14,18 +14,18 @@
     align-items: center;
     border-radius: 2px 2px 0 0;
 
-    .active {
-        i, p {
-            color: $color-red; 
-        }
-    }
-
     &__item {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 5px;
         cursor: pointer;
+
+        .active & {
+            i, p {
+                color:$color-red;
+            }
+        }
 
         &:hover i, &:hover p {
             color:rgb(175, 171, 171);

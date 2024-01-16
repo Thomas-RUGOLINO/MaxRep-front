@@ -24,6 +24,12 @@ interface UserInfosProps {
     country: string,
     height: number,
     weight: number,
+    sports: UserSportsProps[]
+}
+
+interface UserSportsProps { 
+    id:number,
+    name:string
 }
 
 interface ErrorProps {
@@ -80,8 +86,6 @@ const ProfilePage = () => {
             setError({status:401, message:'Unauthorized / Non autorisé'});
         }
     }
-
-    
 
     useEffect(() => {
         getUserProfile();
@@ -160,18 +164,14 @@ const ProfilePage = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td> <i className="icon-table fa-solid fa-chart-line"></i> </td>
-                                            <td> Marathon </td>
-                                            <td> 3h30min </td>
-                                            <td> <i className="icon-table fa-solid fa-xmark"></i> </td>
-                                        </tr>
-                                        <tr>
-                                            <td> <i className="icon-table fa-solid fa-chart-line"></i> </td>
-                                            <td> Marathon </td>
-                                            <td> 3h30min </td>
-                                            <td> <i className="icon-table fa-solid fa-xmark"></i> </td>
-                                        </tr>
+                                        {userInfos.sports.length > 0 && userInfos.sports.map(sport => (
+                                            <tr key={sport.id}>
+                                                <td> <i className="icon-table fa-solid fa-chart-line"></i> </td>
+                                                <td> {sport.name} </td>
+                                                <td> Aucune </td>
+                                                <td> <i className="icon-table fa-solid fa-xmark"></i> </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                             </div>

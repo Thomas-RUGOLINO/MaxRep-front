@@ -4,7 +4,6 @@ import { jwtDecode } from 'jwt-decode';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header/Header';
-import ErrorPage from '../ErrorPage/ErrorPage';
 
 interface DecodedToken {
     id: number; 
@@ -59,12 +58,22 @@ const LoginPage = () => {
 
             } else {
                 //Return error status & message
-                return <ErrorPage status={500} message={response.data.error} />
+                setErrorMessage(response.data.error);
             }
 
         } catch (error) {
+            if (axios.isAxiosError(error)) { //== Case if axios error
+                if (error.response) {
+                    setErrorMessage(error.response.data.error);
+
+                } else { //== Case if no response from server
+                    setErrorMessage('Une erreur de réseau est survenue.');
+                }
+
+            } else { //== Case if not axios error
+                setErrorMessage('Une erreur inattendue est survenue.');
+            }
             console.log(error);
-            return <ErrorPage status={500} message={'Server error / Erreur serveur'} /> //Return error status & message
         }
     }
 

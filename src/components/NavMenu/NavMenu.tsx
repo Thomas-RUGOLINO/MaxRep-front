@@ -3,7 +3,7 @@ import {NavLink} from 'react-router-dom';
 
 const NavMenu = () => {
     return (
-        <nav className='nav'>
+        <nav className='nav'> 
             <NavLink to='/session'>
                 <div className="nav__item">
                         <i className="fa-solid fa-calendar-days"></i>

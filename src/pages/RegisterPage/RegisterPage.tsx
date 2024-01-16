@@ -2,7 +2,6 @@ import './RegisterPage.scss'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header/Header'
-import ErrorPage from '../ErrorPage/ErrorPage';
 import { useState } from 'react'
 
 const RegisterPage = () => {
@@ -40,7 +39,7 @@ const RegisterPage = () => {
 
         //Comparing passwords
         if (userInfos.password !== userInfos.passwordConfirm) {
-            return setErrorMessage('Les mots de passe ne correspondent pas !')
+            setErrorMessage('Les mots de passe ne correspondent pas !')
         }
         
         //Push userInfos to backend
@@ -50,15 +49,23 @@ const RegisterPage = () => {
             
             if (response.status === 201) {
                 //! Add pop up ?
+                console.log('status 201')
                 navigate(`/login`);
-
-            } else {
-                setErrorMessage("Cet utilisateur existe déjà !")
             }
 
         } catch (error) {
+            if (axios.isAxiosError(error)) { //== Case if axios error
+                if (error.response) {
+                    setErrorMessage(error.response.data.error);
+
+                } else { //== Case if no response from server
+                    setErrorMessage('Une erreur de réseau est survenue.');
+                }
+
+            } else { //== Case if not axios error
+                setErrorMessage('Une erreur inattendue est survenue.');
+            }
             console.log(error);
-            return <ErrorPage status={500} message={'Server error / Erreur serveur'} /> //Return error status & message
         }
     }
 
@@ -137,7 +144,8 @@ const RegisterPage = () => {
                                     name="birthDate" 
                                     value={userInfos.birthDate} 
                                     onChange={handleInputChange} 
-                                    placeholder='Votre date de naissance' 
+                                    placeholder='Votre date de naissance'
+                                    required 
                                 />
                             </div>
                             <div className='input'> 

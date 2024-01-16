@@ -67,7 +67,7 @@
 
             .icon-table {
                 cursor: pointer;
-                &.fa-xmark {
+                &.fa-circle-xmark {
                     color: $color-red;
                 }
             }
@@ -95,6 +95,10 @@
     &__header {
         display: flex;
         justify-content: center;
+
+        i {
+            cursor: pointer;
+        }
     }
 
     &__content {

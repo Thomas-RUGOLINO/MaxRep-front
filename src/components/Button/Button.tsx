@@ -2,13 +2,15 @@ import './Button.scss'
 
 interface ButtonProps {
     text: string,
-    color: 'black' | 'white' | 'red'
+    color: 'black' | 'white' | 'red',
+    type: 'button' | 'submit',
+    onClick?: () => void
 }
 
-const Button = ({text, color}: ButtonProps) => {
+const Button = ({text, color, type, onClick}: ButtonProps) => {
     return (
         <>
-            <button className={`button ${color}`} type='button'> {text} </button>
+            <button onClick={onClick} className={`button ${color}`} type={type}> {text} </button>
         </>
     )
 }

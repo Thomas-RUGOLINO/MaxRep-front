@@ -4,6 +4,10 @@ import { jwtDecode } from 'jwt-decode';
 import { useEffect, useState } from 'react';
 import Header from '../../components/Header/Header';
 import NavMenu from '../../components/NavMenu/NavMenu';
+import Modal from '../../components/Modal/Modal';
+import EditProfileForm from '../../components/Forms/EditProfileForm';
+import AddSportForm from '../../components/Forms/AddSportForm';
+import DeleteSportForm from '../../components/Forms/DeleteSportForm';
 import ErrorPage from '../ErrorPage/ErrorPage';
 import calculateAgeFromBirthDate from '../../utils/calculateAgeFromBirthDate';
 import formatUserName from '../../utils/formatUserName';
@@ -52,8 +56,15 @@ const ProfilePage = () => {
     const [userInfos, setUserInfos] = useState<UserInfosProps | null>(null);
     //! Add a loader state
     const [error, setError] = useState<ErrorProps | null>(null);
+    //Modal states
+    const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState<boolean>(false);
+    const [isAddSportModalOpen, setIsAddSportModalOpen] = useState<boolean>(false);
+    const [isDeleteSportModalOpen, setIsDeleteSportModalOpen] = useState<boolean>(false);
+    //Delete sport modal state
+    const [selectedSportId, setSelectedSportId] = useState<number | null>(null);
 
-    const getUserProfile = async () => {
+    //Get user profile infos
+    const getUserProfile = async () => {  //! ==> Déplacer cette fonction dans le dossier services
 
         const token = localStorage.getItem('userToken');
 
@@ -99,6 +110,22 @@ const ProfilePage = () => {
         
     }
 
+    const handleProfileUpdate = () => {
+        // Appelle getUserProfile pour recharger les informations
+        getUserProfile();
+    };
+
+    //Handle modals
+    const openEditProfileModal = () => { setIsEditProfileModalOpen(true); };
+    const closeEditProfileModal = () => { setIsEditProfileModalOpen(false); };
+    const openAddSportModal = () => { setIsAddSportModalOpen(true); };
+    const closeAddSportModal = () => { setIsAddSportModalOpen(false); };
+    const openDeleteSportModal = (sportId: number) => { 
+        setSelectedSportId(sportId); //Set selected sport id to delete
+        setIsDeleteSportModalOpen(true); 
+    };
+    const closeDeleteSportModal = () => { setIsDeleteSportModalOpen(false); };
+
     const getMostRecentSessionDate = (userId:number, sportId:number) => {
 
         if (userInfos) {
@@ -142,7 +169,7 @@ const ProfilePage = () => {
                             <div className="container">
                                 <div className="container__header">
                                     <h3> Infos </h3>
-                                    <i className="icon fa-solid fa-pen-to-square"></i>
+                                    <i onClick={openEditProfileModal} className="icon fa-solid fa-pen-to-square"></i>
                                 </div>
                                 <div className="container__content">
                                     <div className="info age">
@@ -176,7 +203,7 @@ const ProfilePage = () => {
                             <div className="container">
                                 <div className="container__header">
                                     <h3> Sports </h3>
-                                    <i className="icon fa-regular fa-square-plus"></i>
+                                    <i onClick={openAddSportModal} className="icon fa-regular fa-square-plus"></i>
                                 </div>
                                 <table className="sports-table" cellSpacing="10">
                                     <thead>
@@ -197,7 +224,7 @@ const ProfilePage = () => {
                                                     (`${getMostRecentSessionDate(userInfos.id, sport.id)} ${sport.unit}`
                                                     ) : ("Aucune donnée")}
                                                 </td>
-                                                <td> <i className="icon-table fa-solid fa-xmark"></i> </td>
+                                                <td> <i onClick={() => openDeleteSportModal(sport.id)} className="icon-table fa-solid fa-circle-xmark"></i> </td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -206,6 +233,29 @@ const ProfilePage = () => {
                         </section>
                     </main>
                 </div>
+
+                {/* Modals are displayed on user's clicks */}
+                <Modal title='Editer mes infos' isOpen={isEditProfileModalOpen} onClose={closeEditProfileModal}> 
+                    <EditProfileForm 
+                        userId={userInfos.id}
+                        userCurrentInfos={userInfos}
+                        onClose={closeEditProfileModal}
+                        onProfileUpdate={handleProfileUpdate}
+                    />
+                </Modal>
+                <Modal title='Ajouter un sport' isOpen={isAddSportModalOpen} onClose={closeAddSportModal}> 
+                    <AddSportForm
+                        userId={userInfos.id}
+                        onClose={closeAddSportModal}
+                    />
+                </Modal>
+                <Modal title='Supprimer le sport' isOpen={isDeleteSportModalOpen} onClose={closeDeleteSportModal}> 
+                    <DeleteSportForm
+                        userId={userInfos.id}
+                        sportId={selectedSportId}
+                        onClose={closeDeleteSportModal}
+                    />
+                </Modal>
             </>
             )}
         

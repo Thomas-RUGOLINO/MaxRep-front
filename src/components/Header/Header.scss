@@ -6,19 +6,31 @@
     background-color: $color-red;
     border-bottom: 1px solid $color-white;
     display: flex;
+    justify-content: space-between;
     align-items: center;
     gap: 20px;
 
-    &__logo {
+    &__title {
+        display: flex;
+        align-items: center;
         height: 100%;
-        padding-left: 20px;
+
+        h1 {
+            color:$color-white;
+        }
 
         img {
             height: 100%;
         }
     }
 
-    h1 {
-        color: $color-white;
+    &__logout {
+        margin-right: 15px;
+
+        i {
+            font-size: 1.2rem;
+            color: $color-white;
+            cursor: pointer;
+        }
     }
 }

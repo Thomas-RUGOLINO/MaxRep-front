@@ -170,7 +170,7 @@ const ProfilePage = () => {
                     <main className="profile-main">
                         <section className="profile__head">
                             <div className="picture">
-                                <img src="/assets/test/profile-picture-test.jpg" alt="profile-picture"/>
+                                <img src={userInfos.profile_picture} alt="profile-picture"/>
                             </div>
                             <div className="name">
                                 <h3> {formatUserName(userInfos.firstname)} </h3>
@@ -259,6 +259,7 @@ const ProfilePage = () => {
                     <AddSportForm
                         userId={userInfos.id}
                         onClose={closeAddSportModal}
+                        onProfileUpdate={handleProfileUpdate}
                     />
                 </Modal>
                 <Modal title='Supprimer le sport' isOpen={isDeleteSportModalOpen} onClose={closeDeleteSportModal}> 
@@ -266,6 +267,7 @@ const ProfilePage = () => {
                         userId={userInfos.id}
                         sportId={selectedSportId}
                         onClose={closeDeleteSportModal}
+                        onProfileUpdate={handleProfileUpdate}
                     />
                 </Modal>
             </>

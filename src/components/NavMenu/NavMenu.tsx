@@ -1,8 +1,6 @@
 import './NavMenu.scss';
 import {NavLink} from 'react-router-dom';
 
-//! Remp
-
 const NavMenu = () => {
     return (
         <nav className='nav'> 

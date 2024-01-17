@@ -19,7 +19,9 @@ interface UserCurrentInfosProps {
     city: string,
     country: string,
     height: number,
-    weight: number
+    weight: number,
+    profile_picture: string,
+    is_shared: boolean
 }
 
 interface DecodedTokenProps {
@@ -34,11 +36,13 @@ const EditProfileForm = ({userId, userCurrentInfos, onClose, onProfileUpdate}: E
     const [userNewInfos, setUserNewInfos] = useState<UserCurrentInfosProps>(userCurrentInfos);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => {
+        
+        const value = (e.target as HTMLInputElement).type === 'checkbox' ? (e.target as HTMLInputElement).checked : (e.target as HTMLInputElement).value;  //Handle input type
         setUserNewInfos({
             ...userNewInfos,
-            [e.target.name]: e.target.value
-        })
-    }
+            [e.target.name]: value
+        });
+    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => { 
         e.preventDefault();
@@ -51,6 +55,7 @@ const EditProfileForm = ({userId, userCurrentInfos, onClose, onProfileUpdate}: E
             const userId = decodedTokenProps.id;
 
             try {
+                console.log(userNewInfos)
                 const response = await axios.patch(`https://maxrep-back.onrender.com/api/profile/${userId}`, userNewInfos, {
                     headers: {
                         'Authorization': `Bearer ${token}`, // Remplace ${token} par la valeur de ton token
@@ -150,11 +155,30 @@ const EditProfileForm = ({userId, userCurrentInfos, onClose, onProfileUpdate}: E
                         required 
                     />
                 </div>
-            </div>
+                <div className='field'>
+                    <label htmlFor="profilePicture">Photo de profil</label>
+                    <input 
+                        type="text" 
+                        name="profilePicture"
+                        value={userNewInfos.profile_picture}
+                        onChange={handleChange}
+                    />
+                </div>
+                <div className='field'>
+                    <label htmlFor="is_shared">Partager mon profil</label>
+                    <input 
+                        type='checkbox' 
+                        name='is_shared' 
+                        checked={userNewInfos.is_shared}
+                        onChange={handleChange}
+                        className='checkbox'
+                        />
+                </div>
             <div className="form__buttons">
                 <Button text='Enregistrer' color='black' type='submit' />
                 <Button text='Annuler' color='red' onClick={onClose} type='button' />
             </div>
+        </div>
             
         </form>
     )

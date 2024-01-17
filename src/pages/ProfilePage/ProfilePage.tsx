@@ -28,6 +28,8 @@ interface UserInfosProps {
     country: string,
     height: number,
     weight: number,
+    profile_picture: string,
+    is_shared: boolean,
     sessions: UserSessionProps[],
     sports: UserSportsProps[]
 }

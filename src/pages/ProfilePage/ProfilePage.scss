@@ -1,0 +1,120 @@
+@import '../../styles/variables.scss';
+@import '../../styles/breakpoints.scss';
+
+.profile-page {
+    max-width: 95%;
+    margin: 0 auto 100px; //100px to handle sticky menu and allow to scroll to the bottom of the page
+
+    .profile-header {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0 15px;
+    }
+
+    .profile-main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+
+        .profile__head {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 0 10%;
+
+            .picture {
+                width: clamp(75px, 20%, 120px);
+
+                img {
+                    width: 100%;
+                    clip-path: circle();
+                }
+            }
+        }
+
+        .profile__infos, .profile__sports {
+            width: 100%;
+        }
+
+        //Table
+        .sports-table {
+            width: 100%;
+            border-collapse: separate; //Handle spaces between cells
+            border-spacing: 0 10px; //Spaces between rows but not cols
+
+            thead {
+                text-align: left;
+            }
+
+            thead tr {
+                background-color: $color-grey;
+            }
+
+            th, td {
+                padding: 8px; 
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+
+            tbody tr {
+                background-color: $color-white;
+                box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+                margin-bottom: 5px;
+            }
+
+            .icon-table {
+                cursor: pointer;
+                &.fa-circle-xmark {
+                    color: $color-red;
+                }
+            }
+        } 
+    }
+}
+
+//! Action ==> A factoriser dans un composant à part pour être réutiliser!
+.container { 
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-color: $color-grey;
+    border-radius: 10px;
+    padding: 15px;
+
+    .icon { //Place the icon relative to the container
+        position:absolute;
+        right: 15px;
+        font-size: 1.2rem;
+    }
+
+    &__header {
+        display: flex;
+        justify-content: center;
+
+        i {
+            cursor: pointer;
+        }
+    }
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        justify-items: center;
+        align-items: center;
+        gap: 15px;
+        @include breakpoint-phone {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+}

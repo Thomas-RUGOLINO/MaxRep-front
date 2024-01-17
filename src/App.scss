@@ -1,17 +1,31 @@
-//Global style
+@import './styles/variables.scss';
+
+//GLOBAL STYLE
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-//Fonts
+//GLOBAL FONTS
 //Headings
 h1, h2, h3 {
     font-family: 'Montserrat', Arial, sans-serif;
+    color:$color-black;
+}
+
+h1 {
+    font-size: 2rem;
+}
+
+h2 {
+    font-size: 1.8rem;
 }
 
 //Content
-p, a, label, button {
+p, a, label, button, th, td {
     font-family: 'Roboto' , Arial ,  sans-serif;
+    color:$color-black;
+    font-size: 1rem;
 }

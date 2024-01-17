@@ -1,1 +1,76 @@
 @import '../../styles/variables.scss';
+@import '../../styles/breakpoints.scss';
+
+.home-main {
+    
+    .home-firstpage {
+        position: relative;
+        min-height: 90vh; //because header's height = 10vh
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+        background-image: url('/assets/images/wallpaper-crossfit.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center center;
+
+        .button {
+            width: clamp(100px, 30%, 200px);
+            padding: 12px 10px;
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+            cursor: pointer;
+            transition: all 100ms ease-out;
+
+            &.black {
+                background-color: $color-black;
+                &:hover {
+                    transform: scale(1.02);
+                }
+    
+            }
+            &.white {
+                background-color: $color-white;
+                &:hover {
+                    transform: scale(1.02);
+                }
+            }
+
+            a {
+                text-decoration: none;
+                &.black {
+                    color:$color-black;
+                }
+                &.white {
+                    color:$color-white;
+                }
+            }
+        }
+
+        .show-more {
+            position: absolute;
+            bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transform: scale(1);
+            transition: transform 100ms ease-in;
+
+            &:hover {
+                transform: scale(1.1);
+            }
+            
+            p, .icon {
+                color:$color-white;
+            }
+        }
+    }
+
+    .home-secondpage {
+        min-height: 100vh;
+    }
+}

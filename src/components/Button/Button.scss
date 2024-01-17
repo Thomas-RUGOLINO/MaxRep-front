@@ -1,0 +1,22 @@
+@import '../../styles/variables.scss';
+
+.button {
+    width: clamp(100px, 30%, 200px);
+    padding: 12px 10px;
+    border: none;
+    border-radius: 5px;
+    color: $color-white;
+    cursor: pointer;
+}
+
+.button.black {
+    background-color: $color-black;
+}
+
+.button.white {
+    background-color: $color-white;
+}
+
+.button.red {
+    background-color: $color-red;
+}

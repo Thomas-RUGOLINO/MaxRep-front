@@ -1,5 +1,5 @@
 import './Form.scss';
-import axios from 'axios';
+import axiosInstance from '../../services/axiosInstance';
 import { jwtDecode } from 'jwt-decode';
 import { useState } from 'react';
 import Button from '../Button/Button';
@@ -44,7 +44,7 @@ const EditProfileForm = ({userId, userCurrentInfos, onClose, onProfileUpdate}: E
         });
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {  
+    const editUserProfile = async (e: React.FormEvent<HTMLFormElement>) => {  
         e.preventDefault();
         //! => Appeler la fonction editProfile (ci-dessous) et la déplacer dans le dossier services
         console.log('submit new infos :' , userId, userNewInfos);
@@ -57,10 +57,9 @@ const EditProfileForm = ({userId, userCurrentInfos, onClose, onProfileUpdate}: E
 
             try {
                 console.log(userNewInfos)
-                const response = await axios.patch(`https://maxrep-back.onrender.com/api/profile/${userId}`, userNewInfos, {
+                const response = await axiosInstance.patch(`/profile/${userId}`, userNewInfos, {
                     headers: {
-                        'Authorization': `Bearer ${token}`, // Remplace ${token} par la valeur de ton token
-                        // Autres en-têtes si nécessaire
+                        'Authorization': `Bearer ${token}`
                     }
                 });
                 console.log(response);
@@ -74,12 +73,13 @@ const EditProfileForm = ({userId, userCurrentInfos, onClose, onProfileUpdate}: E
             }
 
         } else {
+            //! Gestion d'erreur (==> a factoriser ?)
             console.log('no token');
         }        
     }    
 
     return (
-        <form className='form editProfileForm' method='post' onSubmit={handleSubmit}>
+        <form className='form editProfileForm' method='post' onSubmit={editUserProfile}>
             <div className="form__fields">
                 <div className="field">
                     <label htmlFor="lastname">Nom*</label>
@@ -102,10 +102,10 @@ const EditProfileForm = ({userId, userCurrentInfos, onClose, onProfileUpdate}: E
                     />
                 </div>
                 <div className="field">
-                    <label htmlFor="birthDate">Date de naissance*</label>
+                    <label htmlFor="birth_date">Date de naissance*</label>
                     <input 
                         type="date" 
-                        name="birthDate" 
+                        name="birth_date" 
                         value={userNewInfos.birth_date} 
                         onChange={handleChange}
                         required 
@@ -116,7 +116,7 @@ const EditProfileForm = ({userId, userCurrentInfos, onClose, onProfileUpdate}: E
                     <select name="gender" value={userNewInfos.gender} onChange={handleChange}>
                         <option value="Homme"> Homme </option>
                         <option value="Femme"> Femme </option>
-                        <option value="Non binary"> Non binaire </option>
+                        <option value="Non binaire"> Non binaire </option>
                     </select>
                 </div>
                 <div className="field">
@@ -157,10 +157,10 @@ const EditProfileForm = ({userId, userCurrentInfos, onClose, onProfileUpdate}: E
                     />
                 </div>
                 <div className='field'>
-                    <label htmlFor="profilePicture">Photo de profil</label>
+                    <label htmlFor="profile_picture">Photo de profil</label>
                     <input 
                         type="text" 
-                        name="profilePicture"
+                        name="profile_picture"
                         value={userNewInfos.profile_picture}
                         onChange={handleChange}
                     />

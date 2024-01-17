@@ -150,9 +150,9 @@ const RegisterPage = () => {
                             <div className='input'> 
                                 <i className="icon fa-solid fa-venus-mars"></i>
                                 <select name="gender" value={userInfos.gender} onChange={handleInputChange} required>
-                                    <option value="male"> Homme </option>
-                                    <option value="female"> Femme </option>
-                                    <option value="non-binary"> Non binaire </option>
+                                    <option value="Homme"> Homme </option>
+                                    <option value="Femme"> Femme </option>
+                                    <option value="Non binaire"> Non binaire </option>
                                 </select>
                             </div>
                         </div>

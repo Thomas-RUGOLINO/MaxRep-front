@@ -181,7 +181,7 @@ const ProfilePage = () => {
                             <div className="container">
                                 <div className="container__header">
                                     <h3> Infos </h3>
-                                    <i onClick={openEditProfileModal} className="icon fa-solid fa-pen-to-square"></i>
+                                    <i onClick={openEditProfileModal} className="icon fa-solid fa-pen-to-square" title='Editer les infos'></i>
                                 </div>
                                 <div className="container__content">
                                     <div className="info age">
@@ -215,7 +215,7 @@ const ProfilePage = () => {
                             <div className="container">
                                 <div className="container__header">
                                     <h3> Sports </h3>
-                                    <i onClick={openAddSportModal} className="icon fa-regular fa-square-plus"></i>
+                                    <i onClick={openAddSportModal} className="icon fa-regular fa-square-plus" title='Ajouter un sport'></i>
                                 </div>
                                 <table className="sports-table" cellSpacing="10">
                                     <thead>
@@ -236,7 +236,7 @@ const ProfilePage = () => {
                                                     (`${getMostRecentSessionScore(userInfos.id, sport.id)} ${sport.unit}`
                                                     ) : ("Aucune donnée")}
                                                 </td>
-                                                <td> <i onClick={() => openDeleteSportModal(sport.id)} className="icon-table fa-solid fa-circle-xmark"></i> </td>
+                                                <td> <i onClick={() => openDeleteSportModal(sport.id)} className="icon-table fa-solid fa-circle-xmark" title='Supprimer un sport'></i> </td>
                                             </tr>
                                         ))}
                                     </tbody>

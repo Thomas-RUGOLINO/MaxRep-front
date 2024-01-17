@@ -15,6 +15,14 @@ h1, h2, h3 {
     color:$color-black;
 }
 
+h1 {
+    font-size: 2rem;
+}
+
+h2 {
+    font-size: 1.8rem;
+}
+
 //Content
 p, a, label, button, th, td {
     font-family: 'Roboto' , Arial ,  sans-serif;

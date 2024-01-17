@@ -18,6 +18,7 @@
         .field {
             display: flex;
             justify-content: center;
+            align-items: center;
             gap: 10px;
     
             label {
@@ -28,6 +29,7 @@
                 width: clamp(120px, 70%, 500px);
                 background-color: $color-grey;
                 border: 1px solid grey;
+                padding: 5px 5px;
             }
 
             .checkbox {
@@ -39,6 +41,7 @@
     }
 
     &__buttons {
+        margin-top: 20px;
         display: flex;
         justify-content: center;
         gap: 30px;

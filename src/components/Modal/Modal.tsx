@@ -17,7 +17,7 @@ const Modal = ({title, isOpen, onClose, children}: ModalProps) => {
                         <div className="modal__header">
                             <h3 className="modal__title">{title}</h3>
                             <button className="modal__close" onClick={onClose}> 
-                                <i className="fa-solid fa-circle-xmark"></i> 
+                                <i className="fa-solid fa-circle-xmark" title='Fermer'></i> 
                             </button>
                         </div>
                         <div className="modal__content">

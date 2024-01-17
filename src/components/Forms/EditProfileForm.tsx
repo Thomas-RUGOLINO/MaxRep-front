@@ -166,7 +166,7 @@ const EditProfileForm = ({userId, userCurrentInfos, onClose, onProfileUpdate}: E
                     />
                 </div>
                 <div className='field'>
-                    <label htmlFor="is_shared">Partager mon profil</label>
+                    <label htmlFor="is_shared">Partager mon profil ?</label>
                     <input 
                         type='checkbox' 
                         name='is_shared' 

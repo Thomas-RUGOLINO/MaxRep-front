@@ -14,7 +14,7 @@ const Header = () => {
             <header className="header">
                 <div className="header__title">
                     <img src="/assets/logo/maxrep-logo.png" alt="" />
-                    <h1> MaxRep </h1>
+                    {/* <h1> MaxRep </h1> */}
                 </div>
                 <div className="header__logout">
                     {isAuthenticated() && <i className="fa-solid fa-right-from-bracket" title='Se déconnecter' onClick={handleLogout}></i>}

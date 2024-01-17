@@ -1,5 +1,6 @@
 import './App.scss'
 import {Routes, Route} from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import HomePage from './pages/HomePage/HomePage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import RegisterPage from './pages/RegisterPage/RegisterPage';
@@ -10,13 +11,15 @@ const App = () => {
 
   return (
     <>
-      <Routes>
-        <Route path='/' element={<HomePage />} /> 
-        <Route path='/login' element={<LoginPage />} /> 
-        <Route path='/register' element={<RegisterPage />} /> 
-        <Route path='/profile' element={<ProfilePage />} /> 
-        <Route path='*' element= {<ErrorPage status={404} message='Not Found / Non trouvé' />} />
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route path='/' element={<HomePage />} /> 
+          <Route path='/login' element={<LoginPage />} /> 
+          <Route path='/register' element={<RegisterPage />} /> 
+          <Route path='/profile' element={<ProfilePage />} /> 
+          <Route path='*' element= {<ErrorPage status={404} message='Not Found / Non trouvé' />} />
+        </Routes>
+      </AuthProvider>
     </>
   )
 }

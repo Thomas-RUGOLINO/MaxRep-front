@@ -2,6 +2,8 @@ import './ProfilePage.scss';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import Header from '../../components/Header/Header';
 import NavMenu from '../../components/NavMenu/NavMenu';
 import Modal from '../../components/Modal/Modal';
@@ -63,6 +65,18 @@ const ProfilePage = () => {
     //Delete sport modal state
     const [selectedSportId, setSelectedSportId] = useState<number | null>(null);
 
+    const navigate = useNavigate(); //Hook to navigate to another page
+    const { isAuthenticated } = useAuth()!; //Hook to get isAuthenticated function from AuthContext
+
+    //Handle redirection if user is not authenticated
+    useEffect(() => {
+        if (!isAuthenticated()) {
+            navigate('/login')
+        } else {
+            getUserProfile();
+        }
+    },[isAuthenticated, navigate])
+
     //Get user profile infos
     const getUserProfile = async () => {  //! ==> Déplacer cette fonction dans le dossier services
 
@@ -115,7 +129,7 @@ const ProfilePage = () => {
         getUserProfile();
     };
 
-    //Handle modals
+    //Open and close modals
     const openEditProfileModal = () => { setIsEditProfileModalOpen(true); };
     const closeEditProfileModal = () => { setIsEditProfileModalOpen(false); };
     const openAddSportModal = () => { setIsAddSportModalOpen(true); };
@@ -126,7 +140,8 @@ const ProfilePage = () => {
     };
     const closeDeleteSportModal = () => { setIsDeleteSportModalOpen(false); };
 
-    const getMostRecentSessionDate = (userId:number, sportId:number) => {
+    //Get most recent session score for a sport
+    const getMostRecentSessionScore = (userId:number, sportId:number) => {
 
         if (userInfos) {
             const filteredSessions = userInfos.sessions
@@ -137,11 +152,6 @@ const ProfilePage = () => {
         return filteredSessions.length > 0 ? filteredSessions[0].score : null;
         }
     };
-
-    useEffect(() => {
-        getUserProfile();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[]);
 
     //Handle 3 cases => error, loading and userInfos received
     return (
@@ -220,8 +230,8 @@ const ProfilePage = () => {
                                                 <td> <i className="icon-table fa-solid fa-chart-line"></i> </td>
                                                 <td> {sport.name} </td>
                                                 <td>
-                                                     {getMostRecentSessionDate(userInfos.id, sport.id) ? 
-                                                    (`${getMostRecentSessionDate(userInfos.id, sport.id)} ${sport.unit}`
+                                                     {getMostRecentSessionScore(userInfos.id, sport.id) ? 
+                                                    (`${getMostRecentSessionScore(userInfos.id, sport.id)} ${sport.unit}`
                                                     ) : ("Aucune donnée")}
                                                 </td>
                                                 <td> <i onClick={() => openDeleteSportModal(sport.id)} className="icon-table fa-solid fa-circle-xmark"></i> </td>

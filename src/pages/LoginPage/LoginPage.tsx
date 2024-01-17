@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header/Header';
+import { useAuth } from '../../context/AuthContext'
 
 const LoginPage = () => {
 
@@ -12,7 +13,8 @@ const LoginPage = () => {
         password:'',
     });
 
-    const navigate = useNavigate();
+    const navigate = useNavigate(); //Hook to navigate to another page
+    const { login } = useAuth()!; //Hook to get login function from AuthContext, exclamation mark to tell TS that it's not null
     
     const [errorMessage, setErrorMessage] = useState<string>('');
 
@@ -40,7 +42,7 @@ const LoginPage = () => {
 
             if (response.status === 200) {
                 const token = response.data;
-                localStorage.setItem('userToken' , token);
+                login(token); //Login user with token
                 navigate(`/profile`);
 
                 return response.data;

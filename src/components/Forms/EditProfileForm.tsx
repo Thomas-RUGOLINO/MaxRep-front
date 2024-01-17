@@ -44,8 +44,9 @@ const EditProfileForm = ({userId, userCurrentInfos, onClose, onProfileUpdate}: E
         });
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => { 
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {  
         e.preventDefault();
+        //! => Appeler la fonction editProfile (ci-dessous) et la déplacer dans le dossier services
         console.log('submit new infos :' , userId, userNewInfos);
 
         const token = localStorage.getItem('userToken');

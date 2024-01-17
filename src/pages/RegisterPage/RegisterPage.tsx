@@ -18,7 +18,7 @@ const RegisterPage = () => {
     });
     const [errorMessage, setErrorMessage] = useState<string>('');
 
-    const navigate = useNavigate();
+    const navigate = useNavigate(); //Hook to navigate to another page
 
     //UTILS
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -49,7 +49,6 @@ const RegisterPage = () => {
             
             if (response.status === 201) {
                 //! Add pop up ?
-                console.log('status 201')
                 navigate(`/login`);
             }
 

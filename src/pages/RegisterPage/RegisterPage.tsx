@@ -14,7 +14,7 @@ const RegisterPage = () => {
         lastname: '', 
         firstname:'',
         birthDate: '',
-        gender:'man'
+        gender:'Homme'
     });
     const [errorMessage, setErrorMessage] = useState<string>('');
 

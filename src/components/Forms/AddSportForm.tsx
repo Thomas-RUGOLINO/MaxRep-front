@@ -2,10 +2,10 @@ import './Form.scss'
 import axiosInstance from '../../services/axiosInstance';
 import Button from '../Button/Button';
 import { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import Loader from '../Loader/Loader';
 
 interface AddSportFormProps { 
-    userId: number,
     onClose: () => void,
     onProfileUpdate: () => void
 }
@@ -22,49 +22,45 @@ interface SportsProps {
     category_id: number
 }
 
-const AddSportForm = ({userId, onClose, onProfileUpdate}: AddSportFormProps) => { 
+const AddSportForm = ({onClose, onProfileUpdate}: AddSportFormProps) => { 
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [sportsCategories, setSportsCategories] = useState<SportsCategoriesProps[]>([]);
     const [selectedCategoryId, setSelectedCategoryId] = useState<number |null>(1);
     const [selectedSportId, setSelectedSportId] = useState<number | null>(1);
 
+    const {token, userId } = useAuth()!; //Hook to get token and userId from AuthContext
+
     useEffect(() => {
         getSportsCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     //Get sports categories for form 
     const getSportsCategories = async () => {
 
-        const token = localStorage.getItem('userToken');
-
-        if (token) {
-
-            try {
-                setIsLoading(true);
-                const response = await axiosInstance.get(`/categories`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-
-                console.log(response);
-                if (response.status === 200) {
-                    setSportsCategories(response.data);
+        try {
+            setIsLoading(true);
+            const response = await axiosInstance.get(`/categories`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
                 }
-    
-            } catch (error) {
-                //! Gestion d'erreur (==> a factoriser ?)
-                console.log(error);
+            });
 
-            } finally {
-                setTimeout(() => {
-                    setIsLoading(false);
-                }, 500);
+            if (response.status === 200) {
+                setSportsCategories(response.data);
             }
-        }  
 
-    }
+        } catch (error) {
+            //! Gestion d'erreur (==> a factoriser ?)
+            console.error(error);
+
+        } finally {
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 500);
+        }
+    }  
 
     const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement> ) => {
         e.preventDefault();
@@ -82,34 +78,28 @@ const AddSportForm = ({userId, onClose, onProfileUpdate}: AddSportFormProps) => 
 
     const handleSportChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => { 
         e.preventDefault();
-        console.log(e.target.value);
         setSelectedSportId(parseInt(e.target.value));
     }
 
     const addUserSport = async (e: { preventDefault: () => void; }) => { 
         e.preventDefault();
-        const token = localStorage.getItem('userToken');
 
-        if (token) {
-
-            try {
-                const response = await axiosInstance.post(`/profile/sport/${userId}`, {sportId: selectedSportId} , {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-
-                console.log(response);
-                if (response.status === 201) {
-                    onProfileUpdate();
-                    onClose();
+        try {
+            const response = await axiosInstance.post(`/profile/sport/${userId}`, {sportId: selectedSportId} , {
+                headers: {
+                    'Authorization': `Bearer ${token}`
                 }
-    
-            } catch (error) {
-                //! Gestion d'erreur (==> a factoriser ?)
-                console.log(error);
+            });
+
+            if (response.status === 201) {
+                onProfileUpdate();
+                onClose();
             }
-        }  
+
+        } catch (error) {
+            //! Gestion d'erreur (==> a factoriser ?)
+            console.error(error);
+        }
     }
 
     return (

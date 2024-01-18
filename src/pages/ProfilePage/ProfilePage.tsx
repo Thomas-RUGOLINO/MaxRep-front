@@ -62,7 +62,7 @@ const ProfilePage = () => {
     const [selectedSportId, setSelectedSportId] = useState<number | null>(null);
 
     const navigate = useNavigate(); //Hook to navigate to another page
-    const { isAuthenticated, token, userId } = useAuth()!; //Hook to get isAuthenticated function from AuthContext
+    const { isAuthenticated, token, userId } = useAuth()!; //Hook to get token and userId from AuthContext if user is authenticated
 
     //Handle redirection if user is not authenticated
     useEffect(() => {
@@ -117,7 +117,7 @@ const ProfilePage = () => {
 
             } else { //== Case if not axios error
                 setError({status:500, message:'Internal Server Error / Erreur interne du serveur'})
-                console.log(error);
+                console.error(error);
             }                 
 
         } finally {
@@ -151,7 +151,6 @@ const ProfilePage = () => {
             .filter(session => session.user_id === userId && session.sport_id === sportId)
             .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // Sorting by desc date
 
-        console.log(filteredSessions);
         return filteredSessions.length > 0 ? filteredSessions[0].score : null;
         }
     };
@@ -255,7 +254,6 @@ const ProfilePage = () => {
                             </main>
                             <Modal title='Editer mes infos' isOpen={isEditProfileModalOpen} onClose={closeEditProfileModal}> 
                                 <EditProfileForm 
-                                    userId={userInfos.id}
                                     userCurrentInfos={userInfos}
                                     onClose={closeEditProfileModal}
                                     onProfileUpdate={handleProfileUpdate}
@@ -263,14 +261,12 @@ const ProfilePage = () => {
                                 </Modal>
                             <Modal title='Ajouter un sport' isOpen={isAddSportModalOpen} onClose={closeAddSportModal}> 
                                 <AddSportForm
-                                    userId={userInfos.id}
                                     onClose={closeAddSportModal}
                                     onProfileUpdate={handleProfileUpdate}
                                 />
                             </Modal>
                             <Modal title='Supprimer le sport' isOpen={isDeleteSportModalOpen} onClose={closeDeleteSportModal}> 
                                 <DeleteSportForm
-                                    userId={userInfos.id}
                                     sportId={selectedSportId}
                                     onClose={closeDeleteSportModal}
                                     onProfileUpdate={handleProfileUpdate}

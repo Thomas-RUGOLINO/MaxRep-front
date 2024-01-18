@@ -125,12 +125,9 @@ const ProfilePage = () => {
                 }                 
 
             } finally {
-                //add a interval to show loader
                 setTimeout(() => {
                     setIsLoading(false);
-                }, 1000);
-
-                // setIsLoading(false);
+                }, 500);
             }
 
         //If there is no token
@@ -180,7 +177,7 @@ const ProfilePage = () => {
             <NavMenu />
             <div className="profile-page">
                 {isLoading ? ( 
-                    <Loader /> 
+                    <Loader isPage /> 
                 ) : (
                     userInfos &&  (
                         <>

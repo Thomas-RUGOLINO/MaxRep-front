@@ -1,9 +1,13 @@
-import './Loader.scss'
+import './Loader.scss';
 
-const Loader = () => {
+interface LoaderProps { 
+    isPage?: boolean
+}
+
+const Loader = ({isPage}: LoaderProps) => {
     return (
         <>
-            <div className="loader-container">
+            <div className="loader-container" style={isPage ? { minHeight: '90vh' } : undefined}>
                 <span className="loader"></span>
             </div>
         </>

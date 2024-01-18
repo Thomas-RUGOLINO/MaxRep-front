@@ -223,7 +223,7 @@ const ProfilePage = () => {
                                     <div className="container">
                                         <div className="container__header">
                                             <h3> Sports </h3>
-                                            <i onClick={openAddSportModal} className="icon fa-regular fa-square-plus" title='Ajouter un sport'></i>
+                                            <i onClick={openAddSportModal} className="icon fa-solid fa-circle-plus" title='Ajouter un sport'></i>
                                         </div>
                                         <table className="sports-table" cellSpacing="10">
                                             <thead>

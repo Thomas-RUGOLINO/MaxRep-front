@@ -1,6 +1,5 @@
 import './ProfilePage.scss';
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -14,12 +13,6 @@ import ErrorPage from '../ErrorPage/ErrorPage';
 import Loader from '../../components/Loader/Loader';
 import calculateAgeFromBirthDate from '../../utils/calculateAgeFromBirthDate';
 import formatUserName from '../../utils/formatUserName';
-
-interface DecodedTokenProps {
-    id: number; 
-    firstname: string;
-    lastname: string;
-}
 
 interface UserInfosProps {
     id: number,
@@ -69,76 +62,73 @@ const ProfilePage = () => {
     const [selectedSportId, setSelectedSportId] = useState<number | null>(null);
 
     const navigate = useNavigate(); //Hook to navigate to another page
-    const { isAuthenticated } = useAuth()!; //Hook to get isAuthenticated function from AuthContext
+    const { isAuthenticated, token, userId } = useAuth()!; //Hook to get isAuthenticated function from AuthContext
 
     //Handle redirection if user is not authenticated
     useEffect(() => {
         if (!isAuthenticated()) {
-            navigate('/login')
+            navigate('/login');
+
         } else {
+            console.log('token', token);
+            console.log('userId', userId);
             getUserProfile();
         }
-    },[isAuthenticated, navigate])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[isAuthenticated, navigate, token, userId])
 
     //Get user profile infos
     const getUserProfile = async () => { 
 
-        const token = localStorage.getItem('userToken');
-
-        //Testing if token exists
-        if (token) {
-            const decodedTokenProps: DecodedTokenProps = jwtDecode<DecodedTokenProps>(token);
-            const userId = decodedTokenProps.id;
-
-            try {
-                setIsLoading(true);
-                setError(null);
-
-                const response = await axios.get(`https://maxrep-back.onrender.com/api/profile/${userId}` , {
-                    headers: {
-                        'Authorization': `Bearer ${token}` //Send token to backend to verify user
-                    }
-                });
-                
-                console.log(response.data);
-                
-                //== Case response is ok
-                if (response.status === 200) {
-                    setUserInfos(response.data);
-
-                } else {
-                    setError({status:500, message:'Internal Server Error / Erreur interne du serveur'})
-                }
-
-            } catch (error) {
-                if (axios.isAxiosError(error)) { //== Case if axios error
-                    if (error.response) {
-                        setError({status:error.response.status, message:error.response.data.error});
-    
-                    } else { //== Case if no response from server
-                        setError({status:500, message:'Internal Server Error / Erreur interne du serveur'})
-                    }
-    
-                } else { //== Case if not axios error
-                    setError({status:500, message:'Internal Server Error / Erreur interne du serveur'})
-                    console.log(error);
-                }                 
-
-            } finally {
-                setTimeout(() => {
-                    setIsLoading(false);
-                }, 500);
-            }
-
-        //If there is no token
-        } else {
+        if (!userId) {
             setError({status:401, message:'Unauthorized / Non autorisé'});
         }
 
+        try {
+            setIsLoading(true);
+            setError(null);
+
+            const response = await axios.get(`https://maxrep-back.onrender.com/api/profile/${userId}` , {
+                headers: {
+                    'Authorization': `Bearer ${token}` //Send token to backend to verify user
+                }
+            });
+            
+            console.log(response.data);
+            
+            //== Case response is ok
+            if (response.status === 200) {
+                setUserInfos(response.data);
+
+            } else {
+                setError({status:500, message:'Internal Server Error / Erreur interne du serveur'})
+            }
+
+        } catch (error) {
+            setIsLoading(false);
+            
+            if (axios.isAxiosError(error)) { //== Case if axios error
+                if (error.response) {
+                    setError({status:error.response.status, message:error.response.data.error});
+
+                } else { //== Case if no response from server
+                    setError({status:500, message:'Internal Server Error / Erreur interne du serveur'})
+                }
+
+            } else { //== Case if not axios error
+                setError({status:500, message:'Internal Server Error / Erreur interne du serveur'})
+                console.log(error);
+            }                 
+
+        } finally {
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 500);
+        }
     }
 
+    //Refresh user profile infos after update
     const handleProfileUpdate = () => {
-        // Appelle getUserProfile pour recharger les informations
         getUserProfile();
     };
 
@@ -165,6 +155,8 @@ const ProfilePage = () => {
         return filteredSessions.length > 0 ? filteredSessions[0].score : null;
         }
     };
+
+
 
     //Handle 3 cases => error, loading and userInfos received
     if (error) {

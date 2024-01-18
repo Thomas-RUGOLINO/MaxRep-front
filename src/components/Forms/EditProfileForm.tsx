@@ -152,8 +152,7 @@ const EditProfileForm = ({userId, userCurrentInfos, onClose, onProfileUpdate}: E
                         type="number" 
                         name="weight" 
                         value={userNewInfos.weight} 
-                        onChange={handleChange}
-                        required 
+                        onChange={handleChange} 
                     />
                 </div>
                 <div className='field'>

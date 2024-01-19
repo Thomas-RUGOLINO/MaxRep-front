@@ -162,7 +162,11 @@ const SessionPage = () => {
                                                 <i className="icon fa-solid fa-pen-to-square" title='Editer la session' onClick={() => openEditSessionModal(session)}></i>
                                                 <p className='session__title'> <strong>Session de {session.sport.name}</strong> </p>
                                                 <p className='session__desc'> {session.description} </p>
-                                                <SessionScore session={session} isScore={parseInt(session.score.toString()) === 0 ? false : true} />
+                                                <SessionScore 
+                                                    session={session} 
+                                                    isScore={parseInt(session.score.toString()) === 0 ? false : true}
+                                                    onProfileUpdate={handleSessionsUpdate}    
+                                                />
                                             </div>
                                         ) )}
                                         

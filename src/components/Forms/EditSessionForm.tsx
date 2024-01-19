@@ -1,6 +1,6 @@
 import './Form.scss'
 import axiosInstance from '../../services/axiosInstance';
-import { useState , useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import Button from '../Button/Button';
 import Loader from '../Loader/Loader';
@@ -53,11 +53,6 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
         sport_id: session.sport_id,
         unit: session.sport.unit
     });
-
-    useEffect(() => {
-        console.log(updatedSession);
-    })
-
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => { 
         e.preventDefault();

@@ -11,6 +11,8 @@ import AddSessionForm from '../../components/Forms/AddSessionForm';
 import EditSessionForm from '../../components/Forms/EditSessionForm';
 import Loader from '../../components/Loader/Loader';
 import ErrorPage from '../ErrorPage/ErrorPage';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 
 //Route back => GET /sessions/:userId & POST /sessions
 
@@ -32,7 +34,7 @@ interface ErrorProps {
 }
 
 const SessionPage = () => {
-
+    const [value, setValue] = useState(new Date());
     const [userSessions, setUserSessions] = useState([]); 
     const [userSports, setUserSports] = useState([]);
     const [selectedDate, setSelectedDate] = useState<string>('2024-01-15'); 
@@ -123,7 +125,24 @@ const SessionPage = () => {
     if (error) {
         return <ErrorPage status={error.status} message={error.message} />
     }
+    
+    function onChange(nextValue) {
+        setValue(nextValue);
+      }
+      console.log(userSessions);
+      console.log(value);
 
+    const tileClassName = ({ date }: { date: any }) => {
+        const sessionDate = date.getFullYear() + '-' +
+                      String(date.getMonth() + 1).padStart(2, '0') + '-' +
+                      String(date.getDate()).padStart(2, '0');
+        const isDateInItems = userSessions.some(session => session.date === sessionDate) 
+        
+
+        return isDateInItems ? 'session-active' : null;
+    }
+
+    
     return (
         <>
             <Header />
@@ -138,7 +157,11 @@ const SessionPage = () => {
                         </header>
                         <main>
                             <section className='calendar-container'> 
-                                Calendrier à ajouter 
+                            <Calendar
+                                onChange={onChange}
+                                value={value}
+                                tileClassName={tileClassName}
+                        />
                             </section>
                             <section className="agenda-container">
                                 <div className="agenda">

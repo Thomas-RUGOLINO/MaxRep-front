@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 import Header from '../../components/Header/Header';
 import NavMenu from '../../components/NavMenu/NavMenu';
-import Button from '../../components/Button/Button';
+import SessionScore from '../../components/SessionScore/SessionScore';
 import Modal from '../../components/Modal/Modal';
 import AddSessionForm from '../../components/Forms/AddSessionForm';
 import EditSessionForm from '../../components/Forms/EditSessionForm';
@@ -162,18 +162,11 @@ const SessionPage = () => {
                                                 <i className="icon fa-solid fa-pen-to-square" title='Editer la session' onClick={() => openEditSessionModal(session)}></i>
                                                 <p className='session__title'> <strong>Session de {session.sport.name}</strong> </p>
                                                 <p className='session__desc'> {session.description} </p>
-
-                                                {/* Créer un composant spécifique et évolutif en fonction du sport et du score renseigné ou non*/}
-                                                <div className="session__score"> 
-                                                    <form action="">
-                                                        <label htmlFor='score'> Score : </label>
-                                                        <p className="score__value"> {session.score} </p>
-                                                        {/* <input type='number' name='score' className='score__value' /> */}
-                                                        <p className='unit'> kg </p>
-                                                        <Button text='Ajouter' color='black' type='submit' isSmall />
-                                                    </form>
-                                                </div>
-
+                                                <SessionScore 
+                                                    session={session} 
+                                                    isScore={parseInt(session.score.toString()) === 0 ? false : true}
+                                                    onProfileUpdate={handleSessionsUpdate}    
+                                                />
                                             </div>
                                         ) )}
                                         

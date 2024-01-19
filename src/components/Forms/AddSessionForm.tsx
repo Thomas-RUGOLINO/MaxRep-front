@@ -1,8 +1,9 @@
 import './Form.scss'
-import Button from '../Button/Button';
 import axiosInstance from '../../services/axiosInstance';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import Button from '../Button/Button';
+import Loader from '../Loader/Loader';
 
 interface AddSessionFormProps { 
     onClose: () => void,
@@ -27,6 +28,7 @@ const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSession
 
     const {token, userId } = useAuth()!; //Hook to get token and userId from AuthContext
 
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [newSession, setNewSession] = useState<NewSessionProps>({
         user_id: userId,
         date: date,
@@ -52,6 +54,7 @@ const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSession
         e.preventDefault();
 
         try {
+            setIsLoading(true);
             const response = await axiosInstance.post(`/sessions` , newSession, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -68,19 +71,24 @@ const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSession
         } catch (error) {
             //! Gestion d'erreur (==> a factoriser ?)
             console.error(error);
+
+        } finally {
+            setIsLoading(false);
         }
     }
 
     return (
         <>
-            <form className='form addSessionForm' method='post' onSubmit={addSession}>
+            {isLoading && <Loader />}
+            {!isLoading && (
+                <form className='form addSessionForm' method='post' onSubmit={addSession}>
                 {userSports.length === 0 ?
                      (<p> Vous n'avez pas encore ajouté de sport à votre profil. </p>) : (
                         <>
                             <div className="form__fields">
                                 <div className="field">
                                     <label htmlFor="date"> Date </label>
-                                    <input type="date" name='date' value={date} onChange={handleChange}/>
+                                    <input type="date" name='date' value={newSession.date} onChange={handleChange}/>
                                 </div>
                                 <div className="field">
                                     <label htmlFor="sport_id"> Activité</label>
@@ -101,7 +109,9 @@ const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSession
                             </div>
                         </>
                      )}
-            </form>
+                </form>
+            )}
+            
         </>
     )
 }

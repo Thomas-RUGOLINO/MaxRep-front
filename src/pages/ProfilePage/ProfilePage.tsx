@@ -121,9 +121,7 @@ const ProfilePage = () => {
             }                 
 
         } finally {
-            setTimeout(() => {
-                setIsLoading(false);
-            }, 500);
+            setIsLoading(false);
         }
     }
 

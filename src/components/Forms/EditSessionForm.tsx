@@ -1,5 +1,8 @@
 import './Form.scss'
 import Button from '../Button/Button';
+import axiosInstance from '../../services/axiosInstance';
+import { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 
 interface EditSessionFormProps { 
     session:SessionProps,
@@ -18,6 +21,15 @@ interface SessionProps {
     }
 }
 
+interface UpdatedSessionProps {
+    user_id:number | null,
+    id:number,
+    description:string,
+    score:number,
+    date:string,
+    sport_id:number,
+}
+
 interface UserSportsProps {
     id: number,
     name: string,
@@ -25,15 +37,45 @@ interface UserSportsProps {
 
 const EditSessionForm = ({session, userSports, onProfileUpdate}: EditSessionFormProps) => { 
 
+    const {token, userId } = useAuth()!; //Hook to get token and userId from AuthContext
 
-    //Get sports categories for form 
+    const [updatedSession, setUpdatedSession] = useState<UpdatedSessionProps>({
+        user_id: userId,
+        id: session.id,
+        description: session.description,
+        score: session.score,
+        date: session.date,
+        sport_id: session.sport_id,
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => { 
+        e.preventDefault();
+        console.log(e.target.value)
+
+        setUpdatedSession({
+            ...updatedSession,
+            [e.target.name]: e.target.value
+        })
+    }
 
     const editSession = async (e: { preventDefault: () => void; }) => { 
         e.preventDefault();
-    }
 
-    const handleChange = (e) => {
-        e.preventDefault();
+        try {
+            const response = await axiosInstance.post(`/sessions` , updatedSession, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.status === 201) {
+                onProfileUpdate();
+            }
+
+        } catch (error) {
+            //! Gestion d'erreur (==> a factoriser ?)
+            console.error(error);
+        }
     }
 
     return (
@@ -42,7 +84,7 @@ const EditSessionForm = ({session, userSports, onProfileUpdate}: EditSessionForm
                 <div className="form__fields">
                     <div className="field">
                         <label htmlFor="date"> Date </label>
-                        <input type="date" name='date' value={session.date}/>
+                        <input type="date" name='date' value={session.date} onChange={handleChange}/>
                     </div>
                     <div className="field">
                         <label htmlFor="text"> Activité </label>
@@ -58,7 +100,7 @@ const EditSessionForm = ({session, userSports, onProfileUpdate}: EditSessionForm
                     </div>
                     <div className="field">
                         <label htmlFor="score"> Score </label>
-                        <input type="number" name='score' value={session.score} />
+                        <input type="number" name='score' value={session.score} onChange={handleChange} />
                     </div>
                 </div>
                 <div className="form__buttons">

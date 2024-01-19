@@ -1,5 +1,8 @@
 import './Form.scss'
 import Button from '../Button/Button';
+import axiosInstance from '../../services/axiosInstance';
+import { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 
 interface AddSessionFormProps { 
     onClose: () => void,
@@ -13,13 +16,53 @@ interface UserSportsProps {
     name: string,
 }
 
+interface NewSessionProps { 
+    userId: number | null,
+    date: string,
+    sport_id: number,
+    description: string,
+}
+
 const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSessionFormProps) => { 
 
+    const {token, userId } = useAuth()!; //Hook to get token and userId from AuthContext
 
-    //Get sports categories for form 
+    const [newSession, setNewSession] = useState<NewSessionProps>({
+        userId: userId,
+        date: date,
+        sport_id: userSports[0].id,
+        description: ''
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => { 
+        e.preventDefault();
+        console.log(e.target.value)
+
+        setNewSession({
+            ...newSession,
+            [e.target.name]: e.target.value
+        })
+    }
 
     const addSession = async (e: { preventDefault: () => void; }) => { 
         e.preventDefault();
+
+        try {
+            const response = await axiosInstance.post(`/sessions` , newSession, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.status === 201) {
+                onProfileUpdate();
+                onClose();
+            }
+
+        } catch (error) {
+            //! Gestion d'erreur (==> a factoriser ?)
+            console.error(error);
+        }
     }
 
     return (
@@ -31,11 +74,11 @@ const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSession
                             <div className="form__fields">
                                 <div className="field">
                                     <label htmlFor="date"> Date </label>
-                                    <input type="date" name='date' value={date}/>
+                                    <input type="date" name='date' value={date} onChange={handleChange}/>
                                 </div>
                                 <div className="field">
                                     <label htmlFor="text"> Activité</label>
-                                    <select name="text">
+                                    <select name="text" onChange={handleChange}>
                                         {userSports.map((sport: UserSportsProps) => (
                                             <option key={sport.id} value={sport.name}> {sport.name} </option>
                                         ))}
@@ -43,7 +86,7 @@ const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSession
                                 </div>
                                 <div className="field">
                                     <label htmlFor="description"> Description </label>
-                                    <textarea name='description' />
+                                    <textarea name='description' onChange={handleChange} />
                                 </div>
                             </div>
                             <div className="form__buttons">
@@ -52,7 +95,6 @@ const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSession
                             </div>
                         </>
                      )}
-                
             </form>
         </>
     )

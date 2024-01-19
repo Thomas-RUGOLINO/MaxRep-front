@@ -8,6 +8,7 @@ import NavMenu from '../../components/NavMenu/NavMenu';
 import Button from '../../components/Button/Button';
 import Modal from '../../components/Modal/Modal';
 import AddSessionForm from '../../components/Forms/AddSessionForm';
+import EditSessionForm from '../../components/Forms/EditSessionForm';
 import Loader from '../../components/Loader/Loader';
 import ErrorPage from '../ErrorPage/ErrorPage';
 
@@ -17,8 +18,9 @@ interface SessionProps {
     id:number,
     description:string,
     score:number,
+    date:string,
+    sport_id:number,
     sport:{
-        id:number,
         name:string
     }
  }
@@ -32,10 +34,13 @@ const SessionPage = () => {
 
     const [userSessions, setUserSessions] = useState([]); 
     const [userSports, setUserSports] = useState([]);
+    const [selectedDate, setSelectedDate] = useState<string>('2024-01-15'); 
+    const [selectedSession, setSelectedSession] = useState<SessionProps | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<ErrorProps | null>(null);
     //Handle modals
     const [isAddSessionModalOpen, setIsAddSessionModalOpen] = useState<boolean>(false);
+    const [isEditSessionModalOpen, setIsEditSessionModalOpen] = useState<boolean>(false);
 
     const navigate = useNavigate(); //Hook to navigate to another page
     const { isAuthenticated, token, userId } = useAuth()!; //Hook to get token and userId from AuthContext if user is authenticated
@@ -54,6 +59,12 @@ const SessionPage = () => {
 
     const openAddSessionModal = () => { setIsAddSessionModalOpen(true) };
     const closeAddSessionModal = () => { setIsAddSessionModalOpen(false) };
+    const openEditSessionModal = (session: SessionProps) => { 
+        setSelectedSession(session);
+        setIsEditSessionModalOpen(true);
+
+    };
+    const closeEditSessionModal = () => { setIsEditSessionModalOpen(false) };
 
     const getUserSessions = async () => {
 
@@ -149,8 +160,8 @@ const SessionPage = () => {
                                     </div>
                                     <div className="agenda__sessions">
                                         {userSessions.map((session: SessionProps) => (
-                                            <div className="session">
-                                                <i className="icon fa-solid fa-pen-to-square" title='Editer la session'></i>
+                                            <div key={session.id} className="session">
+                                                <i className="icon fa-solid fa-pen-to-square" title='Editer la session' onClick={() => openEditSessionModal(session)}></i>
                                                 <p className='session__title'> <strong>Session de {session.sport.name}</strong> </p>
                                                 <p className='session__desc'> {session.description} </p>
 
@@ -175,9 +186,19 @@ const SessionPage = () => {
                         <Modal title='Ajouter une session' isOpen={isAddSessionModalOpen} onClose={closeAddSessionModal}> 
                             <AddSessionForm 
                                 userSports={userSports}
+                                date={selectedDate}
                                 onClose={closeAddSessionModal}
                                 onProfileUpdate={handleSessionsUpdate}
                             />
+                        </Modal>
+                        <Modal title='Editer une session' isOpen={isEditSessionModalOpen} onClose={closeEditSessionModal}> 
+                            {selectedSession && (
+                                <EditSessionForm 
+                                    session={selectedSession}
+                                    userSports={userSports}
+                                    onProfileUpdate={handleSessionsUpdate}
+                                />
+                            )}
                         </Modal>
                     </>
                 )}

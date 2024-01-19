@@ -4,7 +4,8 @@ import Button from '../Button/Button';
 interface AddSessionFormProps { 
     onClose: () => void,
     onProfileUpdate: () => void,
-    userSports: UserSportsProps[]
+    userSports: UserSportsProps[],
+    date: string
 }
 
 interface UserSportsProps {
@@ -12,7 +13,7 @@ interface UserSportsProps {
     name: string,
 }
 
-const AddSessionForm = ({userSports, onClose, onProfileUpdate}: AddSessionFormProps) => { 
+const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSessionFormProps) => { 
 
 
     //Get sports categories for form 
@@ -23,32 +24,26 @@ const AddSessionForm = ({userSports, onClose, onProfileUpdate}: AddSessionFormPr
 
     return (
         <>
-            <form className='form AddSessionForm' method='post' onSubmit={addSession}>
+            <form className='form addSessionForm' method='post' onSubmit={addSession}>
                 {userSports.length === 0 ?
                      (<p> Vous n'avez pas encore ajouté de sport à votre profil. </p>) : (
                         <>
                             <div className="form__fields">
                                 <div className="field">
-                                    <label htmlFor="date"> Date de la session </label>
-                                    <select name="date">
-                                        <option value="14/01/2024"></option>
-                                    </select>
+                                    <label htmlFor="date"> Date </label>
+                                    <input type="date" name='date' value={date}/>
                                 </div>
                                 <div className="field">
-                                    <label htmlFor="text"> Activité à planifier </label>
+                                    <label htmlFor="text"> Activité</label>
                                     <select name="text">
                                         {userSports.map((sport: UserSportsProps) => (
                                             <option key={sport.id} value={sport.name}> {sport.name} </option>
                                         ))}
-
-                                        
                                     </select>
                                 </div>
                                 <div className="field">
-                                    <label htmlFor="text"> Description de la session </label>
-                                    <select name="text">
-                                        <option value="Marathon"></option>
-                                    </select>
+                                    <label htmlFor="description"> Description </label>
+                                    <textarea name='description' />
                                 </div>
                             </div>
                             <div className="form__buttons">

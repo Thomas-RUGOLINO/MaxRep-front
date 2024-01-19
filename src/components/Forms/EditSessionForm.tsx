@@ -1,8 +1,9 @@
 import './Form.scss'
-import Button from '../Button/Button';
 import axiosInstance from '../../services/axiosInstance';
 import { useState , useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import Button from '../Button/Button';
+import Loader from '../Loader/Loader';
 
 interface EditSessionFormProps { 
     session:SessionProps,
@@ -42,6 +43,7 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
 
     const {token, userId } = useAuth()!; //Hook to get token and userId from AuthContext
 
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [updatedSession, setUpdatedSession] = useState<UpdatedSessionProps>({
         user_id: userId,
         id: session.id,
@@ -71,6 +73,7 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
         e.preventDefault();
 
         try {
+            setIsLoading(true);
             const response = await axiosInstance.patch(`/sessions/${updatedSession.id}` , updatedSession, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -85,39 +88,70 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
         } catch (error) {
             //! Gestion d'erreur (==> a factoriser ?)
             console.error(error);
+
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    const deleteSession = async () => { 
+
+        try {
+            setIsLoading(true);
+            const response = await axiosInstance.delete(`/sessions/${updatedSession.id}` , {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.status === 204) {
+                onProfileUpdate();
+                onClose();
+            }
+
+        } catch (error) {
+            //! Gestion d'erreur (==> a factoriser ?)
+            console.error(error);
+
+        } finally {
+            setIsLoading(false);
         }
     }
 
     return (
         <>
-            <form className='form editSessionForm' method='post' onSubmit={editSession}>
-                <div className="form__fields">
-                    <div className="field">
-                        <label htmlFor="date"> Date </label>
-                        <input type="date" name='date' onChange={handleChange}/>
+            {isLoading && <Loader />}
+            {!isLoading && (
+                <form className='form editSessionForm' method='post' onSubmit={editSession}>
+                    <div className="form__fields">
+                        <div className="field">
+                            <label htmlFor="date"> Date </label>
+                            <input type="date" name='date' value={updatedSession.date} onChange={handleChange}/>
+                        </div>
+                        <div className="field">
+                            <label htmlFor="sport_id"> Activité </label>
+                            <select name="sport_id" value={updatedSession.sport_id}  onChange={handleChange} >
+                                {userSports.map((sport: UserSportsProps) => (
+                                    <option key={sport.id} value={sport.id}> {sport.name} </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="field">
+                            <label htmlFor="description"> Description </label>
+                            <textarea name='description' value={updatedSession.description}  onChange={handleChange} />
+                        </div>
+                        <div className="field">
+                            <label htmlFor="score"> Score </label>
+                            <input type="number" name='score' value={updatedSession.score} onChange={handleChange} />
+                        </div>
                     </div>
-                    <div className="field">
-                        <label htmlFor="sport_id"> Activité </label>
-                        <select name="sport_id" onChange={handleChange}>
-                            {userSports.map((sport: UserSportsProps) => (
-                                <option key={sport.id} value={sport.id}> {sport.name} </option>
-                            ))}
-                        </select>
+                    <div className="form__buttons">
+                        <Button text='Editer' color='black' type='submit' />
+                        <Button text='Supprimer' color='red' type='button' onClick={deleteSession} />
                     </div>
-                    <div className="field">
-                        <label htmlFor="description"> Description </label>
-                        <textarea name='description' onChange={handleChange} />
-                    </div>
-                    <div className="field">
-                        <label htmlFor="score"> Score </label>
-                        <input type="number" name='score' onChange={handleChange} />
-                    </div>
-                </div>
-                <div className="form__buttons">
-                    <Button text='Editer' color='black' type='submit' />
-                    <Button text='Supprimer' color='red' type='submit' />
-                </div>
-            </form>
+                </form>
+            )}
+            
         </>
     )
 }

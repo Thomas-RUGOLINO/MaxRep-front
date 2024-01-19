@@ -1,12 +1,13 @@
 import './Form.scss'
 import Button from '../Button/Button';
 import axiosInstance from '../../services/axiosInstance';
-import { useState } from 'react';
+import { useState , useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 
 interface EditSessionFormProps { 
     session:SessionProps,
     onProfileUpdate: () => void,
+    onClose: () => void,
     userSports: UserSportsProps[],
 }
 
@@ -18,6 +19,7 @@ interface SessionProps {
     sport_id:number,
     sport:{
         name:string,
+        unit:string
     }
 }
 
@@ -28,6 +30,7 @@ interface UpdatedSessionProps {
     score:number,
     date:string,
     sport_id:number,
+    unit:string,
 }
 
 interface UserSportsProps {
@@ -35,7 +38,7 @@ interface UserSportsProps {
     name: string,
 }
 
-const EditSessionForm = ({session, userSports, onProfileUpdate}: EditSessionFormProps) => { 
+const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSessionFormProps) => { 
 
     const {token, userId } = useAuth()!; //Hook to get token and userId from AuthContext
 
@@ -46,7 +49,13 @@ const EditSessionForm = ({session, userSports, onProfileUpdate}: EditSessionForm
         score: session.score,
         date: session.date,
         sport_id: session.sport_id,
+        unit: session.sport.unit
     });
+
+    useEffect(() => {
+        console.log(updatedSession);
+    })
+
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => { 
         e.preventDefault();
@@ -62,14 +71,15 @@ const EditSessionForm = ({session, userSports, onProfileUpdate}: EditSessionForm
         e.preventDefault();
 
         try {
-            const response = await axiosInstance.post(`/sessions` , updatedSession, {
+            const response = await axiosInstance.patch(`/sessions/${updatedSession.id}` , updatedSession, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
 
-            if (response.status === 201) {
+            if (response.status === 200) {
                 onProfileUpdate();
+                onClose();
             }
 
         } catch (error) {
@@ -84,11 +94,11 @@ const EditSessionForm = ({session, userSports, onProfileUpdate}: EditSessionForm
                 <div className="form__fields">
                     <div className="field">
                         <label htmlFor="date"> Date </label>
-                        <input type="date" name='date' value={session.date} onChange={handleChange}/>
+                        <input type="date" name='date' onChange={handleChange}/>
                     </div>
                     <div className="field">
-                        <label htmlFor="text"> Activité </label>
-                        <select name="text" value={session.sport_id} onChange={handleChange}>
+                        <label htmlFor="sport_id"> Activité </label>
+                        <select name="sport_id" onChange={handleChange}>
                             {userSports.map((sport: UserSportsProps) => (
                                 <option key={sport.id} value={sport.id}> {sport.name} </option>
                             ))}
@@ -96,11 +106,11 @@ const EditSessionForm = ({session, userSports, onProfileUpdate}: EditSessionForm
                     </div>
                     <div className="field">
                         <label htmlFor="description"> Description </label>
-                        <textarea name='description' value={session.description} onChange={handleChange} />
+                        <textarea name='description' onChange={handleChange} />
                     </div>
                     <div className="field">
                         <label htmlFor="score"> Score </label>
-                        <input type="number" name='score' value={session.score} onChange={handleChange} />
+                        <input type="number" name='score' onChange={handleChange} />
                     </div>
                 </div>
                 <div className="form__buttons">

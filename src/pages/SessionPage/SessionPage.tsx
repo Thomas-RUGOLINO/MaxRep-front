@@ -21,7 +21,8 @@ interface SessionProps {
     date:string,
     sport_id:number,
     sport:{
-        name:string
+        name:string,
+        unit:string
     }
  }
 
@@ -50,8 +51,6 @@ const SessionPage = () => {
             navigate('/login');
 
         } else {
-            console.log('token', token);
-            console.log('userId', userId);
             getUserSessions();
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -62,7 +61,6 @@ const SessionPage = () => {
     const openEditSessionModal = (session: SessionProps) => { 
         setSelectedSession(session);
         setIsEditSessionModalOpen(true);
-
     };
     const closeEditSessionModal = () => { setIsEditSessionModalOpen(false) };
 
@@ -196,6 +194,7 @@ const SessionPage = () => {
                                 <EditSessionForm 
                                     session={selectedSession}
                                     userSports={userSports}
+                                    onClose={closeEditSessionModal}
                                     onProfileUpdate={handleSessionsUpdate}
                                 />
                             )}

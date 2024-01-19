@@ -1,7 +1,7 @@
 import './Form.scss'
 import Button from '../Button/Button';
 import axiosInstance from '../../services/axiosInstance';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 
 interface AddSessionFormProps { 
@@ -17,7 +17,7 @@ interface UserSportsProps {
 }
 
 interface NewSessionProps { 
-    userId: number | null,
+    user_id: number | null,
     date: string,
     sport_id: number,
     description: string,
@@ -28,10 +28,10 @@ const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSession
     const {token, userId } = useAuth()!; //Hook to get token and userId from AuthContext
 
     const [newSession, setNewSession] = useState<NewSessionProps>({
-        userId: userId,
+        user_id: userId,
         date: date,
         sport_id: userSports[0].id,
-        description: ''
+        description: '',
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => { 
@@ -44,6 +44,10 @@ const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSession
         })
     }
 
+    useEffect(() => {
+        console.log(newSession);
+    },[newSession])
+
     const addSession = async (e: { preventDefault: () => void; }) => { 
         e.preventDefault();
 
@@ -53,6 +57,8 @@ const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSession
                     'Authorization': `Bearer ${token}`
                 }
             });
+
+            console.log(response.data)
 
             if (response.status === 201) {
                 onProfileUpdate();
@@ -77,10 +83,10 @@ const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSession
                                     <input type="date" name='date' value={date} onChange={handleChange}/>
                                 </div>
                                 <div className="field">
-                                    <label htmlFor="text"> Activité</label>
-                                    <select name="text" onChange={handleChange}>
+                                    <label htmlFor="sport_id"> Activité</label>
+                                    <select name="sport_id" onChange={handleChange}>
                                         {userSports.map((sport: UserSportsProps) => (
-                                            <option key={sport.id} value={sport.name}> {sport.name} </option>
+                                            <option key={sport.id} value={sport.id}> {sport.name} </option>
                                         ))}
                                     </select>
                                 </div>

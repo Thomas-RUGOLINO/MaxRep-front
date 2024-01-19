@@ -114,20 +114,21 @@
                             display: flex;
                             justify-content: flex-start;
                             align-items: center;
-                            gap: 10px;
+                            gap: 5px;
 
-                            input {
-                                padding: 5px 25px;
-                                width: 50px;
+                            .score__value {
+                                padding: 5px 15px;
                                 border: none;
                                 border-radius: 5px;
                                 background-color: $color-grey;
+                                text-align: left;
                             }
     
                             //Personal styles for session page buttons
                             button {
                                 font-size: 0.8rem;
                                 width: clamp(55px, 10%, 80px);
+                                margin-left: 20px;
                             }
                         }
                     }

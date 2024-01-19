@@ -258,7 +258,7 @@ const ProfilePage = () => {
                                     onClose={closeEditProfileModal}
                                     onProfileUpdate={handleProfileUpdate}
                                 />
-                                </Modal>
+                            </Modal>
                             <Modal title='Ajouter un sport' isOpen={isAddSportModalOpen} onClose={closeAddSportModal}> 
                                 <AddSportForm
                                     onClose={closeAddSportModal}

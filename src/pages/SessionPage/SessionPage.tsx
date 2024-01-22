@@ -120,11 +120,6 @@ const SessionPage = () => {
     const handleSessionsUpdate = () => {
         getUserSessions();
     };
-
-    //Handle 3 cases => error, loading and userInfos received
-    if (error) {
-        return <ErrorPage status={error.status} message={error.message} />
-    }
     
     function onChange(nextselectedDate : Date) {
         setSelectedDate(nextselectedDate);
@@ -145,6 +140,11 @@ const SessionPage = () => {
     };
     
     const filteredSessions = filterSessionsBySelectedDate();
+
+    //Handle 3 cases => error, loading and userInfos received
+    if (error) {
+        return <ErrorPage status={error.status} message={error.message} />
+    }
     
     return (
         <>

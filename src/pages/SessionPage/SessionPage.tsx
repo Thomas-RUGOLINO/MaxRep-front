@@ -16,9 +16,6 @@ import ErrorPage from '../ErrorPage/ErrorPage';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
-
-//Route back => GET /sessions/:userId & POST /sessions
-
 interface SessionProps {
     id:number,
     description:string,
@@ -29,7 +26,7 @@ interface SessionProps {
         name:string,
         unit:string
     }
- }
+}
 
 interface ErrorProps {
     status:number,
@@ -131,20 +128,14 @@ const SessionPage = () => {
     
     function onChange(nextselectedDate : Date) {
         setSelectedDate(nextselectedDate);
-    }
-
-    //! Fonction 1 : formatage de la date au format YYYY-MM-DD à extraire dans un module
-    
-      
-      console.log(userSessions);
+    }    
 
     const tileClassName = ({ date }: { date: Date }) => {
         const sessionDate = date.getFullYear() + '-' +
-                      String(date.getMonth() + 1).padStart(2, '0') + '-' +
-                      String(date.getDate()).padStart(2, '0');
+            String(date.getMonth() + 1).padStart(2, '0') + '-' +
+            String(date.getDate()).padStart(2, '0');
         const isDateInItems = userSessions.some(session => session.date === sessionDate) 
         
-
         return isDateInItems ? 'session-active' : null;
     }
 

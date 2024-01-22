@@ -9,7 +9,6 @@ export const formatDateInLetters = (value: Date) => {
   };
 
 
- //! Fonction 2 : formatage de la date pour la mettre sour la forme : <nom du jour> <jour> <mois> <année>
   export const formatDateToString = (inputDate: Date) => {
     const dateObject = new Date(inputDate);
   

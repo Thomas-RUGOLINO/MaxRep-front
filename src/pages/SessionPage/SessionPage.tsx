@@ -14,6 +14,7 @@ import ErrorPage from '../ErrorPage/ErrorPage';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
+
 //Route back => GET /sessions/:userId & POST /sessions
 
 interface SessionProps {
@@ -34,10 +35,10 @@ interface ErrorProps {
 }
 
 const SessionPage = () => {
-    const [value, setValue] = useState(new Date());
-    const [userSessions, setUserSessions] = useState([]); 
+    const [userSessions, setUserSessions] = useState<SessionProps[]>([]); 
     const [userSports, setUserSports] = useState([]);
-    const [selectedDate, setSelectedDate] = useState<string>('2024-01-15'); 
+    // State qui stocke la valeur cliquée dans le calendrier
+    const [selectedDate, setSelectedDate] = useState(new Date()); 
     const [selectedSession, setSelectedSession] = useState<SessionProps | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<ErrorProps | null>(null);
@@ -126,13 +127,49 @@ const SessionPage = () => {
         return <ErrorPage status={error.status} message={error.message} />
     }
     
-    function onChange(nextValue) {
-        setValue(nextValue);
-      }
-      console.log(userSessions);
-      console.log(value);
+    function onChange(nextselectedDate : Date) {
+        setSelectedDate(nextselectedDate);
+    }
 
-    const tileClassName = ({ date }: { date: any }) => {
+    //! Fonction 1 : formatage de la date au format YYYY-MM-DD à extraire dans un module
+    const formatValue = (value: Date) => {
+        const dateObject = new Date(value);
+        const year = dateObject.getFullYear();
+        // Les mois commencent à partir de zéro car ils sont indexés dans un tableau
+        const month = String(dateObject.getMonth() + 1).padStart(2, '0'); 
+        const day = String(dateObject.getDate()).padStart(2, '0');
+        
+        return `${year}-${month}-${day}`;
+      };
+    
+
+     //! Fonction 2 : formatage de la date pour la mettre sour la forme : <nom du jour> <jour> <mois> <année>
+    
+ 
+      const formatDateToString = (inputDate: Date) => {
+        const dateObject = new Date(inputDate);
+      
+        // Vérifiez si la date est valide avant de continuer
+        if (!isNaN(dateObject.getTime())) {
+          const jours = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+          const mois = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+      
+          const jourSemaine = jours[dateObject.getDay()];
+          const jour = dateObject.getDate();
+          const moisString = mois[dateObject.getMonth()];
+          const annee = dateObject.getFullYear();
+      
+          return `${jourSemaine} ${jour} ${moisString} ${annee}`;
+        } else {
+          // Gérer le cas où la date n'est pas valide
+          console.error("Date invalide");
+          return "";
+        }
+      };
+      
+      console.log(userSessions);
+
+    const tileClassName = ({ date }: { date: Date }) => {
         const sessionDate = date.getFullYear() + '-' +
                       String(date.getMonth() + 1).padStart(2, '0') + '-' +
                       String(date.getDate()).padStart(2, '0');
@@ -142,6 +179,12 @@ const SessionPage = () => {
         return isDateInItems ? 'session-active' : null;
     }
 
+    const filterSessionsBySelectedDate = () => {
+        const formattedSelectedDate = formatValue(selectedDate); // Utilisez votre fonction formatValue pour obtenir la date au format YYYY-MM-DD
+        return userSessions.filter(session => session.date === formattedSelectedDate);
+    };
+    
+    const filteredSessions = filterSessionsBySelectedDate();
     
     return (
         <>
@@ -158,8 +201,8 @@ const SessionPage = () => {
                         <main>
                             <section className='calendar-container'> 
                             <Calendar
-                                onChange={onChange}
-                                value={value}
+                                onClickDay={onChange}
+                                value={selectedDate}
                                 tileClassName={tileClassName}
                         />
                             </section>
@@ -176,11 +219,12 @@ const SessionPage = () => {
                                         <span className="spiral"></span>
                                     </div>
                                     <div className="agenda__header">
-                                        <h3> Jeudi 15 janvier 2024 </h3>
+                                        <h3> {formatDateToString(selectedDate)} </h3>
                                         <i className="fa-solid fa-circle-plus" title='Ajouter une session' onClick={openAddSessionModal}></i>
                                     </div>
                                     <div className="agenda__sessions">
-                                        {userSessions.map((session: SessionProps) => (
+                                    {filteredSessions.length > 0 ? (
+                                        filteredSessions.map((session: SessionProps) => (
                                             <div key={session.id} className="session">
                                                 <i className="icon fa-solid fa-pen-to-square" title='Editer la session' onClick={() => openEditSessionModal(session)}></i>
                                                 <p className='session__title'> <strong>Session de {session.sport.name}</strong> </p>
@@ -198,7 +242,19 @@ const SessionPage = () => {
                                                 </div>
 
                                             </div>
-                                        ) )}
+                                        ))
+                                        ) : (
+                                            <div className="no-sessions">
+                                                <p>Aucune session pour cette date.</p>
+                                                <Button 
+                                                    text='Ajouter une session' 
+                                                    color='black' 
+                                                    onClick={openAddSessionModal} 
+                                                    isSmall
+                                                    type='button'
+                                                />
+                                            </div>
+                                        )}
                                         
                                     </div>
                                 </div>
@@ -207,7 +263,7 @@ const SessionPage = () => {
                         <Modal title='Ajouter une session' isOpen={isAddSessionModalOpen} onClose={closeAddSessionModal}> 
                             <AddSessionForm 
                                 userSports={userSports}
-                                date={selectedDate}
+                                date={formatValue(selectedDate)}
                                 onClose={closeAddSessionModal}
                                 onProfileUpdate={handleSessionsUpdate}
                             />

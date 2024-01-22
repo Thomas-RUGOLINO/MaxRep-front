@@ -22,6 +22,7 @@ interface NewSessionProps {
     date: string,
     sport_id: number,
     description: string,
+    score: number,
 }
 
 const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSessionFormProps) => { 
@@ -34,6 +35,7 @@ const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSession
         date: date,
         sport_id: userSports[0].id,
         description: '',
+        score: 0,
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => { 
@@ -61,7 +63,7 @@ const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSession
                 }
             });
 
-            console.log(response.data)
+            console.log(response.data);
 
             if (response.status === 201) {
                 onProfileUpdate();

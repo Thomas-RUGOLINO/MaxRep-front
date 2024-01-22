@@ -1,7 +1,8 @@
 import './SessionScore.scss';
 import axiosInstance from '../../services/axiosInstance';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { convertSecondsToTime , convertTimeToSeconds } from '../../utils/convertTime';
 import Button from '../Button/Button';
 
 interface SessionScoreProps { 
@@ -32,17 +33,6 @@ interface UpdatedSessionProps {
     unit:string,
 }
 
-function convertSecondsToTime(seconds: number) { 
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    return { hours, minutes, secs };
-}
-
-function convertTimeToSeconds(hours: number, minutes: number, seconds: number) { 
-    return hours*3600 + minutes*60 + seconds;
-}
-
 const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) => { 
 
     const {token, userId } = useAuth()!; //Hook to get token and userId from AuthContext
@@ -51,11 +41,15 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
         user_id: userId,
         id: session.id,
         description: session.description,
-        score: session.score,
+        score: parseInt(String(session.score)),
         date: session.date,
         sport_id: session.sport_id,
         unit: session.sport.unit
     });
+
+    useEffect(() => {
+        console.log(typeof session.score)
+    })
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => { 
         e.preventDefault();
@@ -82,29 +76,30 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
 
         setUpdatedSession({
             ...updatedSession,
-            score: totalSeconds
+            score: totalSeconds || 0
         });
     }
 
     const editScore = async () => { 
 
-            try {
-                const response = await axiosInstance.patch(`/sessions/${updatedSession.id}` , updatedSession, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-    
-                if (response.status === 200) {
-                    onProfileUpdate();
+        try {
+            console.log(updatedSession)
+            const response = await axiosInstance.patch(`/sessions/${updatedSession.id}` , updatedSession, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
                 }
-    
-            } catch (error) {
-                //! Gestion d'erreur (==> a factoriser ?)
-                console.error(error);
-    
+            });
+
+            if (response.status === 200) {
+                onProfileUpdate();
             }
+
+        } catch (error) {
+            //! Gestion d'erreur (==> a factoriser ?)
+            console.error(error);
+
         }
+    }
         
     //Handle input display according to sport unit
     const displayInputUnit = (unit: string) => { 
@@ -190,7 +185,6 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
                 {!isScore && <Button text='Ajouter' color='black' type='submit' isSmall />}
             </form>
         </div>
-        
     )
 }
 

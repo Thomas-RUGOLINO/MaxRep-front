@@ -2,6 +2,7 @@ import './Form.scss'
 import axiosInstance from '../../services/axiosInstance';
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { convertSecondsToTime , convertTimeToSeconds } from '../../utils/convertTime';
 import Button from '../Button/Button';
 import Loader from '../Loader/Loader';
 
@@ -60,8 +61,27 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
 
         setUpdatedSession({
             ...updatedSession,
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.name === 'score' ? parseInt(e.target.value) || 0 : e.target.value
         })
+    }
+
+    const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>, unit: 'hh' | 'mm' | 'ss') => { 
+        const value = parseInt(e.target.value) || 0;
+        const time = convertSecondsToTime(updatedSession.score);
+        let totalSeconds = updatedSession.score;
+
+        if (unit === 'hh') {
+            totalSeconds = convertTimeToSeconds(value, time.minutes, time.secs);
+        } else if (unit === 'mm') {
+            totalSeconds = convertTimeToSeconds(time.hours, value, time.secs);
+        } else if (unit === 'ss') {
+            totalSeconds = convertTimeToSeconds(time.hours, time.minutes, value);
+        }
+
+        setUpdatedSession({
+            ...updatedSession,
+            score: totalSeconds
+        });
     }
 
     const editSession = async (e: { preventDefault: () => void; }) => { 
@@ -69,6 +89,7 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
 
         try {
             setIsLoading(true);
+            console.log(updatedSession);
             const response = await axiosInstance.patch(`/sessions/${updatedSession.id}` , updatedSession, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -113,6 +134,48 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
         }
     }
 
+    const displayInputUnit = (unit: string) => {
+        if (unit === 'temps') { 
+            const { hours, minutes, secs } = convertSecondsToTime(updatedSession.score);
+
+            return (
+                <>
+                    <input 
+                        type="number" 
+                        name='score-hh' 
+                        className='input-time'
+                        value={hours}
+                        onChange={(e) => handleTimeChange(e, 'hh')} 
+                        max={24}
+                        placeholder='hh' 
+                    />
+                    <input 
+                        type="number" 
+                        name='score-mm' 
+                        className='input-time'
+                        value={minutes} 
+                        onChange={(e) => handleTimeChange(e, 'mm')} 
+                        max={60}
+                        placeholder='mm' 
+                    />
+                    <input 
+                        type="number" 
+                        name='score-ss' 
+                        className='input-time'
+                        value={secs}
+                        onChange={(e) => handleTimeChange(e, 'ss')} 
+                        max={60}
+                        placeholder='ss' 
+                    />
+                </>
+            )
+        } else {
+            return (
+                <input type="number" name='score' value={updatedSession.score} onChange={handleChange} />
+            )
+        }
+    }
+
     return (
         <>
             {isLoading && <Loader />}
@@ -137,7 +200,7 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
                         </div>
                         <div className="field">
                             <label htmlFor="score"> Score </label>
-                            <input type="number" name='score' value={updatedSession.score} onChange={handleChange} />
+                            {displayInputUnit(updatedSession.unit)}                                
                         </div>
                     </div>
                     <div className="form__buttons">

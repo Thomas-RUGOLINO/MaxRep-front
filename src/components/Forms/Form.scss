@@ -32,6 +32,13 @@
                 padding: 5px 5px;
             }
 
+            .input-time {
+                width: clamp(30px, 20%, 100px);
+                background-color: $color-grey;
+                border: 1px solid grey;
+                padding: 5px 5px;
+            }
+
             .checkbox {
                 height: 20px;
             }

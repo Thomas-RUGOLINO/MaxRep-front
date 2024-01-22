@@ -6,6 +6,7 @@ import axios from 'axios';
 import Header from '../../components/Header/Header';
 import NavMenu from '../../components/NavMenu/NavMenu';
 import SessionScore from '../../components/SessionScore/SessionScore';
+import Button from '../../components/Button/Button';
 import Modal from '../../components/Modal/Modal';
 import AddSessionForm from '../../components/Forms/AddSessionForm';
 import EditSessionForm from '../../components/Forms/EditSessionForm';

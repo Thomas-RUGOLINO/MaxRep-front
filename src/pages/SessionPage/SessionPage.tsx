@@ -2,6 +2,7 @@ import './SessionPage.scss';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { formatDateToString, formatDateInLetters } from '../../utils/formatDate';
 import axios from 'axios';
 import Header from '../../components/Header/Header';
 import NavMenu from '../../components/NavMenu/NavMenu';
@@ -133,40 +134,7 @@ const SessionPage = () => {
     }
 
     //! Fonction 1 : formatage de la date au format YYYY-MM-DD à extraire dans un module
-    const formatValue = (value: Date) => {
-        const dateObject = new Date(value);
-        const year = dateObject.getFullYear();
-        // Les mois commencent à partir de zéro car ils sont indexés dans un tableau
-        const month = String(dateObject.getMonth() + 1).padStart(2, '0'); 
-        const day = String(dateObject.getDate()).padStart(2, '0');
-        
-        return `${year}-${month}-${day}`;
-      };
     
-
-     //! Fonction 2 : formatage de la date pour la mettre sour la forme : <nom du jour> <jour> <mois> <année>
-    
- 
-      const formatDateToString = (inputDate: Date) => {
-        const dateObject = new Date(inputDate);
-      
-        // Vérifiez si la date est valide avant de continuer
-        if (!isNaN(dateObject.getTime())) {
-          const jours = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
-          const mois = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-      
-          const jourSemaine = jours[dateObject.getDay()];
-          const jour = dateObject.getDate();
-          const moisString = mois[dateObject.getMonth()];
-          const annee = dateObject.getFullYear();
-      
-          return `${jourSemaine} ${jour} ${moisString} ${annee}`;
-        } else {
-          // Gérer le cas où la date n'est pas valide
-          console.error("Date invalide");
-          return "";
-        }
-      };
       
       console.log(userSessions);
 
@@ -181,7 +149,7 @@ const SessionPage = () => {
     }
 
     const filterSessionsBySelectedDate = () => {
-        const formattedSelectedDate = formatValue(selectedDate); // Utilisez votre fonction formatValue pour obtenir la date au format YYYY-MM-DD
+        const formattedSelectedDate = formatDateInLetters(selectedDate); // Utilisez votre fonction formatDateInLetters pour obtenir la date au format YYYY-MM-DD
         return userSessions.filter(session => session.date === formattedSelectedDate);
     };
     
@@ -257,7 +225,7 @@ const SessionPage = () => {
                         <Modal title='Ajouter une session' isOpen={isAddSessionModalOpen} onClose={closeAddSessionModal}> 
                             <AddSessionForm 
                                 userSports={userSports}
-                                date={formatValue(selectedDate)}
+                                date={formatDateInLetters(selectedDate)}
                                 onClose={closeAddSessionModal}
                                 onProfileUpdate={handleSessionsUpdate}
                             />

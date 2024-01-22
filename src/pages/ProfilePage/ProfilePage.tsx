@@ -153,8 +153,6 @@ const ProfilePage = () => {
         }
     };
 
-
-
     //Handle 3 cases => error, loading and userInfos received
     if (error) {
         return <ErrorPage status={error.status} message={error.message} />

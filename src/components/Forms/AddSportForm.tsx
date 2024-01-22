@@ -26,15 +26,26 @@ const AddSportForm = ({onClose, onProfileUpdate}: AddSportFormProps) => {
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [sportsCategories, setSportsCategories] = useState<SportsCategoriesProps[]>([]);
-    const [selectedCategoryId, setSelectedCategoryId] = useState<number |null>(1);
+    const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(1);
     const [selectedSportId, setSelectedSportId] = useState<number | null>(1);
 
     const {token, userId } = useAuth()!; //Hook to get token and userId from AuthContext
 
     useEffect(() => {
         getSportsCategories();
+        console.log(sportsCategories)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, []);
+
+    useEffect(() => { 
+        if (sportsCategories.length > 0) {
+            setSelectedCategoryId(sportsCategories[0].id);
+            if (sportsCategories[0].sports.length > 0) {
+                setSelectedSportId(sportsCategories[0].sports[0].id);
+            }
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, sportsCategories)
 
     //Get sports categories for form 
     const getSportsCategories = async () => {
@@ -48,7 +59,8 @@ const AddSportForm = ({onClose, onProfileUpdate}: AddSportFormProps) => {
             });
 
             if (response.status === 200) {
-                setSportsCategories(response.data);
+                const sortedCategories = response.data.sort((a: SportsCategoriesProps, b: SportsCategoriesProps) => a.id - b.id);
+                setSportsCategories(sortedCategories);
             }
 
         } catch (error) {
@@ -65,6 +77,7 @@ const AddSportForm = ({onClose, onProfileUpdate}: AddSportFormProps) => {
     const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement> ) => {
         e.preventDefault();
         const categoryId = parseInt(e.target.value)
+        console.log('category :', e.target.value)
         setSelectedCategoryId(categoryId);
 
         //Set first sport of selected category as default value
@@ -79,6 +92,7 @@ const AddSportForm = ({onClose, onProfileUpdate}: AddSportFormProps) => {
     const handleSportChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => { 
         e.preventDefault();
         setSelectedSportId(parseInt(e.target.value));
+        console.log('sport :', e.target.value)
     }
 
     const addUserSport = async (e: { preventDefault: () => void; }) => { 

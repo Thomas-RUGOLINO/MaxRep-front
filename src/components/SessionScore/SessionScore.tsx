@@ -26,20 +26,32 @@ interface UpdatedSessionProps {
     user_id:number | null,
     id:number,
     description:string,
-    score:number | '', //Score can be empty if user has not yet entered a score
+    score:number,
     date:string,
     sport_id:number,
     unit:string,
 }
 
+function convertSecondsToTime(seconds: number) { 
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return { hours, minutes, secs };
+}
+
+function convertTimeToSeconds(hours: number, minutes: number, seconds: number) { 
+    return hours*3600 + minutes*60 + seconds;
+}
+
 const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) => { 
 
     const {token, userId } = useAuth()!; //Hook to get token and userId from AuthContext
+
     const [updatedSession, setUpdatedSession] = useState<UpdatedSessionProps>({
         user_id: userId,
         id: session.id,
         description: session.description,
-        score: '',
+        score: session.score,
         date: session.date,
         sport_id: session.sport_id,
         unit: session.sport.unit
@@ -51,13 +63,31 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
 
         setUpdatedSession({
             ...updatedSession,
-            score: parseInt(e.target.value)
+            score: parseInt(e.target.value) || 0
         })
+    }
+
+    const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>, unit: 'hh' | 'mm' | 'ss') => { 
+        const value = parseInt(e.target.value) || 0;
+        const time = convertSecondsToTime(updatedSession.score);
+        let totalSeconds = updatedSession.score;
+
+        if (unit === 'hh') {
+            totalSeconds = convertTimeToSeconds(value, time.minutes, time.secs);
+        } else if (unit === 'mm') {
+            totalSeconds = convertTimeToSeconds(time.hours, value, time.secs);
+        } else if (unit === 'ss') {
+            totalSeconds = convertTimeToSeconds(time.hours, time.minutes, value);
+        }
+
+        setUpdatedSession({
+            ...updatedSession,
+            score: totalSeconds
+        });
     }
 
     const editScore = async () => { 
 
-        if (updatedSession.score !== '') { 
             try {
                 const response = await axiosInstance.patch(`/sessions/${updatedSession.id}` , updatedSession, {
                     headers: {
@@ -75,30 +105,51 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
     
             }
         }
-    }
         
     //Handle input display according to sport unit
     const displayInputUnit = (unit: string) => { 
-        if (unit === 'km') {
+
+        if (unit === 'temps') {
+            const { hours, minutes, secs } = convertSecondsToTime(updatedSession.score);
+
             return (
-                <input 
-                    type="time" 
-                    name='score' 
-                    className='score__input' 
-                    min="00:00:00" 
-                    max="24:00:00" 
-                    step={1} 
-                    value={updatedSession.score}
-                    placeholder='hh:mm:ss'
-                    onChange={handleChange}
-                />
+                <>  
+                    <input 
+                        type="number" 
+                        name='score-hh' 
+                        className='input-time'
+                        value={hours}
+                        onChange={(e) => handleTimeChange(e, 'hh')} 
+                        max={24}
+                        placeholder='hh' 
+                    />
+                    <input 
+                        type="number" 
+                        name='score-mm' 
+                        className='input-time'
+                        value={minutes} 
+                        onChange={(e) => handleTimeChange(e, 'mm')} 
+                        max={60}
+                        placeholder='mm' 
+                    />
+                    <input 
+                        type="number" 
+                        name='score-ss' 
+                        className='input-time'
+                        value={secs}
+                        onChange={(e) => handleTimeChange(e, 'ss')} 
+                        max={60}
+                        placeholder='ss' 
+                    />
+                </>
+                
             )
         } else {
             return (
                 <input 
                     type='number' 
                     name='score' 
-                    className='score__input' 
+                    className='input' 
                     min='0'
                     placeholder={unit} 
                     value={updatedSession.score}
@@ -108,18 +159,35 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
         }
     }
 
-    return (
-        <div className="session__score"> 
-            <form action="">
-                <label htmlFor='score'> Score : </label>
-                {isScore ? (
-                    <p className="score__value"> {session.score} {session.sport.unit} </p>
-                ) : (
+    const displayScoreInputOrValue = () => { 
+
+        if (isScore) {
+            if (session.sport.unit === 'temps') {
+                const { hours, minutes, secs } = convertSecondsToTime(session.score);
+
+                return (
                     <>
-                        {displayInputUnit(session.sport.unit)}
-                        <Button text='Ajouter' color='black' type='submit' isSmall onClick={editScore} />
+                        <p className="value"> {hours}h </p>
+                        <p className="value"> {minutes}m </p>
+                        <p className="value"> {secs}s </p>
                     </>
-                )}
+                );
+
+            } else {
+                return <p className="value"> {session.score} {session.sport.unit} </p>;
+            }
+
+        } else {
+            return displayInputUnit(session.sport.unit);
+        }
+    }
+
+    return (
+        <div className="score" > 
+            <form action="" onSubmit={editScore}>
+                <label htmlFor='score'> Score: </label>
+                {displayScoreInputOrValue()}
+                {!isScore && <Button text='Ajouter' color='black' type='submit' isSmall />}
             </form>
         </div>
         

@@ -6,6 +6,7 @@ import { Line } from 'react-chartjs-2';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { convertSecondsToHMS } from '../../utils/convertTime';
 import axios from 'axios';
 import ErrorPage from '../ErrorPage/ErrorPage';
 import Loader from '../../components/Loader/Loader';
@@ -139,7 +140,6 @@ const PerformancePage = () => {
 
 
     //! Sortir la partie Chart dans un module
-
     const prepareChartData = (sport: SportProps) => {
         const sortedSessions = sport.sessions.sort((a: SessionProps, b: SessionProps) => new Date(a.date).getTime() - new Date(b.date).getTime());
         const dataPoints = sortedSessions.map(session => ({
@@ -147,7 +147,7 @@ const PerformancePage = () => {
             y: session.score
         }));
 
-        console.log("dataPoints" , dataPoints)
+        console.log(dataPoints)
     
         return {
             label: sport.name,
@@ -178,18 +178,40 @@ const PerformancePage = () => {
                 beginAtZero: true,
                 title: {
                     display: true,
-                    text: 'Score' as const
-                }
-            }
-        },
-        plugins: {
-            legend: {
-                position: 'top' as const,
+                    text: 'Score'
+                },
             },
-            title: {
-                display: true,
-                text: 'User Performance' as const
-            }
+        }
+    };
+
+    const chartOptionsTime = {
+        responsive: true,
+        scales: {
+            x: {
+                type: 'time' as const,
+                time: {
+                    unit: 'day' as const,
+                    displayFormats: {
+                        day: 'd MMM' as const
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Date' as const
+                }
+            },
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Score'
+                },
+                ticks: {
+                    callback: function(value: number) {
+                        return convertSecondsToHMS(value)
+                    }
+                }
+            },
         }
     };
     
@@ -222,7 +244,7 @@ const PerformancePage = () => {
                                         <div className={`sport__content ${isGraphOpen[sport.id] ? '' : 'hide' }`}>
                                             <Line 
                                                 data={{ datasets: [prepareChartData(sport)] }} 
-                                                options={chartOptions}
+                                                options={sport.unit === 'temps' ? chartOptionsTime : chartOptions}
                                             />
                                         </div>
                                     </article>

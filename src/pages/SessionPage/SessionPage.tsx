@@ -164,7 +164,7 @@ const SessionPage = () => {
                                 onClickDay={onChange}
                                 value={selectedDate}
                                 tileClassName={tileClassName}
-                        />
+                            />
                             </section>
                             <section className="agenda-container">
                                 <div className="agenda">

@@ -1,7 +1,6 @@
 import './PerformancePage.scss'
 import Header from '../../components/Header/Header';
 import NavMenu from '../../components/NavMenu/NavMenu';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, TimeScale } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 import { Line } from 'react-chartjs-2';
 import { useEffect, useState } from 'react';
@@ -10,7 +9,17 @@ import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 import ErrorPage from '../ErrorPage/ErrorPage';
 import Loader from '../../components/Loader/Loader';
-// import { LinearScaleOptions, TimeScaleOptions } from 'chart.js';
+import { 
+    Chart as ChartJS, 
+    CategoryScale, 
+    LinearScale, 
+    PointElement, 
+    LineElement, 
+    TimeScale, 
+    Title, 
+    Tooltip, 
+    Legend 
+} from 'chart.js';
 
 ChartJS.register(
     CategoryScale,
@@ -21,7 +30,7 @@ ChartJS.register(
     Title,
     Tooltip,
     Legend
-  );
+);
 
 interface ErrorProps {
     status:number,
@@ -125,49 +134,53 @@ const PerformancePage = () => {
             x: new Date(session.date), // Convertir en objet Date
             y: session.score
         }));
+
+        console.log("dataPoints" , dataPoints)
     
         return {
             label: sport.name,
             data: dataPoints,
             fill: false,
-            borderColor: 'rgb(75, 192, 192)',
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: '#E73725',
+            backgroundColor: '#E1E1E1',
         };
     };
 
     const chartOptions = {
-    scales: {
-        x: {
-            type: 'time' as const,
-            time: {
-                unit: 'day',
-                displayFormats: {
-                    day: 'MMM d'
+        responsive: true,
+        scales: {
+            x: {
+                type: 'time' as const,
+                time: {
+                    unit: 'day' as const,
+                    displayFormats: {
+                        day: 'd MMM' as const
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Date' as const
                 }
+            },
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Score' as const
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                position: 'top' as const,
             },
             title: {
                 display: true,
-                text: 'Date'
-            }
-        },
-        y: {
-            title: {
-                display: true,
-                text: 'Score'
+                text: 'User Performance' as const
             }
         }
-    },
-    responsive: true,
-    plugins: {
-        legend: {
-            position: 'top' as const, // Utiliser 'as const' pour un typage plus strict
-        },
-        title: {
-            display: true,
-            text: 'User Performance'
-        }
-    }
-};
+    };
+    
 
     //Handle 3 cases => error, loading and userInfos received
     if (error) {
@@ -197,7 +210,7 @@ const PerformancePage = () => {
                                         <div className={`sport__content`}>
                                             <Line 
                                                 data={{ datasets: [prepareChartData(sport)] }} 
-                                                options={chartOptions} 
+                                                options={chartOptions}
                                             />
                                         </div>
                                     </article>

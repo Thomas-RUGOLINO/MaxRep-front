@@ -150,7 +150,7 @@ const PerformancePage = () => {
         console.log(dataPoints)
     
         return {
-            label: sport.name,
+            label: '',
             data: dataPoints,
             fill: false,
             borderColor: '#E73725',
@@ -178,10 +178,16 @@ const PerformancePage = () => {
                 beginAtZero: true,
                 title: {
                     display: true,
-                    text: 'Score'
+                    text: 'Score (kg)'
                 },
             },
-        }
+        } , 
+        plugins: {
+            legend: {
+                display: false
+            },
+        },
+        
     };
 
     const chartOptionsTime = {
@@ -204,7 +210,7 @@ const PerformancePage = () => {
                 beginAtZero: true,
                 title: {
                     display: true,
-                    text: 'Score'
+                    text: 'Score (temps)'
                 },
                 ticks: {
                     callback: function(value: number) {
@@ -212,7 +218,12 @@ const PerformancePage = () => {
                     }
                 }
             },
-        }
+        }, 
+        plugins: {
+            legend: {
+                display: false
+            },
+        },
     };
     
 

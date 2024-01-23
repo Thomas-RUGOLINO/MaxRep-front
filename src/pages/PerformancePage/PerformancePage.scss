@@ -36,10 +36,10 @@
             &__content {
                 display: flex;
             }
+
+            .hide {
+                display: none;
+            }
         }
     }
-}
-
-.hide {
-    display: none;
 }

@@ -60,7 +60,7 @@ const PerformancePage = () => {
     const [userPerformances, setUserPerformances] = useState<SportProps[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<ErrorProps | null>(null);
-    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [isGraphOpen, setIsGraphOpen] = useState({});
 
     useEffect(() => {
         if (!isAuthenticated()) {
@@ -93,6 +93,11 @@ const PerformancePage = () => {
             //== Case response is ok
             if (response.status === 200) {
                 setUserPerformances(response.data.sports);
+                const initialOpenStatus = {}
+                response.data.sports.forEach((sport: SportProps) => {
+                    initialOpenStatus[sport.id] = false;
+                })
+                setIsGraphOpen(initialOpenStatus);
 
             } else {
                 setError({status:500, message:'Internal Server Error / Erreur interne du serveur'})
@@ -121,9 +126,12 @@ const PerformancePage = () => {
         }
     }
 
-    const toggleOpen = () => { 
-        setIsOpen(!isOpen);
-    }
+    const toggleOpen = (sportId: number) => {
+        setIsGraphOpen((prevStatus) => ({
+            ...prevStatus,
+            [sportId]: !prevStatus[sportId]
+        }));
+    };
 
 
     //! Sortir la partie Chart dans un module
@@ -205,9 +213,9 @@ const PerformancePage = () => {
                                     <article key={sport.id} className="sport">
                                         <div className="sport__header">
                                             <h3> {sport.name} </h3>
-                                            <i className="fa-solid fa-chevron-down" onClick={toggleOpen}></i>
+                                            <i className={`fa-solid fa-chevron-${isGraphOpen[sport.id] ? 'up' : 'down'}`} onClick={() => toggleOpen(sport.id)}></i>
                                         </div>
-                                        <div className={`sport__content`}>
+                                        <div className={`sport__content ${isGraphOpen[sport.id] ? '' : 'hide' }`}>
                                             <Line 
                                                 data={{ datasets: [prepareChartData(sport)] }} 
                                                 options={chartOptions}

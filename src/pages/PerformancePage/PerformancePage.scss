@@ -31,15 +31,19 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+
+                i {
+                    cursor: pointer;
+                }
             }
 
             &__content {
                 display: flex;
             }
+
+            .hide {
+                display: none;
+            }
         }
     }
-}
-
-.hide {
-    display: none;
 }

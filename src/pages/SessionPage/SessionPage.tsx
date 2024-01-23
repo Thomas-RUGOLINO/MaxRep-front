@@ -125,6 +125,8 @@ const SessionPage = () => {
         setSelectedDate(nextselectedDate);
     }    
 
+    //! Sortir le calendrier dans un composant ?
+    //Handle calendar tile color depending on userSessions
     const tileClassName = ({ date }: { date: Date }) => {
         const sessionDate = date.getFullYear() + '-' +
             String(date.getMonth() + 1).padStart(2, '0') + '-' +
@@ -164,7 +166,7 @@ const SessionPage = () => {
                                 onClickDay={onChange}
                                 value={selectedDate}
                                 tileClassName={tileClassName}
-                        />
+                            />
                             </section>
                             <section className="agenda-container">
                                 <div className="agenda">

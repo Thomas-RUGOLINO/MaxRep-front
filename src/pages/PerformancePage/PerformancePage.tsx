@@ -52,6 +52,10 @@ interface SessionProps {
     sport_id:number,
 }
 
+interface OpenStatus {
+    [key: number]: boolean;
+}
+
 const PerformancePage = () => {
 
     const navigate = useNavigate(); //Hook to navigate to another page
@@ -60,7 +64,7 @@ const PerformancePage = () => {
     const [userPerformances, setUserPerformances] = useState<SportProps[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<ErrorProps | null>(null);
-    const [isGraphOpen, setIsGraphOpen] = useState({});
+    const [isGraphOpen, setIsGraphOpen] = useState<OpenStatus>({});
 
     useEffect(() => {
         if (!isAuthenticated()) {
@@ -93,7 +97,7 @@ const PerformancePage = () => {
             //== Case response is ok
             if (response.status === 200) {
                 setUserPerformances(response.data.sports);
-                const initialOpenStatus = {}
+                const initialOpenStatus: OpenStatus = {}
                 response.data.sports.forEach((sport: SportProps) => {
                     initialOpenStatus[sport.id] = false;
                 })
@@ -127,7 +131,7 @@ const PerformancePage = () => {
     }
 
     const toggleOpen = (sportId: number) => {
-        setIsGraphOpen((prevStatus) => ({
+        setIsGraphOpen((prevStatus: OpenStatus) => ({
             ...prevStatus,
             [sportId]: !prevStatus[sportId]
         }));

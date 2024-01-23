@@ -15,6 +15,7 @@ const RankingPage = () => {
 
     const [error, setError] = useState<ErrorProps | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [userFirstSport, serUserFirstSport] = useState<string>('');
 
     const navigate = useNavigate();
     const { isAuthenticated, token, userId } = useAuth()!;
@@ -39,12 +40,19 @@ const RankingPage = () => {
             setIsLoading(true);
             setError(null);
 
+            const userInfos = await axios.get(`https://maxrep-back.onrender.com/api/profile/${userId}` , {
+                headers: {
+                    'Authorization': `Bearer ${token}` //Send token to backend to verify user
+                }
+            });
             const response = await axios.get(`https://maxrep-back.onrender.com/api/ranking?sportId=3` , {
                 headers: {
                     'Authorization': `Bearer ${token}` //Send token to backend to verify user
                 }
             });
-
+            console.log(userInfos);
+            serUserFirstSport(userInfos.data.sports[0].name);
+            console.log(userFirstSport);
             console.log(response);
         }
 

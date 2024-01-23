@@ -1,0 +1,49 @@
+@import '../../styles/variables.scss';
+@import '../../styles/breakpoints.scss';
+
+.performance-page {
+    max-width: 95%;
+    margin: 0 auto 100px; //100px to handle sticky menu and allow to scroll to the bottom of the page
+
+    .performance-header {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0 15px;
+    }
+
+    .sports-list {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+
+        .sport {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-color: $color-grey;
+            border-radius: 10px;
+            padding: 15px;
+    
+            &__header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                i {
+                    cursor: pointer;
+                }
+            }
+
+            &__content {
+                display: flex;
+            }
+
+            .hide {
+                display: none;
+            }
+        }
+    }
+}

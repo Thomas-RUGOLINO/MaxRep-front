@@ -25,8 +25,15 @@
                 width: clamp(150px, 30%, 200px);
             }
     
-            input, select {
+            input, select, textarea {
                 width: clamp(120px, 70%, 500px);
+                background-color: $color-grey;
+                border: 1px solid grey;
+                padding: 5px 5px;
+            }
+
+            .input-time {
+                width: clamp(30px, 20%, 100px);
                 background-color: $color-grey;
                 border: 1px solid grey;
                 padding: 5px 5px;

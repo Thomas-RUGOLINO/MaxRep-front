@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { countryNames } from '../../data/countriesList';
 
 interface ErrorProps {
     status:number,
@@ -177,10 +178,9 @@ const RankingPage = () => {
                             ))) : null}
                         </select>
                         <select name="country" id="">
-                            <option value="">France</option>
-                            <option value="">Allemagne</option>
-                            <option value="">Canada</option>
-                            <option value="">Brésil</option>
+                            {Object.entries(countryNames).map(([key, value]) => (
+                                <option key={key} value={value}>{value}</option>
+                            ))}
                         </select>
                     </form>
 

@@ -11,11 +11,32 @@ interface ErrorProps {
     message:string
 }
 
+ interface RankingProps {
+    id: number,
+    country: string,
+    firstname: string,
+    lastname: string,
+    best_score: number,
+    date: string
+    user: UserProps;
+}
+
+interface UserProps {
+    city: string | null;
+    country: string | null;
+    firstname: string;
+    lastname: string;
+    // autres champs...
+}
+
 const RankingPage = () => {
 
     const [error, setError] = useState<ErrorProps | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [userFirstSport, serUserFirstSport] = useState<string>('');
+    const [userSportID, setUserSportID] = useState<number>(1);
+    const [userGender, setUserGender] = useState<string>('');
+    const [ranking, setRanking] = useState<RankingProps[]>([]);
+    const [userSports, setUserSports] = useState<[]>([]); // Liste des sports de l'utilisateur
 
     const navigate = useNavigate();
     const { isAuthenticated, token, userId } = useAuth()!;
@@ -25,12 +46,69 @@ const RankingPage = () => {
             navigate('/login');
 
         } else {
-            getBestScores();
+            getUserInfos();
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[isAuthenticated, navigate, token, userId]);
 
-    const getBestScores = async () => {
+    useEffect(() => {
+        console.log(userSportID);
+        console.log(userGender);
+    }, [userSportID, userGender])
+
+    useEffect(() => {
+        if (userSportID) {
+            getBestScores(userSportID, userGender); // Exécutez getRanking si sportId est défini
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userSportID, userGender]);
+
+    // récupérer les infos de l'utilisateur
+    const getUserInfos = async () => {
+            
+            if (!userId) {
+                setError({status:401, message:'Unauthorized / Non autorisé'});
+            }
+    
+            try{
+                setIsLoading(true);
+                setError(null);
+    
+                // récupérer les infos de l'utilisateur
+                const response = await axios.get(`https://maxrep-back.onrender.com/api/profile/${userId}` , {
+                    headers: {
+                        'Authorization': `Bearer ${token}` //Send token to backend to verify user
+                    }
+                });
+                
+                setUserSportID(response.data.sports[0].id);
+                setUserGender(response.data.gender)
+                setUserSports(response.data.sports);
+
+            }
+    
+            catch(error) {
+                setIsLoading(false);
+                
+                if (axios.isAxiosError(error)) { //== Case if axios error
+                    if (error.response) {
+                        setError({status:error.response.status, message:error.response.data.error});
+    
+                    } else { //== Case if no response from server
+                        setError({status:500, message:'Internal Server Error / Erreur interne du serveur'})
+                    }
+    
+                } else { //== Case if not axios error
+                    setError({status:500, message:'Internal Server Error / Erreur interne du serveur'})
+                    console.error(error);
+                }                 
+    
+            } finally {
+                setIsLoading(false);
+            }
+    }
+
+    const getBestScores = async (userSportID: number, userGender: string) => {
 
         if (!userId) {
             setError({status:401, message:'Unauthorized / Non autorisé'});
@@ -40,20 +118,18 @@ const RankingPage = () => {
             setIsLoading(true);
             setError(null);
 
-            const userInfos = await axios.get(`https://maxrep-back.onrender.com/api/profile/${userId}` , {
+            console.log("userSportID : " , userSportID);
+            console.log("userGender: ", userGender);
+
+            // récupérer les données de la table ranking en fonction du sport de l'utilisateur
+            const response = await axios.get(`https://maxrep-back.onrender.com/api/ranking?sportId=${userSportID}&gender=${userGender}` , {
                 headers: {
                     'Authorization': `Bearer ${token}` //Send token to backend to verify user
                 }
             });
-            const response = await axios.get(`https://maxrep-back.onrender.com/api/ranking?sportId=3` , {
-                headers: {
-                    'Authorization': `Bearer ${token}` //Send token to backend to verify user
-                }
-            });
-            console.log(userInfos);
-            serUserFirstSport(userInfos.data.sports[0].name);
-            console.log(userFirstSport);
-            console.log(response);
+            
+            setRanking(response.data);
+            console.log('ranking :' , response.data);
         }
 
         catch(error) {
@@ -77,7 +153,11 @@ const RankingPage = () => {
         }
     };
 
+    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setUserSportID(parseInt(e.target.value));
+    }
 
+    
 
     return (
         <>
@@ -91,11 +171,10 @@ const RankingPage = () => {
                 
                 <main className='ranking-main'>
                     <form action="">
-                        <select name="sportId" id="">
-                            <option value="">Back Squat</option>
-                            <option value="">Marathon</option>
-                            <option value="">100m Papillon</option>
-                            <option value="">Snatch</option>
+                        <select name="sportId" id="" onChange={handleChange}>
+                            {userSports.length > 0 ? (userSports.map((item: any, index) => (
+                                <option key={index} value={item.id}>{item.name}</option>
+                            ))) : null}
                         </select>
                         <select name="country" id="">
                             <option value="">France</option>
@@ -116,27 +195,16 @@ const RankingPage = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>France</td>
-                                <td>Michel Ricard</td>
-                                <td>100</td>
-                                <td>22/01/2024</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Japon</td>
-                                <td>Professeur Onizuka</td>
-                                <td>150</td>
-                                <td>15/01/2024</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>France</td>
-                                <td>John Doe</td>
-                                <td>80</td>
-                                <td>20/01/2024</td>
-                            </tr>
+                        {ranking.length > 0 ? (
+                            ranking.map((item: RankingProps, index) => (
+                                <tr key={index}>
+                                    <td>{index+1}</td>
+                                    <td>{item.user.country}</td>
+                                    <td>{item.user.firstname} {item.user.lastname}</td>
+                                    <td>{item.best_score}</td>
+                                    <td>{item.date}</td>
+                                </tr>
+                            ))) : null}
                         </tbody>
                     </table>
                 </main>

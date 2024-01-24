@@ -1,5 +1,5 @@
-{
-  "AF": "Afghanistan",
+const countryData = {
+    "AF": "Afghanistan",
   "ZA": "Afrique du Sud",
   "AL": "Albanie",
   "DZ": "Algérie",
@@ -255,3 +255,6 @@
   "ZM": "Zambie",
   "ZW": "Zimbabwe"
 }
+
+export const countryNames = Object.values(countryData);
+console.log(countryNames);

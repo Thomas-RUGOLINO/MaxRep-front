@@ -1,6 +1,9 @@
 import './PerformancePage.scss'
 import Header from '../../components/Header/Header';
 import NavMenu from '../../components/NavMenu/NavMenu';
+import NoSportMessage from '../../components/NoSportMessage/NoSportMessage';
+import ErrorPage from '../ErrorPage/ErrorPage';
+import Loader from '../../components/Loader/Loader';
 import 'chartjs-adapter-date-fns';
 import { Line } from 'react-chartjs-2';
 import { useEffect, useState } from 'react';
@@ -8,8 +11,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { convertSecondsToHMS } from '../../utils/convertTime';
 import axios from 'axios';
-import ErrorPage from '../ErrorPage/ErrorPage';
-import Loader from '../../components/Loader/Loader';
 import { 
     Chart as ChartJS, 
     CategoryScale, 
@@ -245,22 +246,26 @@ const PerformancePage = () => {
                             <h2> Performance </h2>
                         </header>
                         <main>
-                            <div className="sports-list">
-                                {userPerformances && userPerformances.map((sport: SportProps) => (
-                                    <article key={sport.id} className="sport">
-                                        <div className="sport__header">
-                                            <h3> {sport.name} </h3>
-                                            <i className={`fa-solid fa-chevron-${isGraphOpen[sport.id] ? 'up' : 'down'}`} onClick={() => toggleOpen(sport.id)}></i>
-                                        </div>
-                                        <div className={`sport__content ${isGraphOpen[sport.id] ? '' : 'hide' }`}>
-                                            <Line 
-                                                data={{ datasets: [prepareChartData(sport)] }} 
-                                                options={sport.unit === 'temps' ? chartOptionsTime : chartOptions}
-                                            />
-                                        </div>
-                                    </article>
-                                ))}
+                            {userPerformances.length === 0 ? 
+                                <NoSportMessage /> : (
+                                <div className="sports-list">
+                                    {userPerformances && userPerformances.map((sport: SportProps) => (
+                                        <article key={sport.id} className="sport">
+                                            <div className="sport__header">
+                                                <h3> {sport.name} </h3>
+                                                <i className={`fa-solid fa-chevron-${isGraphOpen[sport.id] ? 'up' : 'down'}`} onClick={() => toggleOpen(sport.id)}></i>
+                                            </div>
+                                            <div className={`sport__content ${isGraphOpen[sport.id] ? '' : 'hide' }`}>
+                                                <Line 
+                                                    data={{ datasets: [prepareChartData(sport)] }} 
+                                                    options={sport.unit === 'temps' ? chartOptionsTime : chartOptions}
+                                                />
+                                            </div>
+                                        </article>
+                                    ))}
                             </div>
+                            )}
+                            
                         </main>
                     </>
                 )}

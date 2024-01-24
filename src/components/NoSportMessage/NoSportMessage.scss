@@ -1,0 +1,17 @@
+@import '../../styles/variables.scss';
+@import '../../styles/breakpoints.scss';
+
+.no-sport-message {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 10px;
+    background-color: $color-grey;
+    padding: 2rem;
+    border-radius: 10px;
+
+    p {
+        text-align: justify;
+    }
+}

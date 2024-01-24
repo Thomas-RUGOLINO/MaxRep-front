@@ -1,4 +1,5 @@
 const countryData = {
+  "": "",
     "AF": "Afghanistan",
   "ZA": "Afrique du Sud",
   "AL": "Albanie",

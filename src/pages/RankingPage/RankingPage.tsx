@@ -1,6 +1,8 @@
 import './RankingPage.scss'
 import Header from '../../components/Header/Header';
 import NavMenu from '../../components/NavMenu/NavMenu';
+import ErrorPage from '../ErrorPage/ErrorPage';
+import Loader from '../../components/Loader/Loader';
 import { useAuth } from '../../context/AuthContext';
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -37,11 +39,17 @@ interface QueryParamsProps {
     weightMax: number | ''
 }
 
+interface SportProps {
+    id: number,
+    name: string,
+}
+
 const RankingPage = () => {
 
     const [error, setError] = useState<ErrorProps | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [ranking, setRanking] = useState<RankingProps[]>([]);
+    const [userSports, setUserSports] = useState<SportProps[]>([]);
     const [queryParams, setQueryParams] = useState<QueryParamsProps>({
         sportId: 4,
         gender: '',
@@ -116,6 +124,7 @@ const RankingPage = () => {
             });
             
             console.log('userInfos :' , response.data);
+            setUserSports(response.data.sports);
             setQueryParams({
                 ...queryParams,
                 sportId: response.data.sports[0].id,
@@ -161,15 +170,8 @@ const RankingPage = () => {
 
     useEffect(() => {
         getUserInfos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
-    // useEffect(() => {
-    //     getBestScores(queryParams);
-    // }, [])
-
-    
-
-    
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         e.preventDefault();
@@ -197,60 +199,67 @@ const RankingPage = () => {
         getBestScores(queryParams)
     }
 
+    if (error) {
+        return <ErrorPage status={error.status} message={error.message} />
+    }
+
     return (
         <>
             <Header />
             <NavMenu />
             <div className="ranking-page">
-
-                <header className="ranking-header">
-                    <h1> RankingPage </h1>
-                </header>
-                
-                <main className='ranking-main'>
-                    <form action="" onSubmit={handleSubmit}>
-                        <select name="sportId" id="" value={queryParams.sportId} onChange={handleChange}>
-                            <option value={1}> Marathon </option>
-                            <option value={3}> BackSquat </option>
-                            <option value={4}> Deadlift </option>
-                        </select>
-                        <select name="country" id="" value={queryParams.country} onChange={handleChange}>
-                            {Object.entries(countryNames).map(([key, value]) => (
-                                <option key={key} value={value}>{value}</option>
-                            ))}
-                        </select>
-                        <label htmlFor="">Poids min</label>
-                        <input name='weightMin'type='number' value={queryParams.weightMin} onChange={handleChange}></input>
-                        <label htmlFor="">Poids max</label>
-                        <input name='weightMax' type='number' value={queryParams.weightMax} onChange={handleChange}></input>
-                        <button type='submit'> Valider </button>
-                    </form>
-                    <table className='board'>
-                        <thead>
-                            <tr>
-                                <th>Rang</th>
-                                <th>Pays</th>
-                                <th>Nom Prénom</th>
-                                <th>Best Score</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {ranking.length > 0 ? (
-                            ranking.map((item: RankingProps, index) => (
-                                <tr key={index}>
-                                    <td>{index+1}</td>
-                                    <td>{item.user.country}</td>
-                                    <td>{item.user.firstname} {item.user.lastname}</td>
-                                    <td>{item.best_score}</td>
-                                    <td>{item.date}</td>
+                {isLoading ? <Loader isPage /> : (
+                    <>
+                    <header className="ranking-header">
+                        <h2> RankingPage </h2>
+                    </header>
+                    <main className='ranking-main'>
+                        <form action="" onSubmit={handleSubmit}>
+                            <label htmlFor="">Sport</label>
+                            <select name="sportId" id="" value={queryParams.sportId} onChange={handleChange}>
+                                {userSports.map((sport: SportProps) => (
+                                    <option key={sport.id} value={sport.id}> {sport.name} </option>
+                                ))}
+                            </select>
+                            <label htmlFor="">Pays</label>
+                            <select name="country" id="" value={queryParams.country} onChange={handleChange}>
+                                {Object.entries(countryNames).map(([key, value]) => (
+                                    <option key={key} value={value}>{value}</option>
+                                ))}
+                            </select>
+                            <label htmlFor="">Poids min</label>
+                            <input name='weightMin'type='number' value={queryParams.weightMin} onChange={handleChange}></input>
+                            <label htmlFor="">Poids max</label>
+                            <input name='weightMax' type='number' value={queryParams.weightMax} onChange={handleChange}></input>
+                            <button type='submit'> Valider </button>
+                        </form>
+                        <table className='board'>
+                            <thead>
+                                <tr>
+                                    <th>Rang</th>
+                                    <th>Pays</th>
+                                    <th>Nom Prénom</th>
+                                    <th>Best Score</th>
+                                    <th>Date</th>
                                 </tr>
-                            ))) : null}
-                        </tbody>
-                    </table>
-                </main>
+                            </thead>
+                            <tbody>
+                            {ranking.length > 0 ? (
+                                ranking.map((item: RankingProps, index) => (
+                                    <tr key={index}>
+                                        <td>{index+1}</td>
+                                        <td>{item.user.country}</td>
+                                        <td>{item.user.firstname} {item.user.lastname}</td>
+                                        <td>{item.best_score}</td>
+                                        <td>{item.date}</td>
+                                    </tr>
+                                ))) : null}
+                            </tbody>
+                        </table>
+                    </main>
+                    </>
+                )}
             </div>
-            
         </>
     )
 }

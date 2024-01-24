@@ -257,4 +257,3 @@ const countryData = {
 }
 
 export const countryNames = Object.values(countryData);
-console.log(countryNames);

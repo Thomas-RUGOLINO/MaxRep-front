@@ -70,8 +70,6 @@ const ProfilePage = () => {
             navigate('/login');
 
         } else {
-            console.log('token', token);
-            console.log('userId', userId);
             getUserProfile();
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -93,8 +91,6 @@ const ProfilePage = () => {
                     'Authorization': `Bearer ${token}` //Send token to backend to verify user
                 }
             });
-            
-            console.log(response.data);
             
             //== Case response is ok
             if (response.status === 200) {

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import Button from '../Button/Button';
 import Loader from '../Loader/Loader';
+import { countryNames } from '../../data/countriesList';
 
 interface EditProfileFormProps { 
     userCurrentInfos: UserCurrentInfosProps,
@@ -123,12 +124,11 @@ const EditProfileForm = ({userCurrentInfos, onClose, onProfileUpdate}: EditProfi
                     </div>
                     <div className="field">
                         <label htmlFor="country">Pays</label>
-                        <input 
-                            type="text" 
-                            name="country" 
-                            value={userNewInfos.country} 
-                            onChange={handleChange} 
-                        />
+                        <select name="country" id="" onChange={handleChange} value={userNewInfos.country}>
+                            {Object.entries(countryNames).map(([key, value]) => (
+                                <option key={key} value={value}>{value}</option>
+                            ))}
+                        </select>
                     </div>
                     <div className="field">
                         <label htmlFor="height">Taille (cm)</label>

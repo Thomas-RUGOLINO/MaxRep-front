@@ -11,8 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { convertSecondsToHMS } from '../../utils/convertTime';
 import axios from 'axios';
-import { 
-    Chart as ChartJS, 
+import { Chart as ChartJS, 
     CategoryScale, 
     LinearScale, 
     PointElement, 
@@ -139,7 +138,6 @@ const PerformancePage = () => {
         }));
     };
 
-
     //! Sortir la partie Chart dans un module
     const prepareChartData = (sport: SportProps) => {
         const sortedSessions = sport.sessions.sort((a: SessionProps, b: SessionProps) => new Date(a.date).getTime() - new Date(b.date).getTime());
@@ -226,7 +224,6 @@ const PerformancePage = () => {
             },
         },
     };
-    
 
     //Handle 3 cases => error, loading and userInfos received
     if (error) {

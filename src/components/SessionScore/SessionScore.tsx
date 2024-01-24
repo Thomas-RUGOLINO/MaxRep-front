@@ -113,7 +113,7 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
                         type="number" 
                         name='score-hh' 
                         className='input-time'
-                        value={hours}
+                        value={hours === 0 ? '' : hours}
                         onChange={(e) => handleTimeChange(e, 'hh')} 
                         max={24}
                         placeholder='hh' 
@@ -122,7 +122,7 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
                         type="number" 
                         name='score-mm' 
                         className='input-time'
-                        value={minutes} 
+                        value={minutes === 0 ? '' : minutes} 
                         onChange={(e) => handleTimeChange(e, 'mm')} 
                         max={60}
                         placeholder='mm' 
@@ -131,7 +131,7 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
                         type="number" 
                         name='score-ss' 
                         className='input-time'
-                        value={secs}
+                        value={secs === 0 ? '' : secs}
                         onChange={(e) => handleTimeChange(e, 'ss')} 
                         max={60}
                         placeholder='ss' 
@@ -147,7 +147,7 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
                     className='input' 
                     min='0'
                     placeholder={unit} 
-                    value={updatedSession.score}
+                    value={updatedSession.score !== 0 ? updatedSession.score : ''}
                     onChange={handleChange}
                 />
             )

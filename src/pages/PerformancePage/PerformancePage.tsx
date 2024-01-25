@@ -1,7 +1,7 @@
 import './PerformancePage.scss'
 import Header from '../../components/Header/Header';
 import NavMenu from '../../components/NavMenu/NavMenu';
-import NoSportMessage from '../../components/NoSportMessage/NoSportMessage';
+import NoPerfMessage from '../../components/NoPerfMessage/NoPerfMessage';
 import ErrorPage from '../ErrorPage/ErrorPage';
 import Loader from '../../components/Loader/Loader';
 import 'chartjs-adapter-date-fns';
@@ -125,9 +125,7 @@ const PerformancePage = () => {
             }                 
 
         } finally {
-            setTimeout(() => {
-                setIsLoading(false);
-            }, 500);
+            setIsLoading(false);
         }
     }
 
@@ -244,7 +242,7 @@ const PerformancePage = () => {
                         </header>
                         <main>
                             {userPerformances.length === 0 ? 
-                                <NoSportMessage /> : (
+                                <NoPerfMessage /> : (
                                 <div className="sports-list">
                                     {userPerformances && userPerformances.map((sport: SportProps) => (
                                         <article key={sport.id} className="sport">

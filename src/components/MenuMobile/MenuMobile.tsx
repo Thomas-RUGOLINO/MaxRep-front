@@ -7,7 +7,7 @@ const MenuMobile = () => {
             <NavLink to='/session' className={({ isActive }) => isActive ? 'menu-mobile__item active' : 'menu-mobile__item'}>
                 <div className="menu-mobile__item">
                         <i className="fa-solid fa-calendar-days"></i>
-                        <p> SESSION </p>
+                        <p> SESSIONS </p>
                 </div>
             </NavLink>
             <NavLink to='/performance' className={({ isActive }) => isActive ? 'menu-mobile__item active' : 'menu-mobile__item'}>
@@ -25,7 +25,7 @@ const MenuMobile = () => {
             <NavLink to='/profile' className={({ isActive }) => isActive ? 'menu-mobile__item active' : 'menu-mobile__item'}>
                 <div className="menu-mobile__item">
                         <i className="fa-solid fa-user"></i>
-                        <p> PROFILE </p>
+                        <p> PROFIL </p>
                 </div>
             </NavLink>
         </nav>

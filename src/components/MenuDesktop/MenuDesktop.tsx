@@ -8,7 +8,7 @@ const MenuDesktop = () => {
             <nav className='menu-desktop'> 
                 <NavLink to='/session' className={({ isActive }) => isActive ? 'menu-desktop__item active' : 'menu-desktop__item'}>
                     <div className="menu-desktop__item">
-                            <h3> SESSION </h3>
+                            <h3> SESSIONS </h3>
                     </div>
                 </NavLink>
                 <NavLink to='/performance' className={({ isActive }) => isActive ? 'menu-desktop__item active' : 'menu-desktop__item'}>
@@ -23,7 +23,7 @@ const MenuDesktop = () => {
                 </NavLink>
                 <NavLink to='/profile' className={({ isActive }) => isActive ? 'menu-desktop__item active' : 'menu-desktop__item'}>
                     <div className="menu-desktop__item">
-                            <h3> PROFILE </h3>
+                            <h3> PROFIL </h3>
                     </div>
                 </NavLink>
             </nav>

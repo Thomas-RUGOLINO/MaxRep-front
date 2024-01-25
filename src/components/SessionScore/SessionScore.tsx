@@ -76,8 +76,8 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
         });
     }
 
-    const editScore = async () => { 
-        console.log('edit score')
+    const editScore = async (e: React.FormEvent<HTMLFormElement>) => { 
+        e.preventDefault();
 
         try {
             console.log(updatedSession)

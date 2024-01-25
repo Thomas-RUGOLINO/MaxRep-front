@@ -28,14 +28,14 @@
             color:$color-grey;
         }
     }
+}
 
-    &__logout {
-        margin-right: 15px;
+.logout {
+    margin-right: 15px;
 
-        i {
-            font-size: 1.3rem;
-            color: $color-white;
-            cursor: pointer;
-        }
+    i {
+        font-size: 1.3rem;
+        color: $color-white;
+        cursor: pointer;
     }
 }

@@ -1,9 +1,15 @@
 import './Header.scss';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import MenuDesktop from '../MenuDesktop/MenuDesktop';
 
 const Header = () => {
 
+    const { logout, isAuthenticated } = useAuth()!; //Hook to get logout function from AuthContext, exclamation mark to tell TS that it's not null
+
+    const handleLogout = () => {
+        logout();
+    }
 
     return (
         <>
@@ -15,7 +21,15 @@ const Header = () => {
                     {/* <h1> MaxRep </h1> */}
                 </div>
                 <div className="header__menu">
-                    <MenuDesktop />
+                    {isAuthenticated() && (
+                        <>
+                        <MenuDesktop />
+                        <div className="logout">
+                            {isAuthenticated() && <i className="fa-solid fa-right-from-bracket" title='Se déconnecter' onClick={handleLogout}></i>}
+                        </div>
+                        </>
+                    )}
+                    
                 </div>
             </header>
         </>

@@ -68,7 +68,7 @@ const ProfilePage = () => {
     //Handle redirection if user is not authenticated
     useEffect(() => {
         if (!isAuthenticated()) {
-            navigate('/login');
+            navigate('/');
 
         } else {
             getUserProfile();

@@ -19,9 +19,15 @@
             color:$color-white;
         }
 
-        img {
-            height: 70%;
-            margin-left: 15px;
+        a { //It's the React Router Link
+            height: 100%;
+            display: flex;
+            align-items: center;
+
+            img {
+                height: 70%;
+                margin-left: 15px;
+            }
         }
     }
 

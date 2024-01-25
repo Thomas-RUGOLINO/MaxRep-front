@@ -1,5 +1,6 @@
 import './Header.scss';
 import { useAuth } from '../../context/AuthContext';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
 
@@ -13,7 +14,9 @@ const Header = () => {
         <>
             <header className="header">
                 <div className="header__title">
-                    <img src="/assets/logo/maxrep-logo.png" alt="" />
+                    <Link to='/'> 
+                        <img src="/assets/logo/maxrep-logo.png" alt="" title="Retour page d'accueil"/> 
+                    </Link>
                     {/* <h1> MaxRep </h1> */}
                 </div>
                 <div className="header__logout">

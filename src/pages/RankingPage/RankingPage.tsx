@@ -168,7 +168,7 @@ const RankingPage = () => {
 
     useEffect(() => {
         if (!isAuthenticated()) {
-            navigate('/login');
+            navigate('/');
 
         } else {
             getUserInfos();

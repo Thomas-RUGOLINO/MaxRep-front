@@ -1,6 +1,6 @@
 import './SessionScore.scss';
 import axiosInstance from '../../services/axiosInstance';
-import { useEffect, useState } from 'react';
+import {  useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { convertSecondsToTime , convertTimeToSeconds } from '../../utils/convertTime';
 import Button from '../Button/Button';
@@ -47,10 +47,6 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
         unit: session.sport.unit
     });
 
-    useEffect(() => {
-        console.log(typeof session.score)
-    })
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => { 
         e.preventDefault();
         console.log(e.target.value)
@@ -81,6 +77,7 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
     }
 
     const editScore = async () => { 
+        console.log('edit score')
 
         try {
             console.log(updatedSession)

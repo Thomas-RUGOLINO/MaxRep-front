@@ -1,7 +1,7 @@
 import './LoginPage.scss'
 import axios from 'axios';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Header from '../../components/Header/Header';
 import { useAuth } from '../../context/AuthContext'
 
@@ -106,6 +106,11 @@ const LoginPage = () => {
                         </div>
                         <div className="form__buttons">
                             <button type='submit'> CONNEXION </button>
+                        </div>
+                        <div className="form__message">
+                            <Link to='/register'>
+                                <p> Pas de compte ? Inscrivez-vous ici ! </p>
+                            </Link>
                         </div>
                     </form>
                 </section>

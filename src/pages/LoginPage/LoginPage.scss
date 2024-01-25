@@ -29,7 +29,6 @@
 
             &__title {
                 margin-top: 20px;
-                margin-bottom: 10px;
             }
 
             &__errors {
@@ -85,7 +84,6 @@
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                margin-bottom: 40px;
 
                 button {
                     width: 80%;
@@ -97,7 +95,15 @@
                 }
             }
 
-            
+            &__message {
+                margin-bottom: 40px;
+
+                p {
+                    font-size: 0.9rem;
+                    text-align: center;
+                    text-decoration: underline;
+                }
+            }
         }
     }
 }

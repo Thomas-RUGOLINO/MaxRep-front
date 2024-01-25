@@ -1,42 +1,37 @@
 import './Form.scss'
 import axiosInstance from '../../services/axiosInstance';
+import { useAuth } from '../../context/AuthContext';
 import Button from '../Button/Button';
 
 interface DeleteSportFormProps { 
-    userId: number,
     sportId: number | null,
     onClose: () => void,
     onProfileUpdate: () => void
 }
 
-const DeleteSportForm = ({userId, sportId, onClose, onProfileUpdate}: DeleteSportFormProps) => { 
+const DeleteSportForm = ({sportId, onClose, onProfileUpdate}: DeleteSportFormProps) => { 
+
+    const {token, userId } = useAuth()!; //Hook to get token and userId from AuthContext
 
     const deleteUserSport = async (e: { preventDefault: () => void; }) => { 
         e.preventDefault();  
-        
-        const token = localStorage.getItem('userToken');
 
-        if (token) {
-            console.log('submit delete sport :', userId, sportId);
-
-            try {
-                const response = await axiosInstance.delete(`/profile/sport/${userId}/${sportId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-
-                console.log(response);
-                if (response.status === 204) {
-                    onProfileUpdate();
-                    onClose();
+        try {
+            const response = await axiosInstance.delete(`/profile/sport/${userId}/${sportId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
                 }
-    
-            } catch (error) {
-                //! Gestion d'erreur (==> a factoriser ?)
-                console.log(error);
+            });
+
+            if (response.status === 204) {
+                onProfileUpdate();
+                onClose();
             }
-        }  
+
+        } catch (error) {
+            //! Gestion d'erreur (==> a factoriser ?)
+            console.error(error);
+        } 
     }
 
     return (

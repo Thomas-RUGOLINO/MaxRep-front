@@ -1,0 +1,18 @@
+.ranking-page {
+    max-width: 95%;
+    margin: 0 auto 100px;
+
+    .ranking-header {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0 15px;
+    }
+
+    .ranking-main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+
+        }
+}

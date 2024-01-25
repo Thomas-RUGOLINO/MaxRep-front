@@ -14,6 +14,7 @@ import EditSessionForm from '../../components/Forms/EditSessionForm';
 import Loader from '../../components/Loader/Loader';
 import ErrorPage from '../ErrorPage/ErrorPage';
 import Calendar from 'react-calendar';
+import NoSportMessage from '../../components/NoSportMessage/NoSportMessage';
 import 'react-calendar/dist/Calendar.css';
 
 interface SessionProps {
@@ -157,82 +158,87 @@ const SessionPage = () => {
                 <Loader isPage />
                 ) : (
                     <>
-                        <header className="session-header">
+                    <header className="session-header">
                         <h2> Sessions </h2>
-                        </header>
-                        <main>
-                            <section className='calendar-container'> 
-                            <Calendar
-                                onClickDay={onChange}
-                                value={selectedDate}
-                                tileClassName={tileClassName}
-                            />
-                            </section>
-                            <section className="agenda-container">
-                                <div className="agenda">
-                                    <div className="agenda__spirals">
-                                        <span className="spiral"></span>
-                                        <span className="spiral"></span>
-                                        <span className="spiral"></span>
-                                        <span className="spiral"></span>
-                                        <span className="spiral"></span>
-                                        <span className="spiral"></span>
-                                        <span className="spiral"></span>
-                                        <span className="spiral"></span>
+                    </header>
+                    {userSports.length === 0 ?
+                        <NoSportMessage /> : (
+                            <>
+                            <main>
+                                <section className='calendar-container'> 
+                                <Calendar
+                                    onClickDay={onChange}
+                                    value={selectedDate}
+                                    tileClassName={tileClassName}
+                                />
+                                </section>
+                                <section className="agenda-container">
+                                    <div className="agenda">
+                                        <div className="agenda__spirals">
+                                            <span className="spiral"></span>
+                                            <span className="spiral"></span>
+                                            <span className="spiral"></span>
+                                            <span className="spiral"></span>
+                                            <span className="spiral"></span>
+                                            <span className="spiral"></span>
+                                            <span className="spiral"></span>
+                                            <span className="spiral"></span>
+                                        </div>
+                                        <div className="agenda__header">
+                                            <h3> {formatDateToString(selectedDate)} </h3>
+                                            <i className="fa-solid fa-circle-plus" title='Ajouter une session' onClick={openAddSessionModal}></i>
+                                        </div>
+                                        <div className="agenda__sessions">
+                                        {filteredSessions.length > 0 ? (
+                                            filteredSessions.map((session: SessionProps) => (
+                                                <div key={session.id} className="session">
+                                                    <i className="icon fa-solid fa-pen-to-square" title='Editer la session' onClick={() => openEditSessionModal(session)}></i>
+                                                    <p className='session__title'> <strong>Session de {session.sport.name}</strong> </p>
+                                                    <p className='session__desc'> {session.description} </p>
+                                                    <SessionScore 
+                                                        session={session} 
+                                                        isScore={parseInt(session.score.toString()) === 0 ? false : true}
+                                                        onProfileUpdate={handleSessionsUpdate}    
+                                                    />
+                                                </div>
+                                            ))
+                                            ) : (
+                                                <div className="no-sessions">
+                                                    <p>Aucune session pour cette date.</p>
+                                                    <Button 
+                                                        text='Ajouter une session' 
+                                                        color='black' 
+                                                        onClick={openAddSessionModal} 
+                                                        isSmall
+                                                        type='button'
+                                                    />
+                                                </div>
+                                            )}
+                                            
+                                        </div>
                                     </div>
-                                    <div className="agenda__header">
-                                        <h3> {formatDateToString(selectedDate)} </h3>
-                                        <i className="fa-solid fa-circle-plus" title='Ajouter une session' onClick={openAddSessionModal}></i>
-                                    </div>
-                                    <div className="agenda__sessions">
-                                    {filteredSessions.length > 0 ? (
-                                        filteredSessions.map((session: SessionProps) => (
-                                            <div key={session.id} className="session">
-                                                <i className="icon fa-solid fa-pen-to-square" title='Editer la session' onClick={() => openEditSessionModal(session)}></i>
-                                                <p className='session__title'> <strong>Session de {session.sport.name}</strong> </p>
-                                                <p className='session__desc'> {session.description} </p>
-                                                <SessionScore 
-                                                    session={session} 
-                                                    isScore={parseInt(session.score.toString()) === 0 ? false : true}
-                                                    onProfileUpdate={handleSessionsUpdate}    
-                                                />
-                                            </div>
-                                        ))
-                                        ) : (
-                                            <div className="no-sessions">
-                                                <p>Aucune session pour cette date.</p>
-                                                <Button 
-                                                    text='Ajouter une session' 
-                                                    color='black' 
-                                                    onClick={openAddSessionModal} 
-                                                    isSmall
-                                                    type='button'
-                                                />
-                                            </div>
-                                        )}
-                                        
-                                    </div>
-                                </div>
-                            </section>
-                        </main>
-                        <Modal title='Ajouter une session' isOpen={isAddSessionModalOpen} onClose={closeAddSessionModal}> 
-                            <AddSessionForm 
-                                userSports={userSports}
-                                date={formatDateInLetters(selectedDate)}
-                                onClose={closeAddSessionModal}
-                                onProfileUpdate={handleSessionsUpdate}
-                            />
-                        </Modal>
-                        <Modal title='Editer une session' isOpen={isEditSessionModalOpen} onClose={closeEditSessionModal}> 
-                            {selectedSession && (
-                                <EditSessionForm 
-                                    session={selectedSession}
+                                </section>
+                            </main>
+                            <Modal title='Ajouter une session' isOpen={isAddSessionModalOpen} onClose={closeAddSessionModal}> 
+                                <AddSessionForm 
                                     userSports={userSports}
-                                    onClose={closeEditSessionModal}
+                                    date={formatDateInLetters(selectedDate)}
+                                    onClose={closeAddSessionModal}
                                     onProfileUpdate={handleSessionsUpdate}
                                 />
-                            )}
-                        </Modal>
+                            </Modal>
+                            <Modal title='Editer une session' isOpen={isEditSessionModalOpen} onClose={closeEditSessionModal}> 
+                                {selectedSession && (
+                                    <EditSessionForm 
+                                        session={selectedSession}
+                                        userSports={userSports}
+                                        onClose={closeEditSessionModal}
+                                        onProfileUpdate={handleSessionsUpdate}
+                                    />
+                                )}
+                            </Modal>
+                            </>
+                        )}
                     </>
                 )}
                 

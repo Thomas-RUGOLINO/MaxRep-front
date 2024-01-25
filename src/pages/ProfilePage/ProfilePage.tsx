@@ -217,7 +217,10 @@ const ProfilePage = () => {
                                             <h3> Sports </h3>
                                             <i onClick={openAddSportModal} className="icon fa-solid fa-circle-plus" title='Ajouter un sport'></i>
                                         </div>
-                                        <table className="sports-table" cellSpacing="10">
+                                        {userInfos.sports.length === 0 ? (
+                                            <p style={{textAlign: 'center'}}> Veuillez ajouter un sport ! </p>
+                                        ) : (
+                                            <table className="sports-table" cellSpacing="10">
                                             <thead>
                                                 <tr> 
                                                     <th>  </th>
@@ -241,6 +244,7 @@ const ProfilePage = () => {
                                                 ))}
                                             </tbody>
                                         </table>
+                                        )}
                                     </div>
                                 </section>
                             </main>

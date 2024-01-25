@@ -1,11 +1,12 @@
 @import '../../styles/variables.scss';
 
 .button {
-    width: clamp(100px, 30%, 200px);
+    width: clamp(120px, 30%, 200px);
     border: none;
     border-radius: 5px;
     color: $color-white;
     cursor: pointer;
+    text-align: center;
 }
 
 .button.black {

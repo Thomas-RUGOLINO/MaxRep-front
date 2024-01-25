@@ -67,6 +67,7 @@ const Chart = ({sport}: ChartProps) => {
         };
     };
 
+    //Handle window resize and redraw chart to get responsive chart
     useEffect(() => {
         const handleResize = () => {
             setRedraw(true);

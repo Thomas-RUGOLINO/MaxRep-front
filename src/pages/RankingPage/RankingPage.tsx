@@ -11,6 +11,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { countryNames } from '../../data/countriesList';
+import {convertSecondsToHMS} from '../../utils/convertTime';
 
 interface ErrorProps {
     status:number,
@@ -25,6 +26,7 @@ interface ErrorProps {
     best_score: number,
     date: string
     user: UserProps;
+    sport: SportProps;
 }
 
 interface UserProps {
@@ -45,6 +47,7 @@ interface QueryParamsProps {
 interface SportProps {
     id: number,
     name: string,
+    unit: string
 }
 
 const RankingPage = () => {
@@ -53,6 +56,7 @@ const RankingPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [ranking, setRanking] = useState<RankingProps[]>([]);
     const [userSports, setUserSports] = useState<SportProps[]>([]);
+    const [isShared, setIsShared] = useState<boolean>(false);
     const [queryParams, setQueryParams] = useState<QueryParamsProps>({
         sportId: 4,
         gender: '',
@@ -83,10 +87,24 @@ const RankingPage = () => {
             });
 
             console.log('bestScores :' , response.data);
-            // sort by best_score and organize rank id by order
-            const rank = response.data.sort((a: RankingProps, b: RankingProps) => (a.best_score > b.best_score) ? -1 : 1)
+            // 1- We check if the sport unit is 'temps' or 'Kg'
+            if (response.data[0].sport.unit === 'temps') {
+                //If unit is 'temps' we filter the response to remove all best_score = 0
+                const FilteredResponse = response.data.filter((item: RankingProps) => item.best_score !== 0);
+                //then we sort by ascending order
+                const SortedResponse = FilteredResponse.sort((a: RankingProps, b: RankingProps) => a.best_score - b.best_score);
+                // we set the state with the sorted response
+                setRanking(SortedResponse);
+
+            } else { 
+                //If unit is 'Kg' we sort by descending order
+                const rank = response.data.sort((a: RankingProps, b: RankingProps) => (a.best_score > b.best_score) ? -1 : 1)
+                //We set the state with the sorted response
+                setRanking(rank);
+
+            }
+
             
-            setRanking(rank);
         }
 
         catch(error) {
@@ -132,6 +150,7 @@ const RankingPage = () => {
             }
             
             console.log('userInfos :' , response.data);
+            setIsShared(response.data.is_shared);
             setUserSports(response.data.sports);
             setQueryParams({
                 ...queryParams,
@@ -219,7 +238,14 @@ const RankingPage = () => {
                     {userSports.length === 0 ? 
                         <NoSportMessage /> : (
                             <main className='ranking-main'>
+                                {isShared === false && (
+                                    <div className="ranking-notshared__title">
+                                        <p className='ranking-notshared__text'>Vos performances ne sont pas partagées, vous pouvez éditer votre profil et cocher la case</p>
+                                        <p className='ranking-notshared__text'><strong>"Partager mes performances"</strong> dans le Profil si vous souhaitez apparaître dans les classements !</p>
+                                     </div>
+                                )}
                                 <Container> 
+                                    
                                     <div className="container__header">
                                         <h3> Sélectionner un classement </h3>
                                     </div>
@@ -255,6 +281,7 @@ const RankingPage = () => {
                                         </div>
                                     </form>
                                 </Container>
+                                
                                 <table className='board'>
                                     <thead>
                                         <tr>
@@ -272,7 +299,13 @@ const RankingPage = () => {
                                                 <td>{index+1}</td>
                                                 <td>{item.user.country}</td>
                                                 <td>{item.user.firstname} {item.user.lastname}</td>
-                                                <td>{item.best_score}</td>
+                                                <td>
+                                                    {item.sport.unit === 'temps' ? (
+                                                    convertSecondsToHMS(item.best_score)
+                                                    ) : (
+                                                        item.best_score + ' kg'
+                                                    )}
+                                                </td>
                                                 <td>{item.date}</td>
                                             </tr>
                                         ))) : null}

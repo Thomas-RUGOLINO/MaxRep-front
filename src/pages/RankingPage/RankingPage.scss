@@ -13,9 +13,29 @@
 
     .ranking-main {
         display: flex;
+        align-items: center;
+        justify-content: center;
         flex-direction: column;
         align-items: center;
         gap: 15px;
+
+        .ranking-notshared {
+            display: flex;
+
+            &__title {
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: $color-red;
+            }
+         
+            &__text {
+                text-align: center;
+                font-size: 1.2rem;
+                font-weight: 400;
+                color: $color-blue;
+            }
+            
+        }
 
         .container {
             width: 100%;

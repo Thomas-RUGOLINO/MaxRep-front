@@ -118,7 +118,7 @@ const PerformancePage = () => {
                                 <NoPerfMessage /> : (
                                 <div className="sports-list">
                                     {userPerformances && userPerformances.map((sport: SportProps) => (
-                                        <Chart sport={sport} />
+                                        <Chart key={sport.id} sport={sport} />
                                     ))}
                             </div>
                             )}

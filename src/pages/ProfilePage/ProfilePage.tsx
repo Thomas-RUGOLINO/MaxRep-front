@@ -1,7 +1,7 @@
 import './ProfilePage.scss';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Header from '../../components/Header/Header';
 import MenuMobile from '../../components/MenuMobile/MenuMobile';
@@ -238,7 +238,7 @@ const ProfilePage = () => {
                                             <tbody>
                                                 {userInfos.sports.length > 0 && userInfos.sports.map(sport => (
                                                     <tr key={sport.id}>
-                                                        <td> <i className="icon-table fa-solid fa-chart-line"></i> </td>
+                                                        <td> <Link to='/performance'> <i className="icon-table fa-solid fa-chart-line"></i> </Link> </td>
                                                         <td> {sport.name} </td>
                                                         <td>
                                                         {sport.unit === 'kg' ? (

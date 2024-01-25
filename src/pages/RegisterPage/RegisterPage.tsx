@@ -159,6 +159,7 @@ const RegisterPage = () => {
                         <div className="form__buttons">
                             <button type='submit'> INSCRIPTION </button>
                         </div>
+                        
                     </form>
                 </section>
             </main>

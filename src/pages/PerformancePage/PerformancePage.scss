@@ -17,33 +17,5 @@
         flex-wrap: wrap;
         justify-content: center;
         gap: 20px;
-
-        .sport {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            background-color: $color-grey;
-            border-radius: 10px;
-            padding: 15px;
-    
-            &__header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-
-                i {
-                    cursor: pointer;
-                }
-            }
-
-            &__content {
-                display: flex;
-            }
-
-            .hide {
-                display: none;
-            }
-        }
     }
 }

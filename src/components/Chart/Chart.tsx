@@ -1,7 +1,7 @@
 import './Chart.scss';
 import 'chartjs-adapter-date-fns';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, TimeScale, Title, Tooltip, Legend} from 'chart.js';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import { convertSecondsToHMS } from '../../utils/convertTime';
 
@@ -42,6 +42,7 @@ interface SessionProps {
 const Chart = ({sport}: ChartProps) => { 
 
     const [isGraphOpen, setIsGraphOpen] = useState<OpenStatus>({});
+    const [redraw, setRedraw] = useState(false);
 
     const toggleOpen = (sportId: number) => {
         setIsGraphOpen((prevStatus: OpenStatus) => ({
@@ -56,8 +57,6 @@ const Chart = ({sport}: ChartProps) => {
             x: new Date(session.date), // Convertir en objet Date
             y: session.score
         }));
-
-        console.log(dataPoints)
     
         return {
             label: '',
@@ -67,6 +66,19 @@ const Chart = ({sport}: ChartProps) => {
             backgroundColor: '#E1E1E1',
         };
     };
+
+    useEffect(() => {
+        const handleResize = () => {
+            setRedraw(true);
+            setTimeout(() => setRedraw(false), 0);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     const chartOptions = {
         responsive: true,
@@ -149,6 +161,7 @@ const Chart = ({sport}: ChartProps) => {
                 <Line 
                     data={{ datasets: [prepareChartData(sport)] }} 
                     options={sport.unit === 'temps' ? chartOptionsTime : chartOptions}
+                    redraw={redraw}
                 />
             </div>
         </article>

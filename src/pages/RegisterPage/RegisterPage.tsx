@@ -1,8 +1,9 @@
 import './RegisterPage.scss'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import Header from '../../components/Header/Header'
-import { useState } from 'react'
+import { useState ,useEffect } from 'react'
 
 const RegisterPage = () => {
 
@@ -19,6 +20,15 @@ const RegisterPage = () => {
     const [errorMessage, setErrorMessage] = useState<string>('');
 
     const navigate = useNavigate(); //Hook to navigate to another page
+    const { isAuthenticated,  token, userId } = useAuth()!; //Hook to get token and userId from AuthContext if user is authenticated
+
+    //Handle redirection if user is authenticated
+    useEffect(() => {
+        if (isAuthenticated()) {
+            navigate('/profile');
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[isAuthenticated, navigate, token, userId])
 
     //UTILS
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

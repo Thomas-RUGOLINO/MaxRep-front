@@ -1,0 +1,47 @@
+@import '../../styles/variables.scss';
+@import '../../styles/breakpoints.scss';
+
+.container { 
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-color: $color-grey;
+    border-radius: 10px;
+    padding: 15px;
+
+    .icon { //Place the icon relative to the container
+        position:absolute;
+        right: 15px;
+        font-size: 1.2rem;
+        cursor: pointer;
+    }
+
+    &__header {
+        display: flex;
+        justify-content: center;
+
+        i {
+            cursor: pointer;
+        }
+    }
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        justify-items: center;
+        align-items: center;
+        gap: 15px;
+        @include breakpoint-phone {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+}

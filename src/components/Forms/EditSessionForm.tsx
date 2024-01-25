@@ -193,7 +193,7 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
                         </div>
                         <div className="field">
                             <label htmlFor="sport_id"> Activité </label>
-                            <select name="sport_id" value={updatedSession.sport_id}  onChange={handleChange} >
+                            <select disabled name="sport_id" value={updatedSession.sport_id}  onChange={handleChange} >
                                 {userSports.map((sport: UserSportsProps) => (
                                     <option key={sport.id} value={sport.id}> {sport.name} </option>
                                 ))}

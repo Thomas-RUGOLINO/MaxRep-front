@@ -51,7 +51,7 @@ const SessionPage = () => {
 
     useEffect(() => {
         if (!isAuthenticated()) {
-            navigate('/login');
+            navigate('/');
 
         } else {
             getUserSessions();

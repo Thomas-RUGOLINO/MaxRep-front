@@ -1,6 +1,8 @@
 import './RankingPage.scss'
 import Header from '../../components/Header/Header';
 import NavMenu from '../../components/NavMenu/NavMenu';
+import Container from '../../components/Container/Container';
+import Button from '../../components/Button/Button';
 import ErrorPage from '../ErrorPage/ErrorPage';
 import Loader from '../../components/Loader/Loader';
 import NoSportMessage from '../../components/NoSportMessage/NoSportMessage';
@@ -166,7 +168,7 @@ const RankingPage = () => {
 
     useEffect(() => {
         if (!isAuthenticated()) {
-            navigate('/login');
+            navigate('/');
 
         } else {
             getUserInfos();
@@ -217,25 +219,42 @@ const RankingPage = () => {
                     {userSports.length === 0 ? 
                         <NoSportMessage /> : (
                             <main className='ranking-main'>
-                                <form action="" onSubmit={handleSubmit}>
-                                    <label htmlFor="">Sport</label>
-                                    <select name="sportId" id="" value={queryParams.sportId} onChange={handleChange}>
-                                        {userSports.map((sport: SportProps) => (
-                                            <option key={sport.id} value={sport.id}> {sport.name} </option>
-                                        ))}
-                                    </select>
-                                    <label htmlFor="">Pays</label>
-                                    <select name="country" id="" value={queryParams.country} onChange={handleChange}>
-                                        {Object.entries(countryNames).map(([key, value]) => (
-                                            <option key={key} value={value}>{value}</option>
-                                        ))}
-                                    </select>
-                                    <label htmlFor="">Poids min</label>
-                                    <input name='weightMin'type='number' value={queryParams.weightMin} onChange={handleChange}></input>
-                                    <label htmlFor="">Poids max</label>
-                                    <input name='weightMax' type='number' value={queryParams.weightMax} onChange={handleChange}></input>
-                                    <button type='submit'> Valider </button>
-                                </form>
+                                <Container> 
+                                    <div className="container__header">
+                                        <h3> Sélectionner un classement </h3>
+                                    </div>
+                                    <form action="" onSubmit={handleSubmit}>
+                                        <div className="container__fields">
+                                            <div className="field">
+                                                <label htmlFor="">Sport</label>
+                                                <select name="sportId" id="" value={queryParams.sportId} onChange={handleChange}>
+                                                    {userSports.map((sport: SportProps) => (
+                                                        <option key={sport.id} value={sport.id}> {sport.name} </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                            <div className="field">
+                                                <label htmlFor="">Pays</label>
+                                                <select name="country" id="" value={queryParams.country} onChange={handleChange}>
+                                                    {Object.entries(countryNames).map(([key, value]) => (
+                                                        <option key={key} value={value}>{value}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                            <div className="field">
+                                                <label htmlFor="">Poids min</label>
+                                                <input name='weightMin'type='number' value={queryParams.weightMin} onChange={handleChange}></input>
+                                            </div>
+                                            <div className="field">
+                                                <label htmlFor="">Poids max</label>
+                                                <input name='weightMax' type='number' value={queryParams.weightMax} onChange={handleChange}></input>
+                                            </div>
+                                        </div>
+                                        <div className="container__button">
+                                            <Button text='Valider' color='black' type='submit' />
+                                        </div>
+                                    </form>
+                                </Container>
                                 <table className='board'>
                                     <thead>
                                         <tr>

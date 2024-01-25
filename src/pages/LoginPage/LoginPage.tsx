@@ -1,9 +1,9 @@
 import './LoginPage.scss'
 import axios from 'axios';
-import { useState } from 'react';
+import { useState , useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import Header from '../../components/Header/Header';
-import { useAuth } from '../../context/AuthContext'
 
 const LoginPage = () => {
 
@@ -14,7 +14,15 @@ const LoginPage = () => {
     });
 
     const navigate = useNavigate(); //Hook to navigate to another page
-    const { login } = useAuth()!; //Hook to get login function from AuthContext, exclamation mark to tell TS that it's not null
+    const { isAuthenticated, login, token, userId } = useAuth()!; //Hook to get token and userId from AuthContext if user is authenticated
+
+    //Handle redirection if user is authenticated
+    useEffect(() => {
+        if (isAuthenticated()) {
+            navigate('/profile');
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[isAuthenticated, navigate, token, userId])
     
     const [errorMessage, setErrorMessage] = useState<string>('');
 

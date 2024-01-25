@@ -41,7 +41,7 @@ const PerformancePage = () => {
 
     useEffect(() => {
         if (!isAuthenticated()) {
-            navigate('/login');
+            navigate('/');
 
         } else {
             getUserPerformances();

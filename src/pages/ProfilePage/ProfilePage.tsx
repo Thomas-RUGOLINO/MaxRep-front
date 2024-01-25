@@ -6,6 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import Header from '../../components/Header/Header';
 import NavMenu from '../../components/NavMenu/NavMenu';
 import Modal from '../../components/Modal/Modal';
+import Container from '../../components/Container/Container';
 import EditProfileForm from '../../components/Forms/EditProfileForm';
 import AddSportForm from '../../components/Forms/AddSportForm';
 import DeleteSportForm from '../../components/Forms/DeleteSportForm';
@@ -68,7 +69,7 @@ const ProfilePage = () => {
     //Handle redirection if user is not authenticated
     useEffect(() => {
         if (!isAuthenticated()) {
-            navigate('/login');
+            navigate('/');
 
         } else {
             getUserProfile();
@@ -183,7 +184,7 @@ const ProfilePage = () => {
                                     </div>
                                 </section>
                                 <section className="profile__infos">
-                                    <div className="container">
+                                    <Container> 
                                         <div className="container__header">
                                             <h3> Infos </h3>
                                             <i onClick={openEditProfileModal} className="icon fa-solid fa-pen-to-square" title='Editer les infos'></i>
@@ -214,7 +215,7 @@ const ProfilePage = () => {
                                                 <p> {userInfos.weight ? userInfos.weight + 'kg' : "Non renseigné"} </p>
                                             </div>
                                         </div>
-                                    </div>
+                                    </Container>
                                 </section>
                                 <section className="profile__sports">
                                     <div className="container">

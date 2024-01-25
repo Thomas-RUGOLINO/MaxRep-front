@@ -13,6 +13,7 @@ import ErrorPage from '../ErrorPage/ErrorPage';
 import Loader from '../../components/Loader/Loader';
 import calculateAgeFromBirthDate from '../../utils/calculateAgeFromBirthDate';
 import formatUserName from '../../utils/formatUserName';
+import { convertSecondsToHMS } from '../../utils/convertTime';
 
 interface UserInfosProps {
     id: number,
@@ -144,8 +145,12 @@ const ProfilePage = () => {
             const filteredSessions = userInfos.sessions
             .filter(session => session.user_id === userId && session.sport_id === sportId)
             .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // Sorting by desc date
+            
 
         return filteredSessions.length > 0 ? filteredSessions[0].score : null;
+
+
+        
         }
     };
 
@@ -235,9 +240,17 @@ const ProfilePage = () => {
                                                         <td> <i className="icon-table fa-solid fa-chart-line"></i> </td>
                                                         <td> {sport.name} </td>
                                                         <td>
-                                                                {getMostRecentSessionScore(userInfos.id, sport.id) ? 
+                                                        {sport.unit === 'kg' ? (
+                                                         // Affichage pour les sports en kg
+                                                            getMostRecentSessionScore(userInfos.id, sport.id) ?
                                                             (`${getMostRecentSessionScore(userInfos.id, sport.id)} ${sport.unit}`
-                                                            ) : ("Aucune donnée")}
+                                                            ) : ("Aucune donnée")
+                                                        ) : (
+                                                         // Affichage pour les sports de temps
+                                                            getMostRecentSessionScore(userInfos.id, sport.id) ?
+                                                            (convertSecondsToHMS(getMostRecentSessionScore(userInfos.id, sport.id) ?? 0))
+                                                            : ("Aucune donnée")
+                                                        )}
                                                         </td>
                                                         <td> <i onClick={() => openDeleteSportModal(sport.id)} className="icon-table fa-solid fa-circle-xmark" title='Supprimer un sport'></i> </td>
                                                     </tr>

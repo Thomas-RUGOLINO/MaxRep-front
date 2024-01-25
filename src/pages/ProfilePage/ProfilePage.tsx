@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Header from '../../components/Header/Header';
-import NavMenu from '../../components/NavMenu/NavMenu';
+import MenuMobile from '../../components/MenuMobile/MenuMobile';
 import Modal from '../../components/Modal/Modal';
 import Container from '../../components/Container/Container';
 import EditProfileForm from '../../components/Forms/EditProfileForm';
@@ -163,7 +163,7 @@ const ProfilePage = () => {
     return (
         <>
             <Header />
-            <NavMenu />
+            <MenuMobile />
             <div className="profile-page">
                 {isLoading ? ( 
                     <Loader isPage /> 

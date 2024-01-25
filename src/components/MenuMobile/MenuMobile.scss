@@ -1,7 +1,7 @@
 @import '../../styles/breakpoints.scss';
 @import '../../styles/variables.scss';
 
-.nav {
+.menu-mobile {
     background-color: black;
     height: 65px;
     position: fixed;
@@ -13,7 +13,9 @@
     justify-content: space-around;
     align-items: center;
     border-radius: 2px 2px 0 0;
-    
+    @include breakpoint-small-screen() {
+        display: none;
+    }
 
     &__item {
         display: flex;

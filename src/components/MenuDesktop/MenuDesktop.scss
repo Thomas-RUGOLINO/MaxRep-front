@@ -1,0 +1,41 @@
+@import '../../styles/breakpoints.scss';
+@import '../../styles/variables.scss';
+
+.menu-desktop {
+    display: none;
+    @include breakpoint-small-screen() {
+        display: flex;
+        gap: 30px;
+    }
+
+    &__item {
+        text-decoration: none;
+
+        h3 {
+            color: $color-white;
+            font-size: 1.2rem;
+            font-weight: 400;
+            transition: color 150ms ease-out;
+        }
+
+        .active & {
+            h3 {
+                text-decoration: underline;
+            }
+        }
+
+        &:hover h3 {
+            color:$color-grey;
+        }
+    }
+
+    &__logout {
+        margin-right: 15px;
+
+        i {
+            font-size: 1.3rem;
+            color: $color-white;
+            cursor: pointer;
+        }
+    }
+}

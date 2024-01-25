@@ -1,6 +1,6 @@
 import './PerformancePage.scss'
 import Header from '../../components/Header/Header';
-import NavMenu from '../../components/NavMenu/NavMenu';
+import MenuMobile from '../../components/MenuMobile/MenuMobile';
 import NoPerfMessage from '../../components/NoPerfMessage/NoPerfMessage';
 import ErrorPage from '../ErrorPage/ErrorPage';
 import Loader from '../../components/Loader/Loader';
@@ -104,7 +104,7 @@ const PerformancePage = () => {
     return (
         <>
             <Header />
-            <NavMenu />
+            <MenuMobile />
             <div className="performance-page">
                 {isLoading && <Loader /> ? (
                     <Loader isPage />

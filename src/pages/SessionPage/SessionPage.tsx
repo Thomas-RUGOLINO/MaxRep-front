@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { formatDateToString, formatDateInLetters } from '../../utils/formatDate';
 import axios from 'axios';
 import Header from '../../components/Header/Header';
-import NavMenu from '../../components/NavMenu/NavMenu';
+import MenuMobile from '../../components/MenuMobile/MenuMobile';
 import SessionScore from '../../components/SessionScore/SessionScore';
 import Button from '../../components/Button/Button';
 import Modal from '../../components/Modal/Modal';
@@ -150,7 +150,7 @@ const SessionPage = () => {
     return (
         <>
             <Header />
-            <NavMenu />
+            <MenuMobile />
             <div className="session-page">
                 {isLoading ? (
                 <Loader isPage />

@@ -1,6 +1,6 @@
 import './RankingPage.scss'
 import Header from '../../components/Header/Header';
-import NavMenu from '../../components/NavMenu/NavMenu';
+import MenuMobile from '../../components/MenuMobile/MenuMobile';
 import Container from '../../components/Container/Container';
 import Button from '../../components/Button/Button';
 import ErrorPage from '../ErrorPage/ErrorPage';
@@ -209,7 +209,7 @@ const RankingPage = () => {
     return (
         <>
             <Header />
-            <NavMenu />
+            <MenuMobile />
             <div className="ranking-page">
                 {isLoading ? <Loader isPage /> : (
                     <>

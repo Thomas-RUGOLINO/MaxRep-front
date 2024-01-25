@@ -109,7 +109,7 @@ const LoginPage = () => {
                         </div>
                         <div className="form__message">
                             <Link to='/register'>
-                                <p> Pas de compte ? Inscrivez-vous ici </p>
+                                <p> Pas de compte ? Inscrivez-vous ici ! </p>
                             </Link>
                         </div>
                     </form>

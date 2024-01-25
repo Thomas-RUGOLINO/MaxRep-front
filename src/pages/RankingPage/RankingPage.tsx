@@ -212,7 +212,7 @@ const RankingPage = () => {
                 {isLoading ? <Loader isPage /> : (
                     <>
                     <header className="ranking-header">
-                        <h2> RankingPage </h2>
+                        <h2> Classements </h2>
                     </header>
                     {userSports.length === 0 ? 
                         <NoSportMessage /> : (

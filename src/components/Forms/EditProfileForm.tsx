@@ -158,7 +158,7 @@ const EditProfileForm = ({userCurrentInfos, onClose, onProfileUpdate}: EditProfi
                         />
                     </div>
                     <div className='field'>
-                        <label htmlFor="is_shared">Partager mon profil ?</label>
+                        <label htmlFor="is_shared">Partager mes performances ?</label>
                         <input 
                             type='checkbox' 
                             name='is_shared' 

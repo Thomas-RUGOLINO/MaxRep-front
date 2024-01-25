@@ -56,6 +56,7 @@ const RankingPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [ranking, setRanking] = useState<RankingProps[]>([]);
     const [userSports, setUserSports] = useState<SportProps[]>([]);
+    const [isShared, setIsShared] = useState<boolean>(false);
     const [queryParams, setQueryParams] = useState<QueryParamsProps>({
         sportId: 4,
         gender: '',
@@ -149,6 +150,7 @@ const RankingPage = () => {
             }
             
             console.log('userInfos :' , response.data);
+            setIsShared(response.data.is_shared);
             setUserSports(response.data.sports);
             setQueryParams({
                 ...queryParams,
@@ -236,7 +238,14 @@ const RankingPage = () => {
                     {userSports.length === 0 ? 
                         <NoSportMessage /> : (
                             <main className='ranking-main'>
+                                {isShared === false && (
+                                    <div className="ranking-notshared__title">
+                                        <p className='ranking-notshared__text'>Vos performances ne sont pas partagées, vous pouvez l'éditer et cocher la case</p>
+                                        <p className='ranking-notshared__text'><strong>"Partager mes performances"</strong> dans le Profil si vous souhaitez apparaître dans les classements !</p>
+                                     </div>
+                                )}
                                 <Container> 
+                                    
                                     <div className="container__header">
                                         <h3> Sélectionner un classement </h3>
                                     </div>
@@ -272,6 +281,7 @@ const RankingPage = () => {
                                         </div>
                                     </form>
                                 </Container>
+                                
                                 <table className='board'>
                                     <thead>
                                         <tr>

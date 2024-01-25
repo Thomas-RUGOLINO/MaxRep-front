@@ -240,7 +240,7 @@ const RankingPage = () => {
                             <main className='ranking-main'>
                                 {isShared === false && (
                                     <div className="ranking-notshared__title">
-                                        <p className='ranking-notshared__text'>Vos performances ne sont pas partagées, vous pouvez l'éditer et cocher la case</p>
+                                        <p className='ranking-notshared__text'>Vos performances ne sont pas partagées, vous pouvez éditer votre profil et cocher la case</p>
                                         <p className='ranking-notshared__text'><strong>"Partager mes performances"</strong> dans le Profil si vous souhaitez apparaître dans les classements !</p>
                                      </div>
                                 )}

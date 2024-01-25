@@ -2,12 +2,10 @@ import './SessionPage.scss';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { formatDateToString, formatDateInLetters } from '../../utils/formatDate';
+import { formatDateInLetters } from '../../utils/formatDate';
 import axios from 'axios';
 import Header from '../../components/Header/Header';
 import MenuMobile from '../../components/MenuMobile/MenuMobile';
-import SessionScore from '../../components/SessionScore/SessionScore';
-import Button from '../../components/Button/Button';
 import Modal from '../../components/Modal/Modal';
 import AddSessionForm from '../../components/Forms/AddSessionForm';
 import EditSessionForm from '../../components/Forms/EditSessionForm';
@@ -16,6 +14,7 @@ import ErrorPage from '../ErrorPage/ErrorPage';
 import Calendar from 'react-calendar';
 import NoSportMessage from '../../components/NoSportMessage/NoSportMessage';
 import 'react-calendar/dist/Calendar.css';
+import Agenda from '../../components/Agenda/Agenda';
 
 interface SessionProps {
     id:number,
@@ -136,7 +135,7 @@ const SessionPage = () => {
     }
 
     const filterSessionsBySelectedDate = () => {
-        const formattedSelectedDate = formatDateInLetters(selectedDate); // Utilisez votre fonction formatDateInLetters pour obtenir la date au format YYYY-MM-DD
+        const formattedSelectedDate = formatDateInLetters(selectedDate); // get date in format 'YYYY-MM-DD'
         return userSessions.filter(session => session.date === formattedSelectedDate);
     };
     
@@ -171,50 +170,13 @@ const SessionPage = () => {
                                 />
                                 </section>
                                 <section className="agenda-container">
-                                    <div className="agenda">
-                                        <div className="agenda__spirals">
-                                            <span className="spiral"></span>
-                                            <span className="spiral"></span>
-                                            <span className="spiral"></span>
-                                            <span className="spiral"></span>
-                                            <span className="spiral"></span>
-                                            <span className="spiral"></span>
-                                            <span className="spiral"></span>
-                                            <span className="spiral"></span>
-                                        </div>
-                                        <div className="agenda__header">
-                                            <h3> {formatDateToString(selectedDate)} </h3>
-                                            <i className="fa-solid fa-circle-plus" title='Ajouter une session' onClick={openAddSessionModal}></i>
-                                        </div>
-                                        <div className="agenda__sessions">
-                                        {filteredSessions.length > 0 ? (
-                                            filteredSessions.map((session: SessionProps) => (
-                                                <div key={session.id} className="session">
-                                                    <i className="icon fa-solid fa-pen-to-square" title='Editer la session' onClick={() => openEditSessionModal(session)}></i>
-                                                    <p className='session__title'> <strong>Session de {session.sport.name}</strong> </p>
-                                                    <p className='session__desc'> {session.description} </p>
-                                                    <SessionScore 
-                                                        session={session} 
-                                                        isScore={parseInt(session.score.toString()) === 0 ? false : true}
-                                                        onProfileUpdate={handleSessionsUpdate}    
-                                                    />
-                                                </div>
-                                            ))
-                                            ) : (
-                                                <div className="no-sessions">
-                                                    <p>Aucune session pour cette date.</p>
-                                                    <Button 
-                                                        text='Ajouter une session' 
-                                                        color='black' 
-                                                        onClick={openAddSessionModal} 
-                                                        isSmall
-                                                        type='button'
-                                                    />
-                                                </div>
-                                            )}
-                                            
-                                        </div>
-                                    </div>
+                                    <Agenda 
+                                        selectedDate={selectedDate} 
+                                        filteredSessions={filteredSessions}
+                                        onOpenAddSessionModal={openAddSessionModal} 
+                                        onOpenEditSessionModal={openEditSessionModal}
+                                        onProfileUpdate={handleSessionsUpdate}
+                                    />
                                 </section>
                             </main>
                             <Modal title='Ajouter une session' isOpen={isAddSessionModalOpen} onClose={closeAddSessionModal}> 

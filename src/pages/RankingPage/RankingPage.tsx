@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { countryNames } from '../../data/countriesList';
 import {convertSecondsToHMS} from '../../utils/convertTime';
+import {convertDateFormatToEu} from '../../utils/formatDate'
 
 interface ErrorProps {
     status:number,
@@ -24,7 +25,7 @@ interface ErrorProps {
     firstname: string,
     lastname: string,
     best_score: number,
-    date: string
+    date: Date,
     user: UserProps;
     sport: SportProps;
 }
@@ -64,6 +65,8 @@ const RankingPage = () => {
         weightMin: '',
         weightMax: ''
     })
+    const [currentPage, setCurrentPage] = useState(1);
+    const [rowsPerPage] = useState(20)
 
     const navigate = useNavigate();
     const { isAuthenticated, token, userId } = useAuth()!;
@@ -127,6 +130,8 @@ const RankingPage = () => {
             setIsLoading(false);
         }
     }, [token]);
+
+
 
     const getUserInfos = async () => {
 
@@ -219,7 +224,24 @@ const RankingPage = () => {
         queryParams.weightMax = queryParams.weightMax === 0 ? '' : queryParams.weightMax;
 
         getBestScores(queryParams)
-    }
+    };
+    
+    // Find Function to get the SVG corresponding image of the country name
+    const getCountrySvg = (countryName : string) => {
+        const country = Object.values(countryNames).find(country => country.name === countryName);
+        return country ? country.svg : null;
+      }
+
+    // Pagination
+    const indexOfLastItem = currentPage * rowsPerPage;
+    const indexOfFirstItem = indexOfLastItem - rowsPerPage;
+    const currentItems = ranking.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(ranking.length / rowsPerPage);
+
+    const goToNextPage = () => setCurrentPage(page => Math.min(page + 1, totalPages));
+    const goToPreviousPage = () => setCurrentPage(page => Math.max(page - 1, 1));
+
+    
 
     if (error) {
         return <ErrorPage status={error.status} message={error.message} />
@@ -262,18 +284,28 @@ const RankingPage = () => {
                                             <div className="field">
                                                 <label htmlFor="">Pays</label>
                                                 <select name="country" id="" value={queryParams.country} onChange={handleChange}>
-                                                    {Object.entries(countryNames).map(([key, value]) => (
-                                                        <option key={key} value={value}>{value}</option>
+                                                    {Object.entries(countryNames).map(([key, { name }]) => (
+                                                        <option key={key} value={name}>{name}</option>
                                                     ))}
                                                 </select>
                                             </div>
                                             <div className="field">
                                                 <label htmlFor="">Poids min</label>
-                                                <input name='weightMin'type='number' value={queryParams.weightMin} onChange={handleChange}></input>
+                                                <select name='weightMin' value={queryParams.weightMin} onChange={handleChange}>
+                                                    <option value=''>Sélectionnez</option>
+                                                    {[...Array(301).keys()].map((value) => (
+                                                        <option key={value} value={value}>{value}</option>
+                                                    ))}
+                                                </select>
                                             </div>
                                             <div className="field">
                                                 <label htmlFor="">Poids max</label>
-                                                <input name='weightMax' type='number' value={queryParams.weightMax} onChange={handleChange}></input>
+                                                <select name='weightMax' value={queryParams.weightMax} onChange={handleChange}>
+                                                    <option value=''>Sélectionnez</option>
+                                                    {[...Array(301).keys()].map((value) => (
+                                                        <option key={value} value={value}>{value}</option>
+                                                    ))}
+                                                </select>
                                             </div>
                                         </div>
                                         <div className="container__button">
@@ -294,10 +326,14 @@ const RankingPage = () => {
                                     </thead>
                                     <tbody>
                                     {ranking.length > 0 ? (
-                                        ranking.map((item: RankingProps, index) => (
+                                        currentItems.map((item: RankingProps, index) => (
                                             <tr key={index}>
                                                 <td>{index+1}</td>
-                                                <td>{item.user.country}</td>
+                                                <td width= "50px">
+                                                {item.user.country && (
+                                                    <img src={getCountrySvg(item.user.country) ?? " "} alt={`Drapeau ${item.user.country} `} style={{ width: '30px', height: '20px', borderRadius: '100%' }} />
+                                                )}
+                                                </td>
                                                 <td>{item.user.firstname} {item.user.lastname}</td>
                                                 <td>
                                                     {item.sport.unit === 'temps' ? (
@@ -306,11 +342,16 @@ const RankingPage = () => {
                                                         item.best_score + ' kg'
                                                     )}
                                                 </td>
-                                                <td>{item.date}</td>
+                                                <td>{convertDateFormatToEu(item.date)}</td>
                                             </tr>
                                         ))) : null}
                                     </tbody>
                                 </table>
+                                <div className="pagination-controls">
+                                    <button onClick={goToPreviousPage} disabled={currentPage === 1}>Précédent</button>
+                                    <span>Page {currentPage} sur {totalPages}</span>
+                                     <button onClick={goToNextPage} disabled={currentPage === totalPages}>Suivant</button>
+                                </div>
                             </main>
                         )}
                     

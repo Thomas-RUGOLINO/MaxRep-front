@@ -125,8 +125,8 @@ const EditProfileForm = ({userCurrentInfos, onClose, onProfileUpdate}: EditProfi
                     <div className="field">
                         <label htmlFor="country">Pays</label>
                         <select name="country" id="" onChange={handleChange} value={userNewInfos.country}>
-                            {Object.entries(countryNames).map(([key, value]) => (
-                                <option key={key} value={value}>{value}</option>
+                            {Object.entries(countryNames).map(([key, { name }]) => (
+                                <option key={key} value={name}>{name}</option>
                             ))}
                         </select>
                     </div>

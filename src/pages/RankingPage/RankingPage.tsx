@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { countryNames } from '../../data/countriesList';
 import {convertSecondsToHMS} from '../../utils/convertTime';
+import {convertDateFormatToEu} from '../../utils/formatDate'
 
 interface ErrorProps {
     status:number,
@@ -24,7 +25,7 @@ interface ErrorProps {
     firstname: string,
     lastname: string,
     best_score: number,
-    date: string
+    date: Date,
     user: UserProps;
     sport: SportProps;
 }
@@ -130,6 +131,8 @@ const RankingPage = () => {
         }
     }, [token]);
 
+
+
     const getUserInfos = async () => {
 
         if (!userId) {
@@ -222,7 +225,14 @@ const RankingPage = () => {
 
         getBestScores(queryParams)
     };
+    
+    // Find Function to get the SVG corresponding image of the country name
+    const getCountrySvg = (countryName : string) => {
+        const country = Object.values(countryNames).find(country => country.name === countryName);
+        return country ? country.svg : null;
+      }
 
+    // Pagination
     const indexOfLastItem = currentPage * rowsPerPage;
     const indexOfFirstItem = indexOfLastItem - rowsPerPage;
     const currentItems = ranking.slice(indexOfFirstItem, indexOfLastItem);
@@ -274,8 +284,8 @@ const RankingPage = () => {
                                             <div className="field">
                                                 <label htmlFor="">Pays</label>
                                                 <select name="country" id="" value={queryParams.country} onChange={handleChange}>
-                                                    {Object.entries(countryNames).map(([key, value]) => (
-                                                        <option key={key} value={value}>{value}</option>
+                                                    {Object.entries(countryNames).map(([key, { name }]) => (
+                                                        <option key={key} value={name}>{name}</option>
                                                     ))}
                                                 </select>
                                             </div>
@@ -319,7 +329,11 @@ const RankingPage = () => {
                                         currentItems.map((item: RankingProps, index) => (
                                             <tr key={index}>
                                                 <td>{index+1}</td>
-                                                <td>{item.user.country}</td>
+                                                <td width= "50px">
+                                                {item.user.country && (
+                                                    <img src={getCountrySvg(item.user.country) ?? " "} alt={`Drapeau ${item.user.country} `} style={{ width: '30px', height: '20px', borderRadius: '100%' }} />
+                                                )}
+                                                </td>
                                                 <td>{item.user.firstname} {item.user.lastname}</td>
                                                 <td>
                                                     {item.sport.unit === 'temps' ? (
@@ -328,7 +342,7 @@ const RankingPage = () => {
                                                         item.best_score + ' kg'
                                                     )}
                                                 </td>
-                                                <td>{item.date}</td>
+                                                <td>{convertDateFormatToEu(item.date)}</td>
                                             </tr>
                                         ))) : null}
                                     </tbody>

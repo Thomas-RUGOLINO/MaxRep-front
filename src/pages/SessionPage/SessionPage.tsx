@@ -125,13 +125,25 @@ const SessionPage = () => {
 
     //! Sortir le calendrier dans un composant ?
     //Handle calendar tile color depending on userSessions
-    const tileClassName = ({ date }: { date: Date }) => {
+    const tileClassName = ({ date, view }: { date: Date , view:string }) => {
+
+        //Handle tile color for today
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const isToday = date.getTime() === today.getTime();
+
+        //Handle tile color for days with sessions
         const sessionDate = date.getFullYear() + '-' +
             String(date.getMonth() + 1).padStart(2, '0') + '-' +
             String(date.getDate()).padStart(2, '0');
-        const isDateInItems = userSessions.some(session => session.date === sessionDate) 
+
+        const isSessionsInDate = userSessions.some(session => session.date === sessionDate);
         
-        return isDateInItems ? 'session-active' : null;
+        if (isToday && view === 'month') {
+            return isSessionsInDate ? 'session-active today' : 'today';
+        } else {
+            return isSessionsInDate ? 'session-active' : null;
+        }
     }
 
     const filterSessionsBySelectedDate = () => {

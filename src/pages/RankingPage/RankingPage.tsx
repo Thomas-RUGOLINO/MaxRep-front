@@ -64,6 +64,8 @@ const RankingPage = () => {
         weightMin: '',
         weightMax: ''
     })
+    const [currentPage, setCurrentPage] = useState(1);
+    const [rowsPerPage, setRowsPerPage] = useState(20)
 
     const navigate = useNavigate();
     const { isAuthenticated, token, userId } = useAuth()!;
@@ -219,7 +221,17 @@ const RankingPage = () => {
         queryParams.weightMax = queryParams.weightMax === 0 ? '' : queryParams.weightMax;
 
         getBestScores(queryParams)
-    }
+    };
+
+    const indexOfLastItem = currentPage * rowsPerPage;
+    const indexOfFirstItem = indexOfLastItem - rowsPerPage;
+    const currentItems = ranking.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(ranking.length / rowsPerPage);
+
+    const goToNextPage = () => setCurrentPage(page => Math.min(page + 1, totalPages));
+    const goToPreviousPage = () => setCurrentPage(page => Math.max(page - 1, 1));
+
+    
 
     if (error) {
         return <ErrorPage status={error.status} message={error.message} />
@@ -294,7 +306,7 @@ const RankingPage = () => {
                                     </thead>
                                     <tbody>
                                     {ranking.length > 0 ? (
-                                        ranking.map((item: RankingProps, index) => (
+                                        currentItems.map((item: RankingProps, index) => (
                                             <tr key={index}>
                                                 <td>{index+1}</td>
                                                 <td>{item.user.country}</td>
@@ -311,6 +323,11 @@ const RankingPage = () => {
                                         ))) : null}
                                     </tbody>
                                 </table>
+                                <div className="pagination-controls">
+                                    <button onClick={goToPreviousPage} disabled={currentPage === 1}>Précédent</button>
+                                    <span>Page {currentPage} sur {totalPages}</span>
+                                     <button onClick={goToNextPage} disabled={currentPage === totalPages}>Suivant</button>
+                                </div>
                             </main>
                         )}
                     

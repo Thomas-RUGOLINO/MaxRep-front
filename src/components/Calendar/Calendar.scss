@@ -1,0 +1,13 @@
+@import '../../styles/variables.scss';
+@import '../../styles/breakpoints.scss';
+
+.react-calendar .session-active {
+    border-radius: 0;
+    background: $color-grey;
+  }
+
+.react-calendar .today {
+    background-color: $color-red;
+    color: white;
+
+}

@@ -34,5 +34,13 @@
         display: flex;
         gap: 20px;
         align-items: center;
+
+        .icon {
+            cursor: pointer;
+            transition: all 100ms ease-out;
+            &:hover {
+               color:$color-white-hover;
+            }
+        }
     }
 }

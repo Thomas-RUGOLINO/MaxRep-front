@@ -66,8 +66,15 @@
 
             .icon-table {
                 cursor: pointer;
+                transition: all 100ms ease-out;
+                &:hover {
+                    color: $color-black-hover;
+                }
                 &.fa-circle-xmark {
                     color: $color-red;
+                    &:hover {
+                        color: $color-red-hover;
+                    }
                 }
             }
         } 

@@ -4,7 +4,6 @@
 .header {
     height: 10vh;
     background-color: $color-red;
-    border-bottom: 1px solid $color-white;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -25,7 +24,7 @@
             align-items: center;
 
             img {
-                height: 70%;
+                height: 75%;
                 margin-left: 15px;
             }
         }

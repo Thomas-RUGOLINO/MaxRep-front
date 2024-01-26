@@ -1,5 +1,7 @@
 import './Header.scss';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import MenuDesktop from '../MenuDesktop/MenuDesktop';
 
 const Header = () => {
 
@@ -13,11 +15,21 @@ const Header = () => {
         <>
             <header className="header">
                 <div className="header__title">
-                    <img src="/assets/logo/maxrep-logo.png" alt="" />
+                    <Link to='/'> 
+                        <img src="/assets/logo/maxrep-logo.png" alt="" title="Retour page d'accueil"/> 
+                    </Link>
                     {/* <h1> MaxRep </h1> */}
                 </div>
-                <div className="header__logout">
-                    {isAuthenticated() && <i className="fa-solid fa-right-from-bracket" title='Se déconnecter' onClick={handleLogout}></i>}
+                <div className="header__menu">
+                    {isAuthenticated() && (
+                        <>
+                        <MenuDesktop />
+                        <div className="logout">
+                            {isAuthenticated() && <i className="fa-solid fa-right-from-bracket" title='Se déconnecter' onClick={handleLogout}></i>}
+                        </div>
+                        </>
+                    )}
+                    
                 </div>
             </header>
         </>

@@ -1,3 +1,6 @@
+@import '../../styles/variables.scss';
+@import '../../styles/breakpoints.scss';
+
 .ranking-page {
     max-width: 95%;
     margin: 0 auto 100px;
@@ -5,14 +8,101 @@
     .ranking-header {
         display: flex;
         justify-content: center;
-        margin: 20px 0 15px;
+        margin: 20px 0 40px;
     }
 
     .ranking-main {
         display: flex;
+        align-items: center;
+        justify-content: center;
         flex-direction: column;
         align-items: center;
         gap: 15px;
 
+        .ranking-notshared {
+            display: flex;
+
+            &__title {
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: $color-red;
+            }
+         
+            &__text {
+                text-align: center;
+                font-size: 1.2rem;
+                font-weight: 400;
+                color: $color-blue;
+            }
+            
         }
+
+        .container {
+            width: 100%;
+            margin-bottom: 20px;
+
+            form {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                align-items: center;
+            }
+
+            &__fields {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+
+                .field {
+                    display: flex;
+                    width: 100%;
+
+                    label {
+                        width: 50%;
+                    }
+
+                    input, select {
+                        width: 50%;
+                    }
+                }
+            }
+        }
+    }
+
+    .board {
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0 10px;
+
+        thead {
+            text-align: left;
+        }
+
+        thead tr {
+            background-color: $color-red;
+            border-bottom: 2px solid $color-white;
+        }
+
+        thead th {
+            color:$color-white;
+        }
+
+        th, td {
+            padding: 10px 5px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-size: 0.9rem;
+        }
+
+        tbody tr {
+            background-color: $color-white;
+        }
+
+        tbody tr:nth-child(2n+1) {
+            background-color: $color-grey;
+        }
+    }
+
 }

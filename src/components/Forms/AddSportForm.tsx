@@ -1,7 +1,7 @@
 import './Form.scss'
 import axiosInstance from '../../services/axiosInstance';
 import Button from '../Button/Button';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import Loader from '../Loader/Loader';
 
@@ -31,21 +31,28 @@ const AddSportForm = ({onClose, onProfileUpdate}: AddSportFormProps) => {
 
     const {token, userId } = useAuth()!; //Hook to get token and userId from AuthContext
 
+    const updateSelectedCategoryAndSport = useCallback(() => {
+        if (sportsCategories.length > 0) {
+            const newSelectedCategoryId = sportsCategories[0].id;
+            setSelectedCategoryId(newSelectedCategoryId);
+
+            const newSports = sportsCategories[0].sports;
+            if (newSports.length > 0) {
+                setSelectedSportId(newSports[0].id);
+            } else {
+                setSelectedSportId(null);
+            }
+        }
+    }, [sportsCategories]);
+
     useEffect(() => {
         getSportsCategories();
-        console.log(sportsCategories)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => { 
-        if (sportsCategories.length > 0) {
-            setSelectedCategoryId(sportsCategories[0].id);
-            if (sportsCategories[0].sports.length > 0) {
-                setSelectedSportId(sportsCategories[0].sports[0].id);
-            }
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, sportsCategories)
+        updateSelectedCategoryAndSport();
+    }, [updateSelectedCategoryAndSport]);
 
     //Get sports categories for form 
     const getSportsCategories = async () => {
@@ -77,7 +84,6 @@ const AddSportForm = ({onClose, onProfileUpdate}: AddSportFormProps) => {
     const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement> ) => {
         e.preventDefault();
         const categoryId = parseInt(e.target.value)
-        console.log('category :', e.target.value)
         setSelectedCategoryId(categoryId);
 
         //Set first sport of selected category as default value
@@ -92,7 +98,6 @@ const AddSportForm = ({onClose, onProfileUpdate}: AddSportFormProps) => {
     const handleSportChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => { 
         e.preventDefault();
         setSelectedSportId(parseInt(e.target.value));
-        console.log('sport :', e.target.value)
     }
 
     const addUserSport = async (e: { preventDefault: () => void; }) => { 

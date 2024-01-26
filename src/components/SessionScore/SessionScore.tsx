@@ -76,8 +76,8 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
         });
     }
 
-    const editScore = async () => { 
-        console.log('edit score')
+    const editScore = async (e: React.FormEvent<HTMLFormElement>) => { 
+        e.preventDefault();
 
         try {
             console.log(updatedSession)
@@ -112,6 +112,7 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
                         className='input-time'
                         value={hours === 0 ? '' : hours}
                         onChange={(e) => handleTimeChange(e, 'hh')} 
+                        min={0}
                         max={24}
                         placeholder='hh' 
                     />
@@ -121,6 +122,7 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
                         className='input-time'
                         value={minutes === 0 ? '' : minutes} 
                         onChange={(e) => handleTimeChange(e, 'mm')} 
+                        min={0}
                         max={60}
                         placeholder='mm' 
                     />
@@ -130,6 +132,7 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
                         className='input-time'
                         value={secs === 0 ? '' : secs}
                         onChange={(e) => handleTimeChange(e, 'ss')} 
+                        min={0}
                         max={60}
                         placeholder='ss' 
                     />
@@ -142,7 +145,7 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
                     type='number' 
                     name='score' 
                     className='input' 
-                    min='0'
+                    min={0}
                     placeholder={unit} 
                     value={updatedSession.score !== 0 ? updatedSession.score : ''}
                     onChange={handleChange}

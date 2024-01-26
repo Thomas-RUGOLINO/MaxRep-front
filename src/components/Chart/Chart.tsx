@@ -151,12 +151,9 @@ const Chart = ({sport}: ChartProps) => {
 
     return (
         <article key={sport.id} className="sport">
-            <div className="sport__header">
+            <div className="sport__header" onClick={() => toggleOpen(sport.id)}>
                 <h3> {sport.name} </h3>
-                <i 
-                    className={`fa-solid fa-chevron-${isGraphOpen[sport.id] ? 'up' : 'down'}`} 
-                    onClick={() => toggleOpen(sport.id)}>
-                </i>
+                <i className={`fa-solid fa-chevron-${isGraphOpen[sport.id] ? 'up' : 'down'}`}> </i>
             </div>
             <div className={`sport__content ${isGraphOpen[sport.id] ? '' : 'hide' }`}>
                 <Line 

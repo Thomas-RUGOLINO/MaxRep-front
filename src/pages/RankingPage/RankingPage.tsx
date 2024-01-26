@@ -65,7 +65,7 @@ const RankingPage = () => {
         weightMax: ''
     })
     const [currentPage, setCurrentPage] = useState(1);
-    const [rowsPerPage, setRowsPerPage] = useState(20)
+    const [rowsPerPage] = useState(20)
 
     const navigate = useNavigate();
     const { isAuthenticated, token, userId } = useAuth()!;
@@ -281,11 +281,21 @@ const RankingPage = () => {
                                             </div>
                                             <div className="field">
                                                 <label htmlFor="">Poids min</label>
-                                                <input name='weightMin'type='number' value={queryParams.weightMin} onChange={handleChange}></input>
+                                                <select name='weightMin' value={queryParams.weightMin} onChange={handleChange}>
+                                                    <option value=''>Sélectionnez</option>
+                                                    {[...Array(301).keys()].map((value) => (
+                                                        <option key={value} value={value}>{value}</option>
+                                                    ))}
+                                                </select>
                                             </div>
                                             <div className="field">
                                                 <label htmlFor="">Poids max</label>
-                                                <input name='weightMax' type='number' value={queryParams.weightMax} onChange={handleChange}></input>
+                                                <select name='weightMax' value={queryParams.weightMax} onChange={handleChange}>
+                                                    <option value=''>Sélectionnez</option>
+                                                    {[...Array(301).keys()].map((value) => (
+                                                        <option key={value} value={value}>{value}</option>
+                                                    ))}
+                                                </select>
                                             </div>
                                         </div>
                                         <div className="container__button">

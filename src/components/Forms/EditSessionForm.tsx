@@ -208,7 +208,7 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
                             <textarea name='description' value={updatedSession.description}  onChange={handleChange} />
                         </div>
                         <div className="field">
-                            <label htmlFor="score"> Score </label>
+                            <label htmlFor="score"> Score ({updatedSession.unit === 'temps' ? 'h:m:s' : updatedSession.unit}) </label>
                             {displayInputUnit(updatedSession.unit)}                                
                         </div>
                     </div>

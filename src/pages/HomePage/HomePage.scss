@@ -3,7 +3,7 @@
 
 .home-main {
     
-    .home-firstpage {
+    .home-landing {
         position: relative;
         min-height: 90vh; //because header's height = 10vh
         display: flex;
@@ -70,7 +70,47 @@
         }
     }
 
-    .home-secondpage {
+    .home-presentation {
         min-height: 100vh;
+        background-color: $color-white;
+        display: flex;
+        flex-direction: column;
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+            width: 100%;
+            padding: 1rem;
+
+            p {
+                font-size: 1.5rem;
+            }
+
+            .screenshots {
+                width: 100%;
+                display: flex;
+                justify-content: space-around;
+
+                img {
+                    width: 40%;
+                    height: auto;
+                    border: 1px solid $color-grey;
+                }
+            }
+        }
+
+        .footer {
+            display: flex;
+            background-color: black;
+            padding: 1.5rem;
+
+            p {
+                color: $color-white;
+            }
+        }
     }
 }

@@ -22,7 +22,8 @@
             gap: 10px;
     
             label {
-                width: clamp(150px, 30%, 200px);
+                width: clamp(150px, 30%, 230px);
+                font-size: 0.9rem;
             }
     
             input, select, textarea {
@@ -41,6 +42,8 @@
 
             .checkbox {
                 height: 20px;
+                // margin-left: auto;
+                display: inline-block;
             }
 
 

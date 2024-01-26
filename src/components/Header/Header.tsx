@@ -25,7 +25,7 @@ const Header = () => {
                         <>
                         <MenuDesktop />
                         <div className="logout">
-                            {isAuthenticated() && <i className="fa-solid fa-right-from-bracket" title='Se déconnecter' onClick={handleLogout}></i>}
+                            {isAuthenticated() && <i className="icon fa-solid fa-right-from-bracket" title='Se déconnecter' onClick={handleLogout}></i>}
                         </div>
                         </>
                     )}

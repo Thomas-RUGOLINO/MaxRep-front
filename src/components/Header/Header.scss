@@ -4,7 +4,6 @@
 .header {
     height: 10vh;
     background-color: $color-red;
-    border-bottom: 1px solid $color-white;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -25,7 +24,7 @@
             align-items: center;
 
             img {
-                height: 70%;
+                height: 75%;
                 margin-left: 15px;
             }
         }
@@ -35,5 +34,13 @@
         display: flex;
         gap: 20px;
         align-items: center;
+
+        .icon {
+            cursor: pointer;
+            transition: all 100ms ease-out;
+            &:hover {
+               color:$color-white-hover;
+            }
+        }
     }
 }

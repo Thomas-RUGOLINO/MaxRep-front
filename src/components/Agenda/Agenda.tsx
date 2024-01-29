@@ -47,7 +47,7 @@ const Agenda = ({selectedDate, filteredSessions, onOpenAddSessionModal, onOpenEd
                 filteredSessions.map((session: SessionProps) => (
                     <div key={session.id} className="session">
                         <i className="icon fa-solid fa-pen-to-square" title='Editer la session' onClick={() => onOpenEditSessionModal(session)}></i>
-                        <p className='session__title'> <strong>Session de {session.sport.name}</strong> </p>
+                        <p className='session__title'> Session de {session.sport.name} </p>
                         <p className='session__desc'> {session.description} </p>
                         <SessionScore 
                             session={session} 

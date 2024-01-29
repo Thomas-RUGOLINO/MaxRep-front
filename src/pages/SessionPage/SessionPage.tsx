@@ -11,7 +11,8 @@ import AddSessionForm from '../../components/Forms/AddSessionForm';
 import EditSessionForm from '../../components/Forms/EditSessionForm';
 import Loader from '../../components/Loader/Loader';
 import ErrorPage from '../ErrorPage/ErrorPage';
-import Calendar from 'react-calendar';
+// import Calendar from 'react-calendar';
+import Calendar from '../../components/Calendar/Calendar';
 import NoSportMessage from '../../components/NoSportMessage/NoSportMessage';
 import 'react-calendar/dist/Calendar.css';
 import Agenda from '../../components/Agenda/Agenda';
@@ -122,18 +123,7 @@ const SessionPage = () => {
     function onChange(nextselectedDate : Date) {
         setSelectedDate(nextselectedDate);
     }    
-
-    //! Sortir le calendrier dans un composant ?
-    //Handle calendar tile color depending on userSessions
-    const tileClassName = ({ date }: { date: Date }) => {
-        const sessionDate = date.getFullYear() + '-' +
-            String(date.getMonth() + 1).padStart(2, '0') + '-' +
-            String(date.getDate()).padStart(2, '0');
-        const isDateInItems = userSessions.some(session => session.date === sessionDate) 
-        
-        return isDateInItems ? 'session-active' : null;
-    }
-
+    
     const filterSessionsBySelectedDate = () => {
         const formattedSelectedDate = formatDateInLetters(selectedDate); // get date in format 'YYYY-MM-DD'
         return userSessions.filter(session => session.date === formattedSelectedDate);
@@ -164,9 +154,9 @@ const SessionPage = () => {
                             <main>
                                 <section className='calendar-container'> 
                                 <Calendar
-                                    onClickDay={onChange}
-                                    value={selectedDate}
-                                    tileClassName={tileClassName}
+                                    sessions={userSessions}
+                                    selectedDate={selectedDate}
+                                    onChange={onChange}
                                 />
                                 </section>
                                 <section className="agenda-container">

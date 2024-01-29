@@ -24,10 +24,14 @@ h2 {
 }
 
 //Content
-p, a, label, button, th, td {
+p, a, label, button, th, td, span {
     font-family: 'Roboto' , Arial ,  sans-serif;
     color:$color-black;
     font-size: 1rem;
+}
+
+label {
+    font-size: .9rem;
 }
 
 body {

@@ -238,7 +238,11 @@ const ProfilePage = () => {
                                             <tbody>
                                                 {userInfos.sports.length > 0 && userInfos.sports.map(sport => (
                                                     <tr key={sport.id}>
-                                                        <td> <Link to='/performance'> <i className="icon-table fa-solid fa-chart-line"></i> </Link> </td>
+                                                        <td> 
+                                                            <Link to='/performance'> 
+                                                                <i className="icon-table fa-solid fa-chart-line" title='Voir les performances'></i> 
+                                                            </Link> 
+                                                        </td>
                                                         <td> {sport.name} </td>
                                                         <td>
                                                         {sport.unit === 'kg' ? (

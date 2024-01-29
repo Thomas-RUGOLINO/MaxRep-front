@@ -10,6 +10,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useMediaQuery } from 'react-responsive';
+import { convertDateFormatToEu } from '../../utils/formatDate';
+import { convertSecondsToHMS } from '../../utils/convertTime';
 import axios from 'axios';
 
 interface ErrorProps {
@@ -159,6 +161,28 @@ const PerformancePage = () => {
                                         </div>
                                         <div className="sports-chart">
                                             <ChartDesktop sport={selectedSport} />
+                                            <table className='board'>
+                                                <thead>
+                                                    <tr>
+                                                        <th>Date</th>
+                                                        <th>Score</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                {selectedSport.sessions.map((item: SessionProps, index) => (
+                                                        <tr key={index}>
+                                                            <td>{convertDateFormatToEu(new Date(item.date))}</td>
+                                                            <td>
+                                                                {selectedSport.unit === 'temps' ? (
+                                                                convertSecondsToHMS(item.score)
+                                                                ) : (
+                                                                    item.score + ' kg'
+                                                                )}
+                                                            </td> 
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </>
                                 )} 

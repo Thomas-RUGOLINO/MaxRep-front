@@ -11,16 +11,44 @@
         margin: 20px 0 40px;
     }
 
-    .sports-list {
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 20px;
+    .main-mobile {
+        .sports-list {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
     }
 
     .main-desktop {
         display: flex;
+        justify-content: space-around;
+        width: 100%;
+
+        .sports-list {
+            width: 40vw;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+
+            .sport {
+                background-color: $color-grey;
+            }
+
+            .sport.clicked {
+                background-color: $color-blue;
+
+                h3 {
+                    color: $color-white;
+                }
+            }
+        }
+
+        .sports-chart {
+           width: 40vw;
+           height: 40vh;
+        }
     }
 }
 

@@ -41,6 +41,7 @@ const PerformancePage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<ErrorProps | null>(null);
     const [selectedSport, setSelectedSport] = useState<SportProps>({id:0, name:'', unit:'', sessions:[]});
+    const [selectedSportIndex, setSelectedSportIndex] = useState<number>(0); //To know if a sport is clicked to display chart
 
     //Media query to get if device is mobile or desktop
     const isMobile = useMediaQuery({
@@ -107,8 +108,9 @@ const PerformancePage = () => {
         }
     }
 
-    const handleSportClick = (sport:SportProps) => { 
-        setSelectedSport(sport)
+    const handleSportClick = (sport:SportProps, index: number) => { 
+        setSelectedSport(sport);
+        setSelectedSportIndex(index);
     }
 
     //Handle 3 cases => error, loading and userInfos received
@@ -145,9 +147,15 @@ const PerformancePage = () => {
                                     <NoPerfMessage /> : (
                                     <>
                                         <div className="sports-list">
-                                            {userPerformances && userPerformances.map((sport: SportProps) => (
-                                                <li key={sport.id} onClick={() => handleSportClick(sport)}> {sport.name} </li>
-                                            ))}
+                                            {userPerformances && userPerformances.map((sport: SportProps, index) => (
+                                                <article key={sport.id} className={`sport ${index === selectedSportIndex ? 'clicked' : ''}`}  onClick={() => handleSportClick(sport, index)}>
+                                                    <div className="sport__header" >
+                                                        <h3> {sport.name} </h3>
+                                                    </div>
+                                                    <div className={`sport__content`}>
+                                                    </div>
+                                                </article>
+                                            ))}                                            
                                         </div>
                                         <div className="sports-chart">
                                             <ChartDesktop sport={selectedSport} />

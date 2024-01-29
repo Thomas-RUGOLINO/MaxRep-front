@@ -138,11 +138,14 @@ const ChartDesktop = ({sport}: ChartDesktopProps) => {
     };
 
     return (
-        <Line 
-            data={{ datasets: [prepareChartData(sport)] }} 
-            options={sport.unit === 'temps' ? chartOptionsTime : chartOptions}
-            redraw={redraw}
-        />
+        <div className="chart-container">
+            <Line 
+                data={{ datasets: [prepareChartData(sport)] }} 
+                options={sport.unit === 'temps' ? chartOptionsTime : chartOptions}
+                redraw={redraw}
+            />
+        </div>
+
     )
 }
 

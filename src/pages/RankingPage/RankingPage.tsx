@@ -77,9 +77,8 @@ const RankingPage = () => {
             setIsLoading(true);
             setError(null);
 
-            console.log(queryParams)
             if (!queryParams.sportId) {
-                return setError({status:401, message:'Unauthorized / Non autorisé'});
+                return setError({status:401, message:'Unauthorized / Non autorisé'}); //!Message
             }
 
             // Récupérer les données de la table ranking en fonction du sport de l'utilisateur
@@ -89,7 +88,11 @@ const RankingPage = () => {
                 }
             });
 
-            console.log('bestScores :' , response.data);
+            //== Case response is not ok
+            if (response.status !== 200) {
+                setError({status:response.status, message:response.data.error})
+            }
+
             // 1- We check if the sport unit is 'temps' or 'Kg'
             if (response.data[0].sport.unit === 'temps') {
                 //If unit is 'temps' we filter the response to remove all best_score = 0
@@ -105,9 +108,7 @@ const RankingPage = () => {
                 //We set the state with the sorted response
                 setRanking(rank);
 
-            }
-
-            
+            } 
         }
 
         catch(error) {
@@ -118,13 +119,13 @@ const RankingPage = () => {
                     setError({status:error.response.status, message:error.response.data.error});
 
                 } else { //== Case if no response from server
-                    setError({status:500, message:'Internal Server Error / Erreur interne du serveur (1)'})
+                    setError({status:500, message:'Erreur interne du serveur.'})
                 }
 
             } else { //== Case if not axios error
-                setError({status:500, message:'Internal Server Error / Erreur interne du serveur (2)'})
+                setError({status:500, message:'Une erreur inattendue est survenue.'})
                 console.error(error);
-            }                 
+            }         
 
         } finally {
             setIsLoading(false);

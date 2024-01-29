@@ -53,7 +53,8 @@ interface SportProps {
 
 const RankingPage = () => {
 
-    const [error, setError] = useState<ErrorProps | null>(null);
+    const [error, setError] = useState<ErrorProps | null>(null); //To display error page if error with request
+    const [errorMessage, setErrorMessage] = useState<string>(''); //To display error message on front
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [ranking, setRanking] = useState<RankingProps[]>([]);
     const [userSports, setUserSports] = useState<SportProps[]>([]);
@@ -106,7 +107,6 @@ const RankingPage = () => {
                 const rank = response.data.sort((a: RankingProps, b: RankingProps) => (a.best_score > b.best_score) ? -1 : 1)
                 //We set the state with the sorted response
                 setRanking(rank);
-
             } 
         }
 
@@ -130,7 +130,6 @@ const RankingPage = () => {
             setIsLoading(false);
         }
     }, [token]);
-
 
     const getUserInfos = async () => {
 
@@ -219,9 +218,7 @@ const RankingPage = () => {
         e.preventDefault();
 
         if (queryParams.weightMin > queryParams.weightMax) {
-            //! Afficher un message d'erreur sur le front
-            console.log('Erreur !') 
-            return setError({status:0, message:'Le poids maximum doit etre supérieur au poids minimum !'}) 
+            return setErrorMessage('Le poids minimum doit être inférieur au poids maximum !');
         }
 
         queryParams.weightMin = queryParams.weightMin === 0 ? '' : queryParams.weightMin;
@@ -256,6 +253,9 @@ const RankingPage = () => {
                                 <Container> 
                                     <div className="container__header">
                                         <h3> Sélectionner un classement </h3>
+                                    </div>
+                                    <div className="container__errors">
+                                        {errorMessage && <p className='error-message'>{errorMessage}</p>}
                                     </div>
                                     <form action="" onSubmit={handleSubmit}>
                                         <div className="container__fields">

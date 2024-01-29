@@ -1,6 +1,6 @@
 import './Form.scss'
-import axiosInstance from '../../services/axiosInstance';
-import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import Button from '../Button/Button';
 import Loader from '../Loader/Loader';
@@ -25,11 +25,13 @@ interface NewSessionProps {
     score: number,
 }
 
+
 const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSessionFormProps) => { 
 
     const {token, userId } = useAuth()!; //Hook to get token and userId from AuthContext
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = useState<string>('');
     const [newSession, setNewSession] = useState<NewSessionProps>({
         user_id: userId,
         date: date,
@@ -48,31 +50,33 @@ const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSession
         })
     }
 
-    useEffect(() => {
-        console.log(newSession);
-    },[newSession])
-
     const addSession = async (e: { preventDefault: () => void; }) => { 
         e.preventDefault();
 
         try {
             setIsLoading(true);
-            const response = await axiosInstance.post(`/sessions` , newSession, {
+            const response = await axios.post(`https://maxrep-back.onrender.com/api/sessions` , newSession, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
 
-            console.log(response.data);
-
-            if (response.status === 201) {
-                onProfileUpdate();
-                onClose();
-            }
-
+            onProfileUpdate();
+            onClose();
+            return response.data;
+            
         } catch (error) {
-            //! Gestion d'erreur (==> a factoriser ?)
-            console.error(error);
+            if (axios.isAxiosError(error)) { //== Case if axios error
+                if (error.response) {
+                    setErrorMessage(error.response.data.error);
+
+                } else { //== Case if no response from server
+                    setErrorMessage('Erreur interne du serveur.');
+                }
+
+            } else { //== Case if not axios error
+                setErrorMessage('Une erreur inattendue est survenue.');
+            }
 
         } finally {
             setIsLoading(false);
@@ -87,6 +91,9 @@ const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSession
                 {userSports.length === 0 ?
                      (<p> Vous n'avez pas encore ajouté de sport à votre profil. </p>) : (
                         <>
+                            <div className="form__errors">
+                                <p className='error-message'> {errorMessage} </p>
+                            </div>
                             <div className="form__fields">
                                 <div className="field">
                                     <label htmlFor="date"> Date </label>

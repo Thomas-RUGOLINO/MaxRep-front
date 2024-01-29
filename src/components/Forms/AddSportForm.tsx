@@ -1,5 +1,5 @@
 import './Form.scss'
-import axiosInstance from '../../services/axiosInstance';
+import axios from 'axios';
 import Button from '../Button/Button';
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
@@ -25,6 +25,7 @@ interface SportsProps {
 const AddSportForm = ({onClose, onProfileUpdate}: AddSportFormProps) => { 
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = useState<string>('');
     const [sportsCategories, setSportsCategories] = useState<SportsCategoriesProps[]>([]);
     const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(1);
     const [selectedSportId, setSelectedSportId] = useState<number | null>(1);
@@ -59,25 +60,30 @@ const AddSportForm = ({onClose, onProfileUpdate}: AddSportFormProps) => {
 
         try {
             setIsLoading(true);
-            const response = await axiosInstance.get(`/categories`, {
+            const response = await axios.get(`https://maxrep-back.onrender.com/api/categories`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
 
-            if (response.status === 200) {
-                const sortedCategories = response.data.sort((a: SportsCategoriesProps, b: SportsCategoriesProps) => a.id - b.id);
-                setSportsCategories(sortedCategories);
-            }
+            const sortedCategories = response.data.sort((a: SportsCategoriesProps, b: SportsCategoriesProps) => a.id - b.id);
+            setSportsCategories(sortedCategories);
 
         } catch (error) {
-            //! Gestion d'erreur (==> a factoriser ?)
-            console.error(error);
+            if (axios.isAxiosError(error)) { //== Case if axios error
+                if (error.response) {
+                    setErrorMessage(error.response.data.error);
+
+                } else { //== Case if no response from server
+                    setErrorMessage('Erreur interne du serveur.');
+                }
+
+            } else { //== Case if not axios error
+                setErrorMessage('Une erreur inattendue est survenue.');
+            }
 
         } finally {
-            setTimeout(() => {
-                setIsLoading(false);
-            }, 500);
+            setIsLoading(false);
         }
     }  
 
@@ -104,20 +110,31 @@ const AddSportForm = ({onClose, onProfileUpdate}: AddSportFormProps) => {
         e.preventDefault();
 
         try {
-            const response = await axiosInstance.post(`/profile/sport/${userId}`, {sportId: selectedSportId} , {
+            setIsLoading(true);
+            const response = await axios.post(`https://maxrep-back.onrender.com/api/profile/sport/${userId}`, {sportId: selectedSportId} , {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
 
-            if (response.status === 201) {
-                onProfileUpdate();
-                onClose();
-            }
+            onProfileUpdate();
+            onClose();
+            return response.data
 
         } catch (error) {
-            //! Gestion d'erreur (==> a factoriser ?)
-            console.error(error);
+            if (axios.isAxiosError(error)) { //== Case if axios error
+                if (error.response) {
+                    setErrorMessage(error.response.data.error);
+
+                } else { //== Case if no response from server
+                    setErrorMessage('Erreur interne du serveur.');
+                }
+
+            } else { //== Case if not axios error
+                setErrorMessage('Une erreur inattendue est survenue.');
+            }
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -127,35 +144,38 @@ const AddSportForm = ({onClose, onProfileUpdate}: AddSportFormProps) => {
             {!isLoading && sportsCategories.length === 0 && <p> Aucune catégorie de sport n'a été trouvée </p>}
             {!isLoading && (
                 <form className='form addSportForm' method='post' onSubmit={addUserSport}>
-                <div className="form__fields">
-                    <div className="field">
-                        <label htmlFor="category"> Sélectionner une catégorie </label>
-                        <select name="category" onChange={handleCategoryChange}>
-                            {sportsCategories.map((category: SportsCategoriesProps) => (
-                                <option key={category.id} value={category.id}> {category.name} </option>
-                            )
-                            )}
-                        </select>
+                    <div className="form__errors">
+                        <p className='error-message'> {errorMessage} </p>
                     </div>
-                    <div className="field">
-                        <label htmlFor="sport"> Sélectionner un sport </label>
-                        <select name="sport" onChange={handleSportChange}>
-                            {sportsCategories
-                                .filter((category: SportsCategoriesProps) => category.id === selectedCategoryId)
-                                .map((category: SportsCategoriesProps) => (
-                                    category.sports.map((sport: SportsProps) => (
-                                        <option key={sport.id} value={sport.id}> {sport.name} </option>
+                    <div className="form__fields">
+                        <div className="field">
+                            <label htmlFor="category"> Sélectionner une catégorie </label>
+                            <select name="category" onChange={handleCategoryChange}>
+                                {sportsCategories.map((category: SportsCategoriesProps) => (
+                                    <option key={category.id} value={category.id}> {category.name} </option>
+                                )
+                                )}
+                            </select>
+                        </div>
+                        <div className="field">
+                            <label htmlFor="sport"> Sélectionner un sport </label>
+                            <select name="sport" onChange={handleSportChange}>
+                                {sportsCategories
+                                    .filter((category: SportsCategoriesProps) => category.id === selectedCategoryId)
+                                    .map((category: SportsCategoriesProps) => (
+                                        category.sports.map((sport: SportsProps) => (
+                                            <option key={sport.id} value={sport.id}> {sport.name} </option>
+                                        ))
                                     ))
-                                ))
-                            }
-                        </select>
+                                }
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div className="form__buttons">
-                    <Button text='Ajouter' color='black' type='submit' />
-                    <Button text='Annuler' color='red' onClick={onClose} type='button' />
-                </div>
-            </form>
+                    <div className="form__buttons">
+                        <Button text='Ajouter' color='black' type='submit' />
+                        <Button text='Annuler' color='red' onClick={onClose} type='button' />
+                    </div>
+                </form>
             )}
         </>
     )

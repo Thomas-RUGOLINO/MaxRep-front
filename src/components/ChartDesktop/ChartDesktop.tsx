@@ -1,4 +1,4 @@
-import './Chart.scss';
+import './ChartDesktop.scss';
 import 'chartjs-adapter-date-fns';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, TimeScale, Title, Tooltip, Legend} from 'chart.js';
 import { useState, useEffect } from 'react';
@@ -16,7 +16,7 @@ ChartJS.register(
     Legend
 );
 
-interface ChartProps {
+interface ChartDesktopProps {
     sport:SportProps
 }
 
@@ -27,10 +27,6 @@ interface SportProps {
     sessions:SessionProps[]
 }
 
-interface OpenStatus {
-    [key: number]: boolean;
-}
-
 interface SessionProps { 
     id:number,
     date:string,
@@ -39,17 +35,9 @@ interface SessionProps {
     sport_id:number,
 }
 
-const Chart = ({sport}: ChartProps) => { 
+const ChartDesktop = ({sport}: ChartDesktopProps) => { 
 
-    const [isGraphOpen, setIsGraphOpen] = useState<OpenStatus>({});
     const [redraw, setRedraw] = useState(false);
-
-    const toggleOpen = (sportId: number) => {
-        setIsGraphOpen((prevStatus: OpenStatus) => ({
-            ...prevStatus,
-            [sportId]: !prevStatus[sportId]
-        }));
-    };
 
     const prepareChartData = (sport: SportProps) => {
         const sortedSessions = sport.sessions.sort((a: SessionProps, b: SessionProps) => new Date(a.date).getTime() - new Date(b.date).getTime());
@@ -150,20 +138,15 @@ const Chart = ({sport}: ChartProps) => {
     };
 
     return (
-        <article key={sport.id} className="sport">
-            <div className="sport__header" onClick={() => toggleOpen(sport.id)}>
-                <h3> {sport.name} </h3>
-                <i className={`fa-solid fa-chevron-${isGraphOpen[sport.id] ? 'up' : 'down'}`}> </i>
-            </div>
-            <div className={`sport__content ${isGraphOpen[sport.id] ? '' : 'hide' }`}>
-                <Line 
-                    data={{ datasets: [prepareChartData(sport)] }} 
-                    options={sport.unit === 'temps' ? chartOptionsTime : chartOptions}
-                    redraw={redraw}
-                />
-            </div>
-        </article>
+        <div className="chart-container">
+            <Line 
+                data={{ datasets: [prepareChartData(sport)] }} 
+                options={sport.unit === 'temps' ? chartOptionsTime : chartOptions}
+                redraw={redraw}
+            />
+        </div>
+
     )
 }
 
-export default Chart;
+export default ChartDesktop;

@@ -82,7 +82,15 @@ const PerformancePage = () => {
             if (response.status === 200) {
                 setUserPerformances(response.data.sports);
                 if (response.data.sports.length > 0) {
-                    setSelectedSport(response.data.sports[0]);  
+
+                    //Sort by ASC date
+                    const sortedSessions = response.data.sports[0].sessions.sort((a: SessionProps, b: SessionProps) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+                    const sortedSport : SportProps = {
+                        ...response.data.sports[0],
+                        sessions : sortedSessions
+                    };
+                    setSelectedSport(sortedSport);  
                 }
 
             } else {
@@ -111,7 +119,16 @@ const PerformancePage = () => {
     }
 
     const handleSportClick = (sport:SportProps, index: number) => { 
-        setSelectedSport(sport);
+        //Sort by ASC date
+        const sortedSessions = sport.sessions.sort((a: SessionProps, b: SessionProps) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+        console.log(sortedSessions);
+        const sortedSport : SportProps = {
+            ...sport,
+            sessions : sortedSessions
+        };
+
+        setSelectedSport(sortedSport);
         setSelectedSportIndex(index);
     }
 
@@ -161,28 +178,31 @@ const PerformancePage = () => {
                                         </div>
                                         <div className="sports-chart">
                                             <ChartDesktop sport={selectedSport} />
-                                            <table className='board'>
-                                                <thead>
-                                                    <tr>
-                                                        <th>Date</th>
-                                                        <th>Score</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                {selectedSport.sessions.map((item: SessionProps, index) => (
-                                                        <tr key={index}>
-                                                            <td>{convertDateFormatToEu(new Date(item.date))}</td>
-                                                            <td>
-                                                                {selectedSport.unit === 'temps' ? (
-                                                                convertSecondsToHMS(item.score)
-                                                                ) : (
-                                                                    item.score + ' kg'
-                                                                )}
-                                                            </td> 
+                                            <h3 className='table-title'> 5 dernières sessions </h3>
+                                            <div className='table'>
+                                                <table className='board'>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Date</th>
+                                                            <th>Score</th>
                                                         </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
+                                                    </thead>
+                                                    <tbody>
+                                                    {selectedSport.sessions.slice(-5).map((item: SessionProps, index) => (
+                                                            <tr key={index}>
+                                                                <td>{convertDateFormatToEu(new Date(item.date))}</td>
+                                                                <td>
+                                                                    {selectedSport.unit === 'temps' ? (
+                                                                    convertSecondsToHMS(item.score)
+                                                                    ) : (
+                                                                        item.score + ' kg'
+                                                                    )}
+                                                                </td> 
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </>
                                 )} 

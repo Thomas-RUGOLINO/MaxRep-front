@@ -25,7 +25,7 @@ interface ErrorProps {
     firstname: string,
     lastname: string,
     best_score: number,
-    date: Date,
+    date: string,
     user: UserProps;
     sport: SportProps;
 }
@@ -342,7 +342,7 @@ const RankingPage = () => {
                                                         item.best_score + ' kg'
                                                     )}
                                                 </td>
-                                                <td>{convertDateFormatToEu(item.date)}</td>
+                                                <td>{convertDateFormatToEu(new Date(item.date))}</td>
                                             </tr>
                                         ))) : null}
                                     </tbody>

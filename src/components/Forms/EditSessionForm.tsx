@@ -1,5 +1,5 @@
 import './Form.scss'
-import axiosInstance from '../../services/axiosInstance';
+import axios from 'axios';
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { convertSecondsToTime , convertTimeToSeconds } from '../../utils/convertTime';
@@ -45,6 +45,7 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
     const {token, userId } = useAuth()!; //Hook to get token and userId from AuthContext
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = useState<string>('');
     const [updatedSession, setUpdatedSession] = useState<UpdatedSessionProps>({
         user_id: userId,
         id: session.id,
@@ -89,21 +90,28 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
 
         try {
             setIsLoading(true);
-            console.log(updatedSession);
-            const response = await axiosInstance.patch(`/sessions/${updatedSession.id}` , updatedSession, {
+            const response = await axios.patch(`https://maxrep-back.onrender.com/api/sessions/${updatedSession.id}` , updatedSession, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
 
-            if (response.status === 200) {
-                onProfileUpdate();
-                onClose();
-            }
+            onProfileUpdate();
+            onClose();
+            return response.data
 
         } catch (error) {
-            //! Gestion d'erreur (==> a factoriser ?)
-            console.error(error);
+            if (axios.isAxiosError(error)) { //== Case if axios error
+                if (error.response) {
+                    setErrorMessage(error.response.data.error);
+
+                } else { //== Case if no response from server
+                    setErrorMessage('Erreur interne du serveur.');
+                }
+
+            } else { //== Case if not axios error
+                setErrorMessage('Une erreur inattendue est survenue.');
+            }
 
         } finally {
             setIsLoading(false);
@@ -114,20 +122,29 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
 
         try {
             setIsLoading(true);
-            const response = await axiosInstance.delete(`/sessions/${updatedSession.id}` , {
+            const response = await axios.delete(`https://maxrep-back.onrender.com/api/sessions/${updatedSession.id}` , {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
 
-            if (response.status === 204) {
-                onProfileUpdate();
-                onClose();
-            }
+            onProfileUpdate();
+            onClose();
+            return response.data;
 
         } catch (error) {
-            //! Gestion d'erreur (==> a factoriser ?)
-            console.error(error);
+            if (axios.isAxiosError(error)) { //== Case if axios error
+                if (error.response) {
+                    setErrorMessage(error.response.data.error);
+
+                } else { //== Case if no response from server
+                    setErrorMessage('Erreur interne du serveur.');
+                }
+
+            } else { //== Case if not axios error
+                setErrorMessage('Une erreur inattendue est survenue.');
+                
+            }
 
         } finally {
             setIsLoading(false);
@@ -190,6 +207,9 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
             {isLoading && <Loader />}
             {!isLoading && (
                 <form className='form editSessionForm' method='post' onSubmit={editSession}>
+                    <div className="form__errors">
+                        <p className='error-message'> {errorMessage} </p>
+                    </div>
                     <div className="form__fields">
                         <div className="field">
                             <label htmlFor="date"> Date </label>

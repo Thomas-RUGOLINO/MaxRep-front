@@ -46,7 +46,18 @@
                 display: inline-block;
             }
 
+        }
+    }
 
+    &__errors {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-left: 10px;
+
+        .error-message {
+            color:$color-red;
+            text-align: center;
         }
     }
 

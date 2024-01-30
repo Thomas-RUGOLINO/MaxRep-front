@@ -46,19 +46,16 @@ const LoginPage = () => {
         //Push userInfos to backend
         try {
             const response = await axios.post('https://maxrep-back.onrender.com/api/login' , userInfos);
-            console.log(response);
 
-            if (response.status === 200) {
-                const token = response.data;
-                login(token); //Login user with token
-                navigate(`/profile`);
-
-                return response.data;
-
-            } else {
-                //Return error status & message
+            if (response.status !== 200) {
                 setErrorMessage(response.data.error);
             }
+
+            const token = response.data;
+            login(token); //Login user with token
+            navigate(`/profile`);
+
+            return response.data;
 
         } catch (error) {
             if (axios.isAxiosError(error)) { //== Case if axios error
@@ -66,13 +63,12 @@ const LoginPage = () => {
                     setErrorMessage(error.response.data.error);
 
                 } else { //== Case if no response from server
-                    setErrorMessage('Une erreur de réseau est survenue.');
+                    setErrorMessage('Erreur interne du serveur.');
                 }
 
             } else { //== Case if not axios error
                 setErrorMessage('Une erreur inattendue est survenue.');
             }
-            console.log(error);
         }
     }
 

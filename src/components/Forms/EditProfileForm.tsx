@@ -48,6 +48,8 @@ const EditProfileForm = ({userCurrentInfos, onClose, onProfileUpdate}: EditProfi
 
             try {
                 setIsLoading(true);
+                setErrorMessage('');
+                
                 const response = await axios.patch(`https://maxrep-back.onrender.com/api/profile/${userId}`, userNewInfos, {
                     headers: {
                         'Authorization': `Bearer ${token}`

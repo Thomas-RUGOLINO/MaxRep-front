@@ -111,6 +111,8 @@ const AddSportForm = ({onClose, onProfileUpdate}: AddSportFormProps) => {
 
         try {
             setIsLoading(true);
+            setErrorMessage('');
+            
             const response = await axios.post(`https://maxrep-back.onrender.com/api/profile/sport/${userId}`, {sportId: selectedSportId} , {
                 headers: {
                     'Authorization': `Bearer ${token}`

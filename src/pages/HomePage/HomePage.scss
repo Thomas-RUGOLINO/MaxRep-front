@@ -86,17 +86,26 @@
             width: 100%;
             padding: 1rem;
 
-            p {
-                font-size: 1.5rem;
+            &__title {
+                font-size: 2rem;
             }
 
-            .screenshots {
+            &__text {
+                font-size: 1rem;
+                text-align: justify;
+            }
+
+            &__screenshots {
                 width: 100%;
                 display: flex;
                 justify-content: space-around;
+                @include breakpoint-small-screen() {
+                    justify-content: center;
+                    gap: 50px;
+                }
 
                 img {
-                    width: 40%;
+                    width: clamp(120px, 45%, 200px);
                     height: auto;
                     border: 1px solid $color-grey;
                 }
@@ -106,10 +115,13 @@
         .footer {
             display: flex;
             background-color: black;
-            padding: 1.5rem;
+            padding: 1.3rem;
+            justify-content: center;
 
             p {
                 color: $color-white;
+                font-size: .8rem;
+                text-align: center;
             }
         }
     }

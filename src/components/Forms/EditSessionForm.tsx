@@ -90,6 +90,8 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
 
         try {
             setIsLoading(true);
+            setErrorMessage('');
+            
             const response = await axios.patch(`https://maxrep-back.onrender.com/api/sessions/${updatedSession.id}` , updatedSession, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -122,6 +124,8 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
 
         try {
             setIsLoading(true);
+            setErrorMessage('');
+
             const response = await axios.delete(`https://maxrep-back.onrender.com/api/sessions/${updatedSession.id}` , {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -156,11 +160,10 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
             const { hours, minutes, secs } = convertSecondsToTime(updatedSession.score);
 
             return (
-                <>
+                <div className='inputs-time'>
                     <input 
                         type="number" 
                         name='score-hh' 
-                        className='input-time'
                         value={hours === 0 ? '' : hours}
                         onChange={(e) => handleTimeChange(e, 'hh')}
                         min={0} 
@@ -170,7 +173,6 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
                     <input 
                         type="number" 
                         name='score-mm' 
-                        className='input-time'
                         value={minutes === 0 ? '' : minutes} 
                         onChange={(e) => handleTimeChange(e, 'mm')} 
                         min={0}
@@ -180,14 +182,13 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
                     <input 
                         type="number" 
                         name='score-ss' 
-                        className='input-time'
                         value={secs === 0 ? '' : secs}
                         onChange={(e) => handleTimeChange(e, 'ss')} 
                         min={0}
                         max={60}
                         placeholder='ss' 
                     />
-                </>
+                </div>
             )
         } else {
             return (

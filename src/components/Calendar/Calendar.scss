@@ -1,6 +1,15 @@
 @import '../../styles/variables.scss';
 @import '../../styles/breakpoints.scss';
 
+.react-calendar{
+  @include breakpoint-small-screen {
+    width: 75% !important;
+    max-width: 600px !important;
+    height: auto !important;
+  }
+  
+}
+
 .react-calendar .session-active {
     border-radius: 0;
     background: $color-grey;

@@ -45,6 +45,7 @@ const Calendar = ({sessions, selectedDate, onChange}: CalendarProps) => {
             onClickDay={onChange}
             value={selectedDate}
             tileClassName={tileClassName}
+            className={'maxrep-calendar'}
         />
     );
 }

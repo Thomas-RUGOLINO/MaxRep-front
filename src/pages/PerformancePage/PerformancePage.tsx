@@ -361,7 +361,7 @@ const PerformancePage = () => {
                                                             required />
                                                             <label htmlFor="">Score</label>
                                                             {displayInputUnit(sport.unit)}
-                                                            <Button text='Ajouter' color='black' type='submit' isSmall />
+                                                            <Button text='Ajouter' color='black' type='submit' isSmall/>
                                                         </form>
                                                     </div>)}
                                                 </article>
@@ -371,7 +371,7 @@ const PerformancePage = () => {
                                             <ChartDesktop sport={displaySelectedSport} />
                                             <h3 className='table-title'> 5 dernières sessions </h3>
                                             <div className='table'>
-                                                <table className='board'>
+                                                <table className='performance-board'>
                                                     <thead>
                                                         <tr>
                                                             <th>Date</th>

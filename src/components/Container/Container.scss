@@ -9,6 +9,9 @@
     background-color: $color-grey;
     border-radius: 10px;
     padding: 15px;
+    @include breakpoint-small-screen {
+        height: 100%;
+    }
 
     .icon { //Place the icon relative to the container
         position:absolute;
@@ -16,6 +19,9 @@
         font-size: 1.2rem;
         cursor: pointer;
         transition: all 100ms ease-out;
+        @include breakpoint-small-screen {
+            font-size: 1.6rem;
+        }
         &:hover {
             color: $color-black-hover;
         }
@@ -31,16 +37,17 @@
     }
 
     &__content {
-        display: flex;
-        flex-direction: column;
         display: grid;
         grid-template-columns: 1fr 1fr;
         justify-items: center;
         align-items: center;
         gap: 15px;
+        height: 75%;
         @include breakpoint-phone {
             grid-template-columns: 1fr 1fr 1fr;
         }
+        
+
 
         .info {
             display: flex;

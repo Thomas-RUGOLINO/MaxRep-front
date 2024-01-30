@@ -54,43 +54,45 @@ const RankingTable = ({ranking}: RankingTableProps) => {
 
     return (
         <>
-            <table className='board'>
-                <thead>
-                    <tr>
-                        <th>Rang</th>
-                        <th>Pays</th>
-                        <th>Nom Prénom</th>
-                        <th>Best Score</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {ranking.length > 0 ? (
-                    currentItems.map((item: RankingProps, index) => (
-                        <tr key={index}>
-                            <td>{index+1}</td>
-                            <td width= "50px">
-                            {item.user.country && (
-                                <img src={getCountrySvg(item.user.country) ?? " "} alt={`Drapeau ${item.user.country} `} style={{ width: '30px', height: '20px', borderRadius: '100%' }} />
-                            )}
-                            </td>
-                            <td>{item.user.firstname} {item.user.lastname}</td>
-                            <td>
-                                {item.sport.unit === 'temps' ? (
-                                convertSecondsToHMS(item.best_score)
-                                ) : (
-                                    item.best_score + ' kg'
-                                )}
-                            </td>
-                            <td>{convertDateFormatToEu(item.date)}</td>
+            <div className='board'>
+                <table className='board-table'>
+                    <thead>
+                        <tr>
+                            <th>Rang</th>
+                            <th>Pays</th>
+                            <th>Nom Prénom</th>
+                            <th>Best Score</th>
+                            <th>Date</th>
                         </tr>
-                    ))) : null}
-                </tbody>
-            </table>
-            <div className="pagination-controls">
-                <button onClick={goToPreviousPage} disabled={currentPage === 1}>Précédent</button>
-                <span>Page {currentPage} sur {totalPages}</span>
-                    <button onClick={goToNextPage} disabled={currentPage === totalPages}>Suivant</button>
+                    </thead>
+                    <tbody>
+                    {ranking.length > 0 ? (
+                        currentItems.map((item: RankingProps, index) => (
+                            <tr key={index}>
+                                <td width= "50px">{index+1}</td>
+                                <td width= "50px">
+                                {item.user.country && (
+                                    <img src={getCountrySvg(item.user.country) ?? " "} alt={`Drapeau ${item.user.country} `} style={{ width: '30px', height: '20px', borderRadius: '100%' }} />
+                                )}
+                                </td>
+                                <td>{item.user.firstname} {item.user.lastname}</td>
+                                <td>
+                                    {item.sport.unit === 'temps' ? (
+                                    convertSecondsToHMS(item.best_score)
+                                    ) : (
+                                        item.best_score + ' kg'
+                                    )}
+                                </td>
+                                <td>{convertDateFormatToEu(item.date)}</td>
+                            </tr>
+                        ))) : null}
+                    </tbody>
+                </table>
+                <div className="pagination-controls">
+                    <button onClick={goToPreviousPage} disabled={currentPage === 1}>Précédent</button>
+                    <span>Page {currentPage} sur {totalPages}</span>
+                        <button onClick={goToNextPage} disabled={currentPage === totalPages}>Suivant</button>
+                </div>
             </div>
         </>
     )

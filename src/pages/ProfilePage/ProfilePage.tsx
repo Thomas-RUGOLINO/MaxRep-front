@@ -184,88 +184,91 @@ const ProfilePage = () => {
                                         <h3> {formatUserName(userInfos.lastname)} </h3>
                                     </div>
                                 </section>
-                                <section className="profile__infos">
-                                    <Container> 
-                                        <div className="container__header">
-                                            <h3> Infos </h3>
-                                            <i onClick={openEditProfileModal} className="icon fa-solid fa-pen-to-square" title='Editer les infos'></i>
-                                        </div>
-                                        <div className="container__content">
-                                            <div className="info age">
-                                                <p> <strong>Age</strong> </p>
-                                                <p> {calculateAgeFromBirthDate(userInfos.birth_date)} ans </p>
+                                <div className="profile__body">
+                                    <section className="profile__infos">
+                                        <Container> 
+                                            <div className="container__header">
+                                                <h3> Infos </h3>
+                                                <i onClick={openEditProfileModal} className="icon fa-solid fa-pen-to-square" title='Editer les infos'></i>
                                             </div>
-                                            <div className="info gender">
-                                                <p> <strong>Sexe</strong> </p>
-                                                <p> {userInfos.gender} </p>
+                                            <div className="container__content">
+                                                <div className="info age">
+                                                    <p> <strong>Age</strong> </p>
+                                                    <p> {calculateAgeFromBirthDate(userInfos.birth_date)} ans </p>
+                                                </div>
+                                                <div className="info gender">
+                                                    <p> <strong>Sexe</strong> </p>
+                                                    <p> {userInfos.gender} </p>
+                                                </div>
+                                                <div className="info city">
+                                                    <p> <strong>Ville</strong> </p>
+                                                    <p> {userInfos.city ? userInfos.city : "Non renseignée"} </p>
+                                                </div>
+                                                <div className="info country">
+                                                    <p> <strong>Pays</strong> </p>
+                                                    <p> {userInfos.country ? userInfos.country : "Non renseigné"} </p>
+                                                </div>
+                                                <div className="info height">
+                                                    <p> <strong>Taille</strong> </p>
+                                                    <p> {userInfos.height ? userInfos.height + 'cm' : "Non renseigné"} </p>
+                                                </div>
+                                                <div className="info weight">
+                                                    <p> <strong>Poids</strong> </p>
+                                                    <p> {userInfos.weight ? userInfos.weight + 'kg' : "Non renseigné"} </p>
+                                                </div>
                                             </div>
-                                            <div className="info city">
-                                                <p> <strong>Ville</strong> </p>
-                                                <p> {userInfos.city ? userInfos.city : "Non renseignée"} </p>
+                                        </Container>
+                                    </section>
+                                    <section className="profile__sports">
+                                        <div className="container">
+                                            <div className="container__header">
+                                                <h3> Sports </h3>
+                                                <i onClick={openAddSportModal} className="icon fa-solid fa-circle-plus" title='Ajouter un sport'></i>
                                             </div>
-                                            <div className="info country">
-                                                <p> <strong>Pays</strong> </p>
-                                                <p> {userInfos.country ? userInfos.country : "Non renseigné"} </p>
-                                            </div>
-                                            <div className="info height">
-                                                <p> <strong>Taille</strong> </p>
-                                                <p> {userInfos.height ? userInfos.height + 'cm' : "Non renseigné"} </p>
-                                            </div>
-                                            <div className="info weight">
-                                                <p> <strong>Poids</strong> </p>
-                                                <p> {userInfos.weight ? userInfos.weight + 'kg' : "Non renseigné"} </p>
-                                            </div>
-                                        </div>
-                                    </Container>
-                                </section>
-                                <section className="profile__sports">
-                                    <div className="container">
-                                        <div className="container__header">
-                                            <h3> Sports </h3>
-                                            <i onClick={openAddSportModal} className="icon fa-solid fa-circle-plus" title='Ajouter un sport'></i>
-                                        </div>
-                                        {userInfos.sports.length === 0 ? (
-                                            <p style={{textAlign: 'center'}}> Veuillez ajouter un sport ! </p>
-                                        ) : (
-                                            <table className="sports-table" cellSpacing="10">
-                                            <thead>
-                                                <tr> 
-                                                    <th>  </th>
-                                                    <th> Sports suivis </th>
-                                                    <th> Dernière perf </th>   
-                                                    <th>  </th>   
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {userInfos.sports.length > 0 && userInfos.sports.map(sport => (
-                                                    <tr key={sport.id}>
-                                                        <td> 
-                                                            <Link to='/performance'> 
-                                                                <i className="icon-table fa-solid fa-chart-line" title='Voir les performances'></i> 
-                                                            </Link> 
-                                                        </td>
-                                                        <td> {sport.name} </td>
-                                                        <td>
-                                                        {sport.unit === 'kg' ? (
-                                                         // Affichage pour les sports en kg
-                                                            getMostRecentSessionScore(userInfos.id, sport.id) ?
-                                                            (`${getMostRecentSessionScore(userInfos.id, sport.id)} ${sport.unit}`
-                                                            ) : ("Aucune donnée")
-                                                        ) : (
-                                                         // Affichage pour les sports de temps
-                                                            getMostRecentSessionScore(userInfos.id, sport.id) ?
-                                                            (convertSecondsToHMS(getMostRecentSessionScore(userInfos.id, sport.id) ?? 0))
-                                                            : ("Aucune donnée")
-                                                        )}
-                                                        </td>
-                                                        <td> <i onClick={() => openDeleteSportModal(sport.id)} className="icon-table fa-solid fa-circle-xmark" title='Supprimer un sport'></i> </td>
+                                            {userInfos.sports.length === 0 ? (
+                                                <p style={{textAlign: 'center'}}> Veuillez ajouter un sport ! </p>
+                                            ) : (
+                                                <table className="sports-table" cellSpacing="10">
+                                                <thead>
+                                                    <tr> 
+                                                        <th>  </th>
+                                                        <th> Sports suivis </th>
+                                                        <th> Dernière perf </th>   
+                                                        <th>  </th>   
                                                     </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                        )}
-                                    </div>
-                                </section>
+                                                </thead>
+                                                <tbody>
+                                                    {userInfos.sports.length > 0 && userInfos.sports.map(sport => (
+                                                        <tr key={sport.id}>
+                                                            <td> 
+                                                                <Link to='/performance'> 
+                                                                    <i className="icon-table fa-solid fa-chart-line" title='Voir les performances'></i> 
+                                                                </Link> 
+                                                            </td>
+                                                            <td> {sport.name} </td>
+                                                            <td>
+                                                            {sport.unit === 'kg' ? (
+                                                            // Affichage pour les sports en kg
+                                                                getMostRecentSessionScore(userInfos.id, sport.id) ?
+                                                                (`${getMostRecentSessionScore(userInfos.id, sport.id)} ${sport.unit}`
+                                                                ) : ("Aucune donnée")
+                                                            ) : (
+                                                            // Affichage pour les sports de temps
+                                                                getMostRecentSessionScore(userInfos.id, sport.id) ?
+                                                                (convertSecondsToHMS(getMostRecentSessionScore(userInfos.id, sport.id) ?? 0))
+                                                                : ("Aucune donnée")
+                                                            )}
+                                                            </td>
+                                                            <td> <i onClick={() => openDeleteSportModal(sport.id)} className="icon-table fa-solid fa-circle-xmark" title='Supprimer un sport'></i> </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                            )}
+                                        </div>
+                                    </section>
+                                </div>
+
                             </main>
                             <Modal title='Editer mes infos' isOpen={isEditProfileModalOpen} onClose={closeEditProfileModal}> 
                                 <EditProfileForm 

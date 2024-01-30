@@ -56,11 +56,12 @@ const RegisterPage = () => {
         try {
             const response = await axios.post('https://maxrep-back.onrender.com/api/register' , userInfos);
             console.log(response);
-            
-            if (response.status === 201) {
-                //! Add pop up ?
-                navigate(`/login`);
+
+            if (response.status !== 200) {
+                setErrorMessage(response.data.error);
             }
+            
+            navigate(`/login`);
 
         } catch (error) {
             if (axios.isAxiosError(error)) { //== Case if axios error
@@ -68,13 +69,12 @@ const RegisterPage = () => {
                     setErrorMessage(error.response.data.error);
 
                 } else { //== Case if no response from server
-                    setErrorMessage('Une erreur de réseau est survenue.');
+                    setErrorMessage('Erreur interne du serveur.');
                 }
 
             } else { //== Case if not axios error
                 setErrorMessage('Une erreur inattendue est survenue.');
             }
-            console.log(error);
         }
     }
 

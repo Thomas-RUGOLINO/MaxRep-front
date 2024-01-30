@@ -49,6 +49,18 @@
                 align-items: center;
             }
 
+            &__errors {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding-left: 10px;
+
+                .error-message {
+                    color:$color-red;
+                    text-align: center;
+                }
+            }
+
             &__fields {
                 width: 100%;
                 display: flex;

@@ -82,17 +82,15 @@ const SessionPage = () => {
                     'Authorization': `Bearer ${token}` //Send token to backend to verify user
                 }
             });
+    
             
-            console.log(response.data);
-            
-            //== Case response is ok
-            if (response.status === 200) {
-                setUserSessions(response.data.sessions);
-                setUserSports(response.data.sports);
-
-            } else {
-                setError({status:500, message:'Internal Server Error / Erreur interne du serveur'})
+            //== Case response is not ok
+            if (response.status !== 200) {
+                setError({status:response.status, message:response.data.error})
             }
+
+            setUserSessions(response.data.sessions);
+            setUserSports(response.data.sports);
 
         } catch (error) {
             setIsLoading(false);
@@ -102,13 +100,13 @@ const SessionPage = () => {
                     setError({status:error.response.status, message:error.response.data.error});
 
                 } else { //== Case if no response from server
-                    setError({status:500, message:'Internal Server Error / Erreur interne du serveur'})
+                    setError({status:500, message:'Erreur interne du serveur.'})
                 }
 
             } else { //== Case if not axios error
-                setError({status:500, message:'Internal Server Error / Erreur interne du serveur'})
+                setError({status:500, message:'Une erreur inattendue est survenue.'})
                 console.error(error);
-            }                 
+            }                  
 
         } finally {
             setIsLoading(false);

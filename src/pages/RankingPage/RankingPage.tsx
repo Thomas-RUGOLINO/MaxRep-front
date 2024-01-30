@@ -2,6 +2,7 @@ import './RankingPage.scss'
 import Header from '../../components/Header/Header';
 import MenuMobile from '../../components/MenuMobile/MenuMobile';
 import Container from '../../components/Container/Container';
+import RankingTable from '../../components/RankingTable/RankingTable';
 import Button from '../../components/Button/Button';
 import ErrorPage from '../ErrorPage/ErrorPage';
 import Loader from '../../components/Loader/Loader';
@@ -11,8 +12,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { countryNames } from '../../data/countriesList';
-import {convertSecondsToHMS} from '../../utils/convertTime';
-import {convertDateFormatToEu} from '../../utils/formatDate'
+
 
 interface ErrorProps {
     status:number,
@@ -25,9 +25,9 @@ interface ErrorProps {
     firstname: string,
     lastname: string,
     best_score: number,
-    date: string,
-    user: UserProps;
-    sport: SportProps;
+    date: Date,
+    user: UserProps
+    sport: SportProps
 }
 
 interface UserProps {
@@ -53,7 +53,8 @@ interface SportProps {
 
 const RankingPage = () => {
 
-    const [error, setError] = useState<ErrorProps | null>(null);
+    const [error, setError] = useState<ErrorProps | null>(null); //To display error page if error with request
+    const [errorMessage, setErrorMessage] = useState<string>(''); //To display error message on front
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [ranking, setRanking] = useState<RankingProps[]>([]);
     const [userSports, setUserSports] = useState<SportProps[]>([]);
@@ -65,8 +66,7 @@ const RankingPage = () => {
         weightMin: '',
         weightMax: ''
     })
-    const [currentPage, setCurrentPage] = useState(1);
-    const [rowsPerPage] = useState(20)
+
 
     const navigate = useNavigate();
     const { isAuthenticated, token, userId } = useAuth()!;
@@ -77,9 +77,8 @@ const RankingPage = () => {
             setIsLoading(true);
             setError(null);
 
-            console.log(queryParams)
             if (!queryParams.sportId) {
-                return setError({status:401, message:'Unauthorized / Non autorisé'});
+                return setError({status:401, message:'Unauthorized / Non autorisé'}); //!Message
             }
 
             // Récupérer les données de la table ranking en fonction du sport de l'utilisateur
@@ -89,7 +88,11 @@ const RankingPage = () => {
                 }
             });
 
-            console.log('bestScores :' , response.data);
+            //== Case response is not ok
+            if (response.status !== 200) {
+                setError({status:response.status, message:response.data.error})
+            }
+
             // 1- We check if the sport unit is 'temps' or 'Kg'
             if (response.data[0].sport.unit === 'temps') {
                 //If unit is 'temps' we filter the response to remove all best_score = 0
@@ -104,10 +107,7 @@ const RankingPage = () => {
                 const rank = response.data.sort((a: RankingProps, b: RankingProps) => (a.best_score > b.best_score) ? -1 : 1)
                 //We set the state with the sorted response
                 setRanking(rank);
-
-            }
-
-            
+            } 
         }
 
         catch(error) {
@@ -118,20 +118,18 @@ const RankingPage = () => {
                     setError({status:error.response.status, message:error.response.data.error});
 
                 } else { //== Case if no response from server
-                    setError({status:500, message:'Internal Server Error / Erreur interne du serveur (1)'})
+                    setError({status:500, message:'Erreur interne du serveur.'})
                 }
 
             } else { //== Case if not axios error
-                setError({status:500, message:'Internal Server Error / Erreur interne du serveur (2)'})
+                setError({status:500, message:'Une erreur inattendue est survenue.'})
                 console.error(error);
-            }                 
+            }         
 
         } finally {
             setIsLoading(false);
         }
     }, [token]);
-
-
 
     const getUserInfos = async () => {
 
@@ -150,11 +148,16 @@ const RankingPage = () => {
                 }
             });
 
+             //== Case response is not ok
+             if (response.status !== 200) {
+                setError({status:response.status, message:response.data.error})
+            }
+
             if (response.data.sports.length === 0) {
                 return 
             }
             
-            console.log('userInfos :' , response.data);
+            // Set the state with the response data
             setIsShared(response.data.is_shared);
             setUserSports(response.data.sports);
             setQueryParams({
@@ -215,9 +218,7 @@ const RankingPage = () => {
         e.preventDefault();
 
         if (queryParams.weightMin > queryParams.weightMax) {
-            //! Afficher un message d'erreur sur le front
-            console.log('Erreur !') 
-            return setError({status:0, message:'Le poids maximum doit etre supérieur au poids minimum !'}) 
+            return setErrorMessage('Le poids minimum doit être inférieur au poids maximum !');
         }
 
         queryParams.weightMin = queryParams.weightMin === 0 ? '' : queryParams.weightMin;
@@ -225,23 +226,6 @@ const RankingPage = () => {
 
         getBestScores(queryParams)
     };
-    
-    // Find Function to get the SVG corresponding image of the country name
-    const getCountrySvg = (countryName : string) => {
-        const country = Object.values(countryNames).find(country => country.name === countryName);
-        return country ? country.svg : null;
-      }
-
-    // Pagination
-    const indexOfLastItem = currentPage * rowsPerPage;
-    const indexOfFirstItem = indexOfLastItem - rowsPerPage;
-    const currentItems = ranking.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(ranking.length / rowsPerPage);
-
-    const goToNextPage = () => setCurrentPage(page => Math.min(page + 1, totalPages));
-    const goToPreviousPage = () => setCurrentPage(page => Math.max(page - 1, 1));
-
-    
 
     if (error) {
         return <ErrorPage status={error.status} message={error.message} />
@@ -267,9 +251,11 @@ const RankingPage = () => {
                                      </div>
                                 )}
                                 <Container> 
-                                    
                                     <div className="container__header">
                                         <h3> Sélectionner un classement </h3>
+                                    </div>
+                                    <div className="container__errors">
+                                        {errorMessage && <p className='error-message'>{errorMessage}</p>}
                                     </div>
                                     <form action="" onSubmit={handleSubmit}>
                                         <div className="container__fields">
@@ -313,45 +299,7 @@ const RankingPage = () => {
                                         </div>
                                     </form>
                                 </Container>
-                                
-                                <table className='board'>
-                                    <thead>
-                                        <tr>
-                                            <th>Rang</th>
-                                            <th>Pays</th>
-                                            <th>Nom Prénom</th>
-                                            <th>Best Score</th>
-                                            <th>Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    {ranking.length > 0 ? (
-                                        currentItems.map((item: RankingProps, index) => (
-                                            <tr key={index}>
-                                                <td>{index+1}</td>
-                                                <td width= "50px">
-                                                {item.user.country && (
-                                                    <img src={getCountrySvg(item.user.country) ?? " "} alt={`Drapeau ${item.user.country} `} style={{ width: '30px', height: '20px', borderRadius: '100%' }} />
-                                                )}
-                                                </td>
-                                                <td>{item.user.firstname} {item.user.lastname}</td>
-                                                <td>
-                                                    {item.sport.unit === 'temps' ? (
-                                                    convertSecondsToHMS(item.best_score)
-                                                    ) : (
-                                                        item.best_score + ' kg'
-                                                    )}
-                                                </td>
-                                                <td>{convertDateFormatToEu(new Date(item.date))}</td>
-                                            </tr>
-                                        ))) : null}
-                                    </tbody>
-                                </table>
-                                <div className="pagination-controls">
-                                    <button onClick={goToPreviousPage} disabled={currentPage === 1}>Précédent</button>
-                                    <span>Page {currentPage} sur {totalPages}</span>
-                                     <button onClick={goToNextPage} disabled={currentPage === totalPages}>Suivant</button>
-                                </div>
+                                <RankingTable ranking={ranking} />
                             </main>
                         )}
                     

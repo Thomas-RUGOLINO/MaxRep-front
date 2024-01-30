@@ -105,10 +105,14 @@ const PerformancePage = () => {
                 }
             });
             
-            console.log(response.data);
+            //== Case response is not ok
+            if (response.status !== 200) {
+                setError({status:response.status, message:response.data.error})
+            }
             
+
             //== Case response is ok
-            if (response.status === 200) {
+           
                 setUserPerformances(response.data.sports);
                 if (response.data.sports.length > 0) {
 
@@ -131,10 +135,12 @@ const PerformancePage = () => {
         
                     setSelectedSport(sortedSport);
                     setDisplaySelectedSport(filteredSport);
-                }
+                
 
-            } else {
-                setError({status:500, message:'Internal Server Error / Erreur interne du serveur'})
+          
+
+           
+
             }
 
         } catch (error) {
@@ -145,13 +151,13 @@ const PerformancePage = () => {
                     setError({status:error.response.status, message:error.response.data.error});
 
                 } else { //== Case if no response from server
-                    setError({status:500, message:'Internal Server Error / Erreur interne du serveur'})
+                    setError({status:500, message:'Erreur interne du serveur.'})
                 }
 
             } else { //== Case if not axios error
-                setError({status:500, message:'Internal Server Error / Erreur interne du serveur'})
+                setError({status:500, message:'Une erreur inattendue est survenue.'})
                 console.error(error);
-            }                 
+            }         
 
         } finally {
             setIsLoading(false);

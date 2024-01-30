@@ -11,7 +11,6 @@ import AddSessionForm from '../../components/Forms/AddSessionForm';
 import EditSessionForm from '../../components/Forms/EditSessionForm';
 import Loader from '../../components/Loader/Loader';
 import ErrorPage from '../ErrorPage/ErrorPage';
-// import Calendar from 'react-calendar';
 import Calendar from '../../components/Calendar/Calendar';
 import NoSportMessage from '../../components/NoSportMessage/NoSportMessage';
 import 'react-calendar/dist/Calendar.css';

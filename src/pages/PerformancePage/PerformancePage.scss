@@ -34,6 +34,43 @@
 
             .sport {
                 background-color: $color-grey;
+
+                form {
+                    width: 100%;
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+                    gap: 5px;
+                }
+
+                label {
+                    color: $color-white;
+                }
+
+                input {
+                    width: 100px;
+                padding: 5px 5px;
+                border: none;
+                border-radius: 5px;
+                background-color: $color-grey;
+                text-align: left;
+                &::placeholder {
+                    text-align: right;
+                }
+                }
+
+                .input-time {
+                    width: 40px;
+                    padding: 5px 5px;
+                    border: none;
+                    border-radius: 5px;
+                    background-color: $color-grey;
+                    text-align: left;
+                    &::placeholder {
+                        text-align: right;
+                    }
+                }
+
             }
 
             .sport.clicked {
@@ -43,6 +80,8 @@
                     color: $color-white;
                 }
             }
+
+
         }
 
         .sports-chart {
@@ -53,6 +92,8 @@
                display: flex;
                justify-content: center;
            }
+
+           
         }
 
         .table {

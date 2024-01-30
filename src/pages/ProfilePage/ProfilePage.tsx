@@ -101,6 +101,8 @@ const ProfilePage = () => {
 
             setUserInfos(response.data);
 
+            console.log(userInfos)
+
         } catch (error) {
             setIsLoading(false);
             
@@ -140,13 +142,13 @@ const ProfilePage = () => {
 
     //Get most recent session score for a sport
     const getMostRecentSessionScore = (userId:number, sportId:number) => {
-
+        
         if (userInfos) {
             const filteredSessions = userInfos.sessions
-            .filter(session => session.user_id === userId && session.sport_id === sportId)
+            .filter(session => session.user_id === userId && session.sport_id === sportId && session.score !== 0)
             .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // Sorting by desc date
             
-
+        
         return filteredSessions.length > 0 ? filteredSessions[0].score : null;
 
 

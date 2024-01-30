@@ -12,6 +12,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useMediaQuery } from 'react-responsive';
 import { convertDateFormatToEu } from '../../utils/formatDate';
 import { convertSecondsToHMS } from '../../utils/convertTime';
+import { convertSecondsToTime, convertTimeToSeconds } from '../../utils/convertTime';
 import Button from '../../components/Button/Button';
 import axios from 'axios';
 
@@ -56,8 +57,8 @@ const PerformancePage = () => {
     const [userPerformances, setUserPerformances] = useState<SportProps[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<ErrorProps | null>(null);
-    const [selectedSport, setSelectedSport] = useState<SportProps>({id:0, name:'', unit:'', sessions:[]});
-    const [displaySelectedSport, setDisplaySelectedSport] = useState<SportProps>({id:0, name:'', unit:'', sessions:[]});//[date, score, user_id, sport_id
+    const [selectedSport, setSelectedSport] = useState<SportProps>({id:0, name:'', unit:'', sessions:[]}); 
+    const [displaySelectedSport, setDisplaySelectedSport] = useState<SportProps>({id:0, name:'', unit:'', sessions:[]});//[date, score, user_id, sport_id // use to show only sessions where score is not 0
     const [selectedSportIndex, setSelectedSportIndex] = useState<number>(0); //To know if a sport is clicked to display chart
     const [sessionToModify, setSessionToModify] = useState<sessionToModifyProps>({
         date:'',
@@ -75,7 +76,7 @@ const PerformancePage = () => {
             navigate('/');
 
         } else {
-            getUserPerformances();
+            getUserPerformances(0); //Init display first sport
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[isAuthenticated, navigate, token, userId]);
@@ -89,7 +90,7 @@ const PerformancePage = () => {
         }));
     }, [selectedSport]);
 
-    const getUserPerformances = async () => {
+    const getUserPerformances = async (sportIndex: number) => {
 
         if (!userId) {
             setError({status:401, message:'Unauthorized / Non autorisé'});
@@ -104,43 +105,34 @@ const PerformancePage = () => {
                     'Authorization': `Bearer ${token}` //Send token to backend to verify user
                 }
             });
-            
+            console.log(response.data)
             //== Case response is not ok
             if (response.status !== 200) {
                 setError({status:response.status, message:response.data.error})
             }
             
-
             //== Case response is ok
-           
+                console.log(response.data.sports);
                 setUserPerformances(response.data.sports);
                 if (response.data.sports.length > 0) {
 
                     //Sort by ASC date
-                    const sortedSessions = response.data.sports[0].sessions
+                    const sortedSessions = response.data.sports[sportIndex].sessions
                             .sort((a: SessionProps, b: SessionProps) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
                     const sortedSport : SportProps = {
-                        ...response.data.sports[0],
+                        ...response.data.sports[sportIndex],
                         sessions : sortedSessions
                     };
                     const filteredSessions = sortedSessions.filter((session:SessionProps) => session.score !== 0);
 
                     const filteredSport : SportProps = {
-                        ...response.data.sports[0],
+                        ...response.data.sports[sportIndex],
                     sessions : filteredSessions
                     };  
 
-       
-        
                     setSelectedSport(sortedSport);
                     setDisplaySelectedSport(filteredSport);
-                
-
-          
-
-           
-
             }
 
         } catch (error) {
@@ -166,7 +158,6 @@ const PerformancePage = () => {
 
     const handleSportClick = (sport:SportProps, index: number) => { 
 
-        
         //Sort by ASC date
         const sortedSessions = sport.sessions
                 .sort((a: SessionProps, b: SessionProps) => new Date(a.date).getTime() - new Date(b.date).getTime());
@@ -192,7 +183,7 @@ const PerformancePage = () => {
     }
 
     const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
-        console.log(sessionToModify)
+        
         setSessionToModify({
             ...sessionToModify,
             [e.target.name]: e.target.name === 'score' ? parseInt(e.target.value) || 0 : e.target.value
@@ -200,10 +191,9 @@ const PerformancePage = () => {
         
     }
 
-    const addScoreOrUpdate = async (e:React.FormEvent<HTMLFormElement>) => {
+    const addScoreOrUpdate = async (e:React.FormEvent<HTMLFormElement>, index:number) => {
         e.preventDefault();
         
-        console.log(selectedSport);
        /*  const response = await axios.get(`https://maxrep-back.onrender.com/api/sessions/${userId}`, {
             headers: {
                 'Authorization': `Bearer ${token}` //Send token to backend to verify user
@@ -214,15 +204,23 @@ const PerformancePage = () => {
         // if filteredResponse is different null => update session
         if (filteredResponse.length > 0) {
             
-            
             const sessionToUpdate = await axios.patch(`https://maxrep-back.onrender.com/api/sessions/${filteredResponse[0].id}`, sessionToModify, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
             
-            console.log(sessionToUpdate.data);
-            getUserPerformances();
+            getUserPerformances(index);
+
+            // Réinitialiser sessionToModify
+            /*setSessionToModify({
+                date: '',
+                score: 0,
+                user_id: userId as number,
+                sport_id: selectedSport.id
+            });*/
+
+            return sessionToUpdate.data
         // else => create session
        
         } else {
@@ -232,7 +230,83 @@ const PerformancePage = () => {
                 }
             })
             console.log(sessionToCreate.data);
-            getUserPerformances();
+            getUserPerformances(index);
+        }
+    }
+    
+    const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>, unit: 'hh' | 'mm' | 'ss') => { 
+        const value = parseInt(e.target.value) || 0;
+        const time = convertSecondsToTime(sessionToModify.score);
+        let totalSeconds = sessionToModify.score;
+
+        if (unit === 'hh') {
+            totalSeconds = convertTimeToSeconds(value, time.minutes, time.secs);
+        } else if (unit === 'mm') {
+            totalSeconds = convertTimeToSeconds(time.hours, value, time.secs);
+        } else if (unit === 'ss') {
+            totalSeconds = convertTimeToSeconds(time.hours, time.minutes, value);
+        }
+
+        console.log(totalSeconds);
+
+        setSessionToModify({
+            ...sessionToModify,
+            score: totalSeconds || 0
+        });
+    }
+
+    const displayInputUnit = (unit: string) => { 
+
+        if (unit === 'temps') {
+            const { hours, minutes, secs } = convertSecondsToTime(sessionToModify.score);
+
+            return (
+                <>  
+                    <input 
+                        type="number" 
+                        name='score-hh' 
+                        className='input-time'
+                        value={hours === 0 ? '' : hours}
+                        onChange={(e) => handleTimeChange(e, 'hh')} 
+                        min={0}
+                        max={24}
+                        placeholder='hh' 
+                    />
+                    <input 
+                        type="number" 
+                        name='score-mm' 
+                        className='input-time'
+                        value={minutes === 0 ? '' : minutes} 
+                        onChange={(e) => handleTimeChange(e, 'mm')} 
+                        min={0}
+                        max={60}
+                        placeholder='mm' 
+                    />
+                    <input 
+                        type="number" 
+                        name='score-ss' 
+                        className='input-time'
+                        value={secs === 0 ? '' : secs}
+                        onChange={(e) => handleTimeChange(e, 'ss')} 
+                        min={0}
+                        max={60}
+                        placeholder='ss' 
+                    />
+                </>
+                
+            )
+        } else {
+            return (
+                <input 
+                    type='number' 
+                    name='score' 
+                    className='input' 
+                    min={0}
+                    placeholder={unit} 
+                    value={sessionToModify.score !== 0 ? sessionToModify.score : ''}
+                    onChange={handleChange}
+                />
+            )
         }
     }
 
@@ -258,7 +332,7 @@ const PerformancePage = () => {
                                 {userPerformances.length === 0 ? 
                                     <NoPerfMessage /> : (
                                     <div className="sports-list">
-                                        {userPerformances && userPerformances.map((sport: SportProps) => (
+                                        {userPerformances && userPerformances.map((sport: SportProps) => (                                           
                                             <ChartMobile key={sport.id} sport={sport} />
                                         ))}
                                     </div>
@@ -277,7 +351,7 @@ const PerformancePage = () => {
                                                     </div>
                                                     {index === selectedSportIndex && (
                                                     <div className={`sport__content`}>
-                                                        <form action="" onSubmit={addScoreOrUpdate}>
+                                                        <form action="" onSubmit={(e) => addScoreOrUpdate(e, index)}>
                                                             <label htmlFor="">Date</label>
                                                             <input 
                                                             type="date" 
@@ -286,12 +360,7 @@ const PerformancePage = () => {
                                                             onChange={handleChange}
                                                             required />
                                                             <label htmlFor="">Score</label>
-                                                            <input 
-                                                            type="text" 
-                                                            name="score" 
-                                                            id="" 
-                                                            onChange={handleChange}
-                                                            required/>
+                                                            {displayInputUnit(sport.unit)}
                                                             <Button text='Ajouter' color='black' type='submit' isSmall />
                                                         </form>
                                                     </div>)}

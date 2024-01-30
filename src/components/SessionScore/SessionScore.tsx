@@ -80,7 +80,6 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
         e.preventDefault();
 
         try {
-            console.log(updatedSession)
             const response = await axiosInstance.patch(`/sessions/${updatedSession.id}` , updatedSession, {
                 headers: {
                     'Authorization': `Bearer ${token}`

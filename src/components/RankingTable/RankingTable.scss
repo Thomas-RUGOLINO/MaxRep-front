@@ -8,8 +8,7 @@
     flex-direction: column;
     @include breakpoint-small-screen {
         width: 70%;
-        max-width: 950px;
-        
+        max-width: 950px;  
     }
 
     .board-table {
@@ -38,6 +37,7 @@
             font-size: 0.9rem;
             @include breakpoint-small-screen {
                 font-size: 1.2rem;
+                padding: 10px;
             }
         }
     

@@ -53,23 +53,32 @@ interface SportProps {
 
 const RankingPage = () => {
 
+    const navigate = useNavigate();
+    const { isAuthenticated, token, userId } = useAuth()!;
+
+    useEffect(() => {
+        if (!isAuthenticated()) {
+            navigate('/');
+
+        } else {
+            getUserInfos();
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[isAuthenticated, navigate, token, userId]);
+
     const [error, setError] = useState<ErrorProps | null>(null); //To display error page if error with request
     const [errorMessage, setErrorMessage] = useState<string>(''); //To display error message on front
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [ranking, setRanking] = useState<RankingProps[]>([]);
-    const [userSports, setUserSports] = useState<SportProps[]>([]);
-    const [isShared, setIsShared] = useState<boolean>(false);
-    const [queryParams, setQueryParams] = useState<QueryParamsProps>({
+    const [userSports, setUserSports] = useState<SportProps[]>([]); //To display the sports of the user in filter
+    const [isShared, setIsShared] = useState<boolean>(false); //To display message if user is not sharing his performances
+    const [queryParams, setQueryParams] = useState<QueryParamsProps>({ //To send to backend to get the ranking
         sportId: 4,
         gender: '',
         country: '',
         weightMin: '',
         weightMax: ''
     })
-
-
-    const navigate = useNavigate();
-    const { isAuthenticated, token, userId } = useAuth()!;
+    const [ranking, setRanking] = useState<RankingProps[]>([]);
 
     const getBestScores =  useCallback (async (queryParams: QueryParamsProps) => {
 
@@ -77,42 +86,41 @@ const RankingPage = () => {
             setIsLoading(true);
             setError(null);
 
+            // Go to error page if no sportId in queryParams
             if (!queryParams.sportId) {
-                return setError({status:401, message:'Unauthorized / Non autorisé'}); //!Message
+                return setError({status:401, message:'Unauthorized / Non autorisé'});
             }
 
-            // Récupérer les données de la table ranking en fonction du sport de l'utilisateur
-            const response = await axios.get(`https://maxrep-back.onrender.com/api/ranking?sportId=${queryParams.sportId}&gender=${queryParams.gender}&country=${queryParams.country}&weightMin=${queryParams.weightMin}&weightMax=${queryParams.weightMax}` , {
+            // Get the ranking from the backend with the queryParams
+            const query = `sportId=${queryParams.sportId}&`+
+                `gender=${queryParams.gender}&`+
+                `country=${queryParams.country}&`+
+                `weightMin=${queryParams.weightMin}&`+
+                `weightMax=${queryParams.weightMax}`
+
+            const response = await axios.get(`https://maxrep-back.onrender.com/api/ranking?${query}` , {
                 headers: {
                     'Authorization': `Bearer ${token}` //Send token to backend to verify user
                 }
             });
 
-            //== Case response is not ok
-            if (response.status !== 200) {
-                setError({status:response.status, message:response.data.error})
-            }
+            // Remove the 0 values from the response
+            const filteredResponse = response.data.filter((item: RankingProps) => item.best_score !== 0);
 
-            // 1- We check if the sport unit is 'temps' or 'Kg'
+            // Handle response according to unit of the sport
             if (response.data[0].sport.unit === 'temps') {
-                //If unit is 'temps' we filter the response to remove all best_score = 0
-                const FilteredResponse = response.data.filter((item: RankingProps) => item.best_score !== 0);
-                //then we sort by ascending order
-                const SortedResponse = FilteredResponse.sort((a: RankingProps, b: RankingProps) => a.best_score - b.best_score);
-                // we set the state with the sorted response
-                setRanking(SortedResponse);
+                //If unit is 'temps' we sort by ascending order                
+                const sortedResponse = filteredResponse.sort((a: RankingProps, b: RankingProps) => a.best_score - b.best_score);
+                setRanking(sortedResponse);
 
             } else { 
                 //If unit is 'Kg' we sort by descending order
-                const rank = response.data.sort((a: RankingProps, b: RankingProps) => (a.best_score > b.best_score) ? -1 : 1)
-                //We set the state with the sorted response
-                setRanking(rank);
+                const sortedResponse = filteredResponse.sort((a: RankingProps, b: RankingProps) => (a.best_score > b.best_score) ? -1 : 1)
+                setRanking(sortedResponse);
             } 
         }
 
-        catch(error) {
-            setIsLoading(false);
-            
+        catch(error) {            
             if (axios.isAxiosError(error)) { //== Case if axios error
                 if (error.response) {
                     setError({status:error.response.status, message:error.response.data.error});
@@ -148,24 +156,19 @@ const RankingPage = () => {
                 }
             });
 
-             //== Case response is not ok
-             if (response.status !== 200) {
-                setError({status:response.status, message:response.data.error})
-            }
-
             if (response.data.sports.length === 0) {
                 return 
             }
             
             // Set the state with the response data
-            setIsShared(response.data.is_shared);
-            setUserSports(response.data.sports);
-            setQueryParams({
+            setIsShared(response.data.is_shared); //Get info if user is sharing his performances
+            setUserSports(response.data.sports); //Get the sports of the user
+            setQueryParams({ //Set the queryParams with the first sport of the user
                 ...queryParams,
                 sportId: response.data.sports[0].id,
                 gender: response.data.gender
             })
-            getBestScores({
+            getBestScores({ //Get the ranking with the first sport of the user
                 ...queryParams,
                 sportId: response.data.sports[0].id,
                 gender: response.data.gender
@@ -192,16 +195,6 @@ const RankingPage = () => {
             setIsLoading(false);
         }
     };
-
-    useEffect(() => {
-        if (!isAuthenticated()) {
-            navigate('/');
-
-        } else {
-            getUserInfos();
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[isAuthenticated, navigate, token, userId]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         e.preventDefault();
@@ -246,8 +239,7 @@ const RankingPage = () => {
                             <main className='ranking-main'>
                                 {isShared === false && (
                                     <div className="ranking-notshared__title">
-                                        <p className='ranking-notshared__text'>Vos performances ne sont pas partagées, vous pouvez éditer votre profil et cocher la case</p>
-                                        <p className='ranking-notshared__text'><strong>"Partager mes performances"</strong> dans le Profil si vous souhaitez apparaître dans les classements !</p>
+                                        <p className='ranking-notshared__text'>Vos performances ne sont pas partagées, vous pouvez éditer votre profil et cocher la case <strong>"Partager mes performances"</strong> si vous souhaitez apparaître dans les classements !</p>
                                      </div>
                                 )}
                                 <Container> 

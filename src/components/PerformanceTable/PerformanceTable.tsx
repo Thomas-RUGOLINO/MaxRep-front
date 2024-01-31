@@ -23,6 +23,7 @@ interface SessionProps {
 }
 
 const PerformanceTable = ({displaySelectedSport}: PerformanceTableProps) => { 
+    
     return (
         <>
         {displaySelectedSport.sessions.length > 0 ? (

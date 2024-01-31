@@ -50,7 +50,6 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => { 
         e.preventDefault();
-        console.log(e.target.value)
 
         setUpdatedSession({
             ...updatedSession,
@@ -162,6 +161,7 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
         }
     }
 
+    //Handle display of score or input
     const displayScoreInputOrValue = () => { 
 
         if (isScore) {

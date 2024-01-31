@@ -59,7 +59,8 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => { 
         e.preventDefault();
-        console.log(e.target.value)
+
+        //Sanitize input before setting state
         const sanitizedValue = DOMPurify.sanitize(e.target.value);
         setUpdatedSession({
             ...updatedSession,
@@ -69,11 +70,12 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
 
     const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>, unit: 'hh' | 'mm' | 'ss') => { 
         const value = parseInt(e.target.value) || 0;
-        const time = convertSecondsToTime(updatedSession.score);
-        let totalSeconds = updatedSession.score;
+        const time = convertSecondsToTime(updatedSession.score); //Get time from score and convert it to hours, minutes and seconds
+        let totalSeconds = updatedSession.score; //Initialize totalSeconds with score in seconds
 
+        //For each unit, convert time to seconds and update totalSeconds
         if (unit === 'hh') {
-            totalSeconds = convertTimeToSeconds(value, time.minutes, time.secs);
+            totalSeconds = convertTimeToSeconds(value, time.minutes, time.secs); 
         } else if (unit === 'mm') {
             totalSeconds = convertTimeToSeconds(time.hours, value, time.secs);
         } else if (unit === 'ss') {
@@ -156,9 +158,10 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
         }
     }
 
+    //Display inputs for time or other unit (kg, reps, etc.)
     const displayInputUnit = (unit: string) => {
         if (unit === 'temps') { 
-            const { hours, minutes, secs } = convertSecondsToTime(updatedSession.score);
+            const { hours, minutes, secs } = convertSecondsToTime(updatedSession.score); //Get time from score and convert it to hours, minutes and seconds
 
             return (
                 <div className='inputs-time'>
@@ -191,6 +194,7 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
                     />
                 </div>
             )
+            
         } else {
             return (
                 <input 

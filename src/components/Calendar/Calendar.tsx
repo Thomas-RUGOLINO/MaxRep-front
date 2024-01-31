@@ -22,17 +22,21 @@ interface CalendarProps {
 
 const Calendar = ({sessions, selectedDate, onChange}: CalendarProps) => { 
 
+    //Highlight days in calendar
     const tileClassName = ({ date, view }: { date: Date; view: string }) => {
 
+        //Check if date is today
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const isToday = date.getTime() === today.getTime();
 
+        //Check if date is in sessions array
         const sessionDate = date.getFullYear() + '-' +
             String(date.getMonth() + 1).padStart(2, '0') + '-' +
             String(date.getDate()).padStart(2, '0');
         const isSessionInDate = sessions.some(session => session.date === sessionDate);
 
+        //Return class name for calendar tile 
         if (isToday && view === 'month') {
             return isSessionInDate ? 'session-active today' : 'today';
         } else {

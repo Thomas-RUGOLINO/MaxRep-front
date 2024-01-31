@@ -29,7 +29,7 @@ interface NewSessionProps {
 
 const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSessionFormProps) => { 
 
-    const {token, userId } = useAuth()!; //Hook to get token and userId from AuthContext
+    const {token, userId } = useAuth()!; 
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string>('');
@@ -43,7 +43,8 @@ const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSession
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => { 
         e.preventDefault();
-        console.log(e.target.value)
+
+        //Sanitize input before setting state
         const sanitizedValue = DOMPurify.sanitize(e.target.value);
         setNewSession({
             ...newSession,

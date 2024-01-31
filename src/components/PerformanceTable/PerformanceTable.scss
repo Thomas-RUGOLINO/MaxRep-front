@@ -1,0 +1,63 @@
+@import '../../styles/variables.scss';
+@import '../../styles/breakpoints.scss';
+
+.table {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &-title {
+        display: flex;
+        justify-content: center;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+    }
+
+    .performance-board {
+        width: 60%;
+        border-collapse: collapse;
+        border-spacing: 0 10px;
+        align-items: center;
+
+        thead {
+            text-align: left;
+        }
+
+        thead tr {
+            background-color: $color-red;
+            border-bottom: 2px solid $color-white;
+        }
+
+        thead th {
+            color:$color-white;
+            text-align: center;
+        }
+
+        th, td {
+            padding: 10px 5px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        tbody tr {
+            background-color: $color-white;
+            text-align: center;
+        }
+
+        tbody tr:nth-child(2n+1) {
+            background-color: $color-grey;
+        }
+    }
+}
+
+.no-sessions-message {
+    background-color: $color-grey;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    text-align: center;
+    max-width: 500px;
+    margin: 20px auto 0;
+}

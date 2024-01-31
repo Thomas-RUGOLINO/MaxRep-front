@@ -11,7 +11,6 @@ import AddSessionForm from '../../components/Forms/AddSessionForm';
 import EditSessionForm from '../../components/Forms/EditSessionForm';
 import Loader from '../../components/Loader/Loader';
 import ErrorPage from '../ErrorPage/ErrorPage';
-// import Calendar from 'react-calendar';
 import Calendar from '../../components/Calendar/Calendar';
 import NoSportMessage from '../../components/NoSportMessage/NoSportMessage';
 import 'react-calendar/dist/Calendar.css';
@@ -35,19 +34,9 @@ interface ErrorProps {
 }
 
 const SessionPage = () => {
-    const [userSessions, setUserSessions] = useState<SessionProps[]>([]); 
-    const [userSports, setUserSports] = useState([]);
-    // State qui stocke la valeur cliquée dans le calendrier
-    const [selectedDate, setSelectedDate] = useState(new Date()); 
-    const [selectedSession, setSelectedSession] = useState<SessionProps | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [error, setError] = useState<ErrorProps | null>(null);
-    //Handle modals
-    const [isAddSessionModalOpen, setIsAddSessionModalOpen] = useState<boolean>(false);
-    const [isEditSessionModalOpen, setIsEditSessionModalOpen] = useState<boolean>(false);
 
-    const navigate = useNavigate(); //Hook to navigate to another page
-    const { isAuthenticated, token, userId } = useAuth()!; //Hook to get token and userId from AuthContext if user is authenticated
+    const navigate = useNavigate();
+    const { isAuthenticated, token, userId } = useAuth()!;
 
     useEffect(() => {
         if (!isAuthenticated()) {
@@ -59,6 +48,17 @@ const SessionPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[isAuthenticated, navigate, token, userId]);
 
+    const [userSessions, setUserSessions] = useState<SessionProps[]>([]); 
+    const [userSports, setUserSports] = useState([]);
+    const [selectedDate, setSelectedDate] = useState(new Date()); 
+    const [selectedSession, setSelectedSession] = useState<SessionProps | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [error, setError] = useState<ErrorProps | null>(null);
+    //Handle modals
+    const [isAddSessionModalOpen, setIsAddSessionModalOpen] = useState<boolean>(false);
+    const [isEditSessionModalOpen, setIsEditSessionModalOpen] = useState<boolean>(false);
+
+    //Open and close modals
     const openAddSessionModal = () => { setIsAddSessionModalOpen(true) };
     const closeAddSessionModal = () => { setIsAddSessionModalOpen(false) };
     const openEditSessionModal = (session: SessionProps) => { 
@@ -82,33 +82,23 @@ const SessionPage = () => {
                     'Authorization': `Bearer ${token}` //Send token to backend to verify user
                 }
             });
-            
-            console.log(response.data);
-            
-            //== Case response is ok
-            if (response.status === 200) {
-                setUserSessions(response.data.sessions);
-                setUserSports(response.data.sports);
 
-            } else {
-                setError({status:500, message:'Internal Server Error / Erreur interne du serveur'})
-            }
+            setUserSessions(response.data.sessions);
+            setUserSports(response.data.sports);
 
         } catch (error) {
-            setIsLoading(false);
-            
             if (axios.isAxiosError(error)) { //== Case if axios error
                 if (error.response) {
                     setError({status:error.response.status, message:error.response.data.error});
 
                 } else { //== Case if no response from server
-                    setError({status:500, message:'Internal Server Error / Erreur interne du serveur'})
+                    setError({status:500, message:'Erreur interne du serveur.'})
                 }
 
             } else { //== Case if not axios error
-                setError({status:500, message:'Internal Server Error / Erreur interne du serveur'})
+                setError({status:500, message:'Une erreur inattendue est survenue.'})
                 console.error(error);
-            }                 
+            }                  
 
         } finally {
             setIsLoading(false);
@@ -120,18 +110,19 @@ const SessionPage = () => {
         getUserSessions();
     };
     
-    function onChange(nextselectedDate : Date) {
-        setSelectedDate(nextselectedDate);
+    //Handle date change from calendar
+    function handleDateChange(newDate : Date) {
+        setSelectedDate(newDate);
     }    
     
+    //Filter sessions by selected date
     const filterSessionsBySelectedDate = () => {
-        const formattedSelectedDate = formatDateInLetters(selectedDate); // get date in format 'YYYY-MM-DD'
+        const formattedSelectedDate = formatDateInLetters(selectedDate); // Get date in format 'YYYY-MM-DD'
         return userSessions.filter(session => session.date === formattedSelectedDate);
     };
-    
     const filteredSessions = filterSessionsBySelectedDate();
 
-    //Handle 3 cases => error, loading and userInfos received
+    //Handle 3 return cases => error, loading and userInfos received
     if (error) {
         return <ErrorPage status={error.status} message={error.message} />
     }
@@ -153,11 +144,11 @@ const SessionPage = () => {
                             <>
                             <main>
                                 <section className='calendar-container'> 
-                                <Calendar
-                                    sessions={userSessions}
-                                    selectedDate={selectedDate}
-                                    onChange={onChange}
-                                />
+                                    <Calendar
+                                        sessions={userSessions}
+                                        selectedDate={selectedDate}
+                                        onChange={handleDateChange}
+                                    />
                                 </section>
                                 <section className="agenda-container">
                                     <Agenda 

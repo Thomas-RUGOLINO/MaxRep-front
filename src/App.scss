@@ -1,4 +1,5 @@
 @import './styles/variables.scss';
+@import './styles/breakpoints.scss';
 
 //GLOBAL STYLE
 
@@ -15,12 +16,18 @@ h1, h2, h3 {
     color:$color-black;
 }
 
-h1 {
-    font-size: 2rem;
-}
-
 h2 {
     font-size: 1.8rem;
+    @include breakpoint-small-screen {
+        font-size: 2rem;
+    }
+}
+
+h3 {
+    font-size: 1.4rem;
+    @include breakpoint-small-screen {
+        font-size: 1.6rem;
+    }
 }
 
 //Content
@@ -28,6 +35,9 @@ p, a, label, button, th, td, span {
     font-family: 'Roboto' , Arial ,  sans-serif;
     color:$color-black;
     font-size: 1rem;
+    @include breakpoint-small-screen {
+        font-size: 1.2rem;
+    }
 }
 
 label {

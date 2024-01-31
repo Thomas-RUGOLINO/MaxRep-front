@@ -28,7 +28,7 @@
             &.black {
                 background-color: $color-black;
                 &:hover {
-                    transform: scale(1.02);
+                    transform: scale(1.02); //Animation on hover
                 }
     
             }
@@ -80,36 +80,91 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
             gap: 50px;
             width: 100%;
-            padding: 1rem;
 
-            p {
-                font-size: 1.5rem;
+            &__title {
+                font-size: 2rem;
+                color: $color-white;
             }
 
-            .screenshots {
+            &__text {
+                font-size: 1rem;
+                color: $color-white;
+                text-align: justify;
+                width: 60%;
+                @include breakpoint-small-screen() {
+                    font-size: 1.5rem;
+                }
+            }
+
+            &__screenshots {
                 width: 100%;
                 display: flex;
                 justify-content: space-around;
+                @include breakpoint-small-screen() {
+                    justify-content: center;
+                    gap: 50px;
+                }
+                
+                .screenshot__planification{
+                    width: auto;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .screenshot__visualisation{
+                    width: auto;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .screenshot__comparaison{
+                    width: auto;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                }
 
                 img {
-                    width: 40%;
+                    width: clamp(150px, 55%, 275px);
                     height: auto;
-                    border: 1px solid $color-grey;
+                    border: 1px solid $color-grey; 
+                    transition: transform 0.3s ease-in-out;
+                    &:hover {
+                        transform: scale(1.1); // Augmenter légèrement la taille de l'image
+                    } 
                 }
+            }
+
+            &__presentation {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: space-evenly;
+                background-color: $color-blue;
+                width: 100%;
+                height: auto;
+                padding: 2rem;
             }
         }
 
         .footer {
             display: flex;
             background-color: black;
-            padding: 1.5rem;
+            padding: 1.3rem;
+            justify-content: center;
 
             p {
                 color: $color-white;
+                font-size: .8rem;
+                text-align: center;
             }
         }
     }

@@ -5,7 +5,7 @@ import MenuDesktop from '../MenuDesktop/MenuDesktop';
 
 const Header = () => {
 
-    const { logout, isAuthenticated } = useAuth()!; //Hook to get logout function from AuthContext, exclamation mark to tell TS that it's not null
+    const { logout, isAuthenticated } = useAuth()!;
 
     const handleLogout = () => {
         logout();
@@ -29,7 +29,6 @@ const Header = () => {
                         </div>
                         </>
                     )}
-                    
                 </div>
             </header>
         </>

@@ -1,10 +1,11 @@
 import './Form.scss'
-import axiosInstance from '../../services/axiosInstance';
+import axios from 'axios';
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { convertSecondsToTime , convertTimeToSeconds } from '../../utils/convertTime';
 import Button from '../Button/Button';
 import Loader from '../Loader/Loader';
+import DOMPurify from 'dompurify';
 
 interface EditSessionFormProps { 
     session:SessionProps,
@@ -45,6 +46,7 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
     const {token, userId } = useAuth()!; //Hook to get token and userId from AuthContext
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = useState<string>('');
     const [updatedSession, setUpdatedSession] = useState<UpdatedSessionProps>({
         user_id: userId,
         id: session.id,
@@ -57,21 +59,23 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => { 
         e.preventDefault();
-        console.log(e.target.value)
 
+        //Sanitize input before setting state
+        const sanitizedValue = DOMPurify.sanitize(e.target.value);
         setUpdatedSession({
             ...updatedSession,
-            [e.target.name]: e.target.name === 'score' ? parseInt(e.target.value) || 0 : e.target.value
+            [e.target.name]: e.target.name === 'score' ? parseInt(sanitizedValue) || 0 : sanitizedValue
         })
     }
 
     const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>, unit: 'hh' | 'mm' | 'ss') => { 
         const value = parseInt(e.target.value) || 0;
-        const time = convertSecondsToTime(updatedSession.score);
-        let totalSeconds = updatedSession.score;
+        const time = convertSecondsToTime(updatedSession.score); //Get time from score and convert it to hours, minutes and seconds
+        let totalSeconds = updatedSession.score; //Initialize totalSeconds with score in seconds
 
+        //For each unit, convert time to seconds and update totalSeconds
         if (unit === 'hh') {
-            totalSeconds = convertTimeToSeconds(value, time.minutes, time.secs);
+            totalSeconds = convertTimeToSeconds(value, time.minutes, time.secs); 
         } else if (unit === 'mm') {
             totalSeconds = convertTimeToSeconds(time.hours, value, time.secs);
         } else if (unit === 'ss') {
@@ -89,21 +93,30 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
 
         try {
             setIsLoading(true);
-            console.log(updatedSession);
-            const response = await axiosInstance.patch(`/sessions/${updatedSession.id}` , updatedSession, {
+            setErrorMessage('');
+            
+            const response = await axios.patch(`https://maxrep-back.onrender.com/api/sessions/${updatedSession.id}` , updatedSession, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
 
-            if (response.status === 200) {
-                onProfileUpdate();
-                onClose();
-            }
+            onProfileUpdate();
+            onClose();
+            return response.data
 
         } catch (error) {
-            //! Gestion d'erreur (==> a factoriser ?)
-            console.error(error);
+            if (axios.isAxiosError(error)) { //== Case if axios error
+                if (error.response) {
+                    setErrorMessage(error.response.data.error);
+
+                } else { //== Case if no response from server
+                    setErrorMessage('Erreur interne du serveur.');
+                }
+
+            } else { //== Case if not axios error
+                setErrorMessage('Une erreur inattendue est survenue.');
+            }
 
         } finally {
             setIsLoading(false);
@@ -114,36 +127,47 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
 
         try {
             setIsLoading(true);
-            const response = await axiosInstance.delete(`/sessions/${updatedSession.id}` , {
+            setErrorMessage('');
+
+            const response = await axios.delete(`https://maxrep-back.onrender.com/api/sessions/${updatedSession.id}` , {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
 
-            if (response.status === 204) {
-                onProfileUpdate();
-                onClose();
-            }
+            onProfileUpdate();
+            onClose();
+            return response.data;
 
         } catch (error) {
-            //! Gestion d'erreur (==> a factoriser ?)
-            console.error(error);
+            if (axios.isAxiosError(error)) { //== Case if axios error
+                if (error.response) {
+                    setErrorMessage(error.response.data.error);
+
+                } else { //== Case if no response from server
+                    setErrorMessage('Erreur interne du serveur.');
+                }
+
+            } else { //== Case if not axios error
+                setErrorMessage('Une erreur inattendue est survenue.');
+                
+            }
 
         } finally {
             setIsLoading(false);
         }
     }
 
+    //Display inputs for time or other unit (kg, reps, etc.)
     const displayInputUnit = (unit: string) => {
         if (unit === 'temps') { 
-            const { hours, minutes, secs } = convertSecondsToTime(updatedSession.score);
+            const { hours, minutes, secs } = convertSecondsToTime(updatedSession.score); //Get time from score and convert it to hours, minutes and seconds
 
             return (
-                <>
+                <div className='inputs-time'>
                     <input 
                         type="number" 
                         name='score-hh' 
-                        className='input-time'
                         value={hours === 0 ? '' : hours}
                         onChange={(e) => handleTimeChange(e, 'hh')}
                         min={0} 
@@ -153,7 +177,6 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
                     <input 
                         type="number" 
                         name='score-mm' 
-                        className='input-time'
                         value={minutes === 0 ? '' : minutes} 
                         onChange={(e) => handleTimeChange(e, 'mm')} 
                         min={0}
@@ -163,15 +186,15 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
                     <input 
                         type="number" 
                         name='score-ss' 
-                        className='input-time'
                         value={secs === 0 ? '' : secs}
                         onChange={(e) => handleTimeChange(e, 'ss')} 
                         min={0}
                         max={60}
                         placeholder='ss' 
                     />
-                </>
+                </div>
             )
+            
         } else {
             return (
                 <input 
@@ -190,6 +213,9 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
             {isLoading && <Loader />}
             {!isLoading && (
                 <form className='form editSessionForm' method='post' onSubmit={editSession}>
+                    <div className="form__errors">
+                        <p className='error-message'> {errorMessage} </p>
+                    </div>
                     <div className="form__fields">
                         <div className="field">
                             <label htmlFor="date"> Date </label>

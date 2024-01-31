@@ -53,6 +53,9 @@ interface UserSessionProps {
 
 const ProfilePage = () => {
 
+    const navigate = useNavigate();
+    const { isAuthenticated, token, userId } = useAuth()!;
+
     const [userInfos, setUserInfos] = useState<UserInfosProps | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<ErrorProps | null>(null);
@@ -62,9 +65,6 @@ const ProfilePage = () => {
     const [isDeleteSportModalOpen, setIsDeleteSportModalOpen] = useState<boolean>(false);
     //Delete sport modal state
     const [selectedSportId, setSelectedSportId] = useState<number | null>(null);
-
-    const navigate = useNavigate(); //Hook to navigate to another page
-    const { isAuthenticated, token, userId } = useAuth()!; //Hook to get token and userId from AuthContext if user is authenticated
 
     //Handle redirection if user is not authenticated
     useEffect(() => {
@@ -93,28 +93,20 @@ const ProfilePage = () => {
                     'Authorization': `Bearer ${token}` //Send token to backend to verify user
                 }
             });
-            
-            //== Case response is ok
-            if (response.status === 200) {
-                setUserInfos(response.data);
+        
+            setUserInfos(response.data);
 
-            } else {
-                setError({status:500, message:'Internal Server Error / Erreur interne du serveur'})
-            }
-
-        } catch (error) {
-            setIsLoading(false);
-            
+        } catch (error) {            
             if (axios.isAxiosError(error)) { //== Case if axios error
                 if (error.response) {
                     setError({status:error.response.status, message:error.response.data.error});
 
                 } else { //== Case if no response from server
-                    setError({status:500, message:'Internal Server Error / Erreur interne du serveur'})
+                    setError({status:500, message:'Erreur interne du serveur.'})
                 }
 
             } else { //== Case if not axios error
-                setError({status:500, message:'Internal Server Error / Erreur interne du serveur'})
+                setError({status:500, message:'Une erreur inattendue est survenue.'})
                 console.error(error);
             }                 
 
@@ -141,21 +133,16 @@ const ProfilePage = () => {
 
     //Get most recent session score for a sport
     const getMostRecentSessionScore = (userId:number, sportId:number) => {
-
         if (userInfos) {
             const filteredSessions = userInfos.sessions
-            .filter(session => session.user_id === userId && session.sport_id === sportId)
+            .filter(session => session.user_id === userId && session.sport_id === sportId && session.score !== 0)
             .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // Sorting by desc date
             
-
-        return filteredSessions.length > 0 ? filteredSessions[0].score : null;
-
-
-        
+            return filteredSessions.length > 0 ? filteredSessions[0].score : null;
         }
     };
 
-    //Handle 3 cases => error, loading and userInfos received
+    //Handle 3 return cases => error, loading and userInfos received
     if (error) {
         return <ErrorPage status={error.status} message={error.message} />
     }
@@ -170,19 +157,20 @@ const ProfilePage = () => {
                 ) : (
                     userInfos &&  (
                         <>
-                            <header className="profile-header">
-                                <h2> Profil </h2>
-                            </header>
-                            <main className="profile-main">
-                                <section className="profile__head">
-                                    <div className="picture">
-                                        <img src={userInfos.profile_picture} alt="profile-picture"/>
-                                    </div>
-                                    <div className="name">
-                                        <h3> {formatUserName(userInfos.firstname)} </h3>
-                                        <h3> {formatUserName(userInfos.lastname)} </h3>
-                                    </div>
-                                </section>
+                        <header className="profile-header">
+                            <h2> Profil </h2>
+                        </header>
+                        <main className="profile-main">
+                            <section className="profile__head">
+                                <div className="picture">
+                                    <img src={userInfos.profile_picture} alt="profile-picture"/>
+                                </div>
+                                <div className="name">
+                                    <h3> {formatUserName(userInfos.firstname)} </h3>
+                                    <h3> {formatUserName(userInfos.lastname)} </h3>
+                                </div>
+                            </section>
+                            <div className="profile__body">
                                 <section className="profile__infos">
                                     <Container> 
                                         <div className="container__header">
@@ -246,12 +234,12 @@ const ProfilePage = () => {
                                                         <td> {sport.name} </td>
                                                         <td>
                                                         {sport.unit === 'kg' ? (
-                                                         // Affichage pour les sports en kg
+                                                        // Affichage pour les sports en kg
                                                             getMostRecentSessionScore(userInfos.id, sport.id) ?
                                                             (`${getMostRecentSessionScore(userInfos.id, sport.id)} ${sport.unit}`
                                                             ) : ("Aucune donnée")
                                                         ) : (
-                                                         // Affichage pour les sports de temps
+                                                        // Affichage pour les sports de temps
                                                             getMostRecentSessionScore(userInfos.id, sport.id) ?
                                                             (convertSecondsToHMS(getMostRecentSessionScore(userInfos.id, sport.id) ?? 0))
                                                             : ("Aucune donnée")
@@ -265,30 +253,32 @@ const ProfilePage = () => {
                                         )}
                                     </div>
                                 </section>
-                            </main>
-                            <Modal title='Editer mes infos' isOpen={isEditProfileModalOpen} onClose={closeEditProfileModal}> 
-                                <EditProfileForm 
-                                    userCurrentInfos={userInfos}
-                                    onClose={closeEditProfileModal}
-                                    onProfileUpdate={handleProfileUpdate}
-                                />
-                            </Modal>
-                            <Modal title='Ajouter un sport' isOpen={isAddSportModalOpen} onClose={closeAddSportModal}> 
-                                <AddSportForm
-                                    onClose={closeAddSportModal}
-                                    onProfileUpdate={handleProfileUpdate}
-                                />
-                            </Modal>
-                            <Modal title='Supprimer le sport' isOpen={isDeleteSportModalOpen} onClose={closeDeleteSportModal}> 
-                                <DeleteSportForm
-                                    sportId={selectedSportId}
-                                    onClose={closeDeleteSportModal}
-                                    onProfileUpdate={handleProfileUpdate}
-                                />
-                            </Modal>                                            
+                            </div>
+
+                        </main>
+                        <Modal title='Editer mes infos' isOpen={isEditProfileModalOpen} onClose={closeEditProfileModal}> 
+                            <EditProfileForm 
+                                userCurrentInfos={userInfos}
+                                onClose={closeEditProfileModal}
+                                onProfileUpdate={handleProfileUpdate}
+                            />
+                        </Modal>
+                        <Modal title='Ajouter un sport' isOpen={isAddSportModalOpen} onClose={closeAddSportModal}> 
+                            <AddSportForm
+                                onClose={closeAddSportModal}
+                                onProfileUpdate={handleProfileUpdate}
+                            />
+                        </Modal>
+                        <Modal title='Supprimer le sport' isOpen={isDeleteSportModalOpen} onClose={closeDeleteSportModal}> 
+                            <DeleteSportForm
+                                sportId={selectedSportId}
+                                onClose={closeDeleteSportModal}
+                                onProfileUpdate={handleProfileUpdate}
+                            />
+                        </Modal>                                            
                         </>
                     )
-                ) }
+                )}
             </div>
         </>
     )

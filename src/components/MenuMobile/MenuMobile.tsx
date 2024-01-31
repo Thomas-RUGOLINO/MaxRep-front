@@ -2,6 +2,7 @@ import './MenuMobile.scss';
 import {NavLink} from 'react-router-dom';
 
 const MenuMobile = () => {
+    
     return (
         <nav className='menu-mobile'> 
             <NavLink to='/session' className={({ isActive }) => isActive ? 'menu-mobile__item active' : 'menu-mobile__item'}>

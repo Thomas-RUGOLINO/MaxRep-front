@@ -33,11 +33,14 @@
                 padding: 5px 5px;
             }
 
-            .input-time {
-                width: clamp(30px, 20%, 100px);
-                background-color: $color-grey;
-                border: 1px solid grey;
-                padding: 5px 5px;
+            .inputs-time {
+                display: flex;
+                gap: 10px;
+                width: 70%;
+
+                input { //Handle inputs when unit is time
+                    width: clamp(35px, 35%, 250px);
+                }
             }
 
             .checkbox {
@@ -46,7 +49,18 @@
                 display: inline-block;
             }
 
+        }
+    }
 
+    &__errors {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-left: 10px;
+
+        .error-message {
+            color:$color-red;
+            text-align: center;
         }
     }
 

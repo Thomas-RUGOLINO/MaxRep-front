@@ -44,6 +44,7 @@ export const formatDateInLetters = (value: Date) => {
     const formattedDate = `${day}/${month}/${year}`;
   
     return formattedDate;
+    
   }else {
     // Gérer le cas où la date n'est pas valide
     console.error("Date invalide");

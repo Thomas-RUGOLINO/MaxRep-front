@@ -1,4 +1,4 @@
-import './Chart.scss';
+import './ChartMobile.scss';
 import 'chartjs-adapter-date-fns';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, TimeScale, Title, Tooltip, Legend} from 'chart.js';
 import { useState, useEffect } from 'react';
@@ -16,7 +16,7 @@ ChartJS.register(
     Legend
 );
 
-interface ChartProps {
+interface ChartMobileProps {
     sport:SportProps
 }
 
@@ -39,11 +39,12 @@ interface SessionProps {
     sport_id:number,
 }
 
-const Chart = ({sport}: ChartProps) => { 
+const ChartMobile = ({sport}: ChartMobileProps) => { 
 
     const [isGraphOpen, setIsGraphOpen] = useState<OpenStatus>({});
     const [redraw, setRedraw] = useState(false);
 
+    //Toggle graph open status
     const toggleOpen = (sportId: number) => {
         setIsGraphOpen((prevStatus: OpenStatus) => ({
             ...prevStatus,
@@ -51,6 +52,7 @@ const Chart = ({sport}: ChartProps) => {
         }));
     };
 
+    //Prepare data for chart
     const prepareChartData = (sport: SportProps) => {
         const sortedSessions = sport.sessions.sort((a: SessionProps, b: SessionProps) => new Date(a.date).getTime() - new Date(b.date).getTime());
         const dataPoints = sortedSessions.map(session => ({
@@ -81,6 +83,7 @@ const Chart = ({sport}: ChartProps) => {
         };
     }, []);
 
+    //Chart options for unit 'kg' & 'reps'
     const chartOptions = {
         responsive: true,
         scales: {
@@ -113,6 +116,7 @@ const Chart = ({sport}: ChartProps) => {
         
     };
 
+    //Chart options for unit 'temps'
     const chartOptionsTime = {
         responsive: true,
         scales: {
@@ -166,4 +170,4 @@ const Chart = ({sport}: ChartProps) => {
     )
 }
 
-export default Chart;
+export default ChartMobile;

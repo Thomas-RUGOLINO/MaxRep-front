@@ -9,6 +9,9 @@
         border-radius: 25px;
         max-width: 800px;
         margin: 0 auto;
+        @include breakpoint-small-screen {
+            width: 100%;
+        }
 
         //Handle spirals on top of the agenda
         &__spirals {
@@ -59,6 +62,9 @@
                 color: $color-white;
                 cursor: pointer;
                 transition: all 100ms ease-out;
+                @include breakpoint-small-screen {
+                    font-size: 1.6rem;
+                }
                 &:hover {
                     color: $color-white-hover;
                 } 
@@ -85,6 +91,9 @@
                     font-size: 1.3rem;
                     cursor: pointer;
                     transition: all 100ms ease-out;
+                    @include breakpoint-small-screen {
+                        font-size: 1.6rem;
+                    }
                     &:hover {
                         color: $color-black-hover;
                     }
@@ -94,11 +103,17 @@
                     font-size: 1.1rem;
                     font-weight: bold;
                     margin-bottom: 15px;
+                    @include breakpoint-small-screen {
+                        font-size: 1.4rem;
+                    }
                 }
 
                 &__desc {
                     font-size: 1rem;
                     margin-bottom: 20px;
+                    @include breakpoint-small-screen {
+                        font-size: 1.2rem;
+                    }
                 }
             }
 

@@ -2,6 +2,7 @@ import './RankingPage.scss'
 import Header from '../../components/Header/Header';
 import MenuMobile from '../../components/MenuMobile/MenuMobile';
 import Container from '../../components/Container/Container';
+import RankingTable from '../../components/RankingTable/RankingTable';
 import Button from '../../components/Button/Button';
 import ErrorPage from '../ErrorPage/ErrorPage';
 import Loader from '../../components/Loader/Loader';
@@ -11,8 +12,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { countryNames } from '../../data/countriesList';
-import {convertSecondsToHMS} from '../../utils/convertTime';
-import {convertDateFormatToEu} from '../../utils/formatDate'
+
 
 interface ErrorProps {
     status:number,
@@ -26,8 +26,8 @@ interface ErrorProps {
     lastname: string,
     best_score: number,
     date: Date,
-    user: UserProps;
-    sport: SportProps;
+    user: UserProps
+    sport: SportProps
 }
 
 interface UserProps {
@@ -53,23 +53,32 @@ interface SportProps {
 
 const RankingPage = () => {
 
-    const [error, setError] = useState<ErrorProps | null>(null);
+    const navigate = useNavigate();
+    const { isAuthenticated, token, userId } = useAuth()!;
+
+    useEffect(() => {
+        if (!isAuthenticated()) {
+            navigate('/');
+
+        } else {
+            getUserInfos();
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[isAuthenticated, navigate, token, userId]);
+
+    const [error, setError] = useState<ErrorProps | null>(null); //To display error page if error with request
+    const [errorMessage, setErrorMessage] = useState<string>(''); //To display error message on front
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [ranking, setRanking] = useState<RankingProps[]>([]);
-    const [userSports, setUserSports] = useState<SportProps[]>([]);
-    const [isShared, setIsShared] = useState<boolean>(false);
-    const [queryParams, setQueryParams] = useState<QueryParamsProps>({
+    const [userSports, setUserSports] = useState<SportProps[]>([]); //To display the sports of the user in filter
+    const [isShared, setIsShared] = useState<boolean>(false); //To display message if user is not sharing his performances
+    const [queryParams, setQueryParams] = useState<QueryParamsProps>({ //To send to backend to get the ranking
         sportId: 4,
         gender: '',
         country: '',
         weightMin: '',
         weightMax: ''
     })
-    const [currentPage, setCurrentPage] = useState(1);
-    const [rowsPerPage] = useState(20)
-
-    const navigate = useNavigate();
-    const { isAuthenticated, token, userId } = useAuth()!;
+    const [ranking, setRanking] = useState<RankingProps[]>([]);
 
     const getBestScores =  useCallback (async (queryParams: QueryParamsProps) => {
 
@@ -77,61 +86,58 @@ const RankingPage = () => {
             setIsLoading(true);
             setError(null);
 
-            console.log(queryParams)
+            // Go to error page if no sportId in queryParams
             if (!queryParams.sportId) {
                 return setError({status:401, message:'Unauthorized / Non autorisé'});
             }
 
-            // Récupérer les données de la table ranking en fonction du sport de l'utilisateur
-            const response = await axios.get(`https://maxrep-back.onrender.com/api/ranking?sportId=${queryParams.sportId}&gender=${queryParams.gender}&country=${queryParams.country}&weightMin=${queryParams.weightMin}&weightMax=${queryParams.weightMax}` , {
+            // Get the ranking from the backend with the queryParams
+            const query = `sportId=${queryParams.sportId}&`+
+                `gender=${queryParams.gender}&`+
+                `country=${queryParams.country}&`+
+                `weightMin=${queryParams.weightMin}&`+
+                `weightMax=${queryParams.weightMax}`
+
+            const response = await axios.get(`https://maxrep-back.onrender.com/api/ranking?${query}` , {
                 headers: {
                     'Authorization': `Bearer ${token}` //Send token to backend to verify user
                 }
             });
 
-            console.log('bestScores :' , response.data);
-            // 1- We check if the sport unit is 'temps' or 'Kg'
+            // Remove the 0 values from the response
+            const filteredResponse = response.data.filter((item: RankingProps) => item.best_score !== 0);
+
+            // Handle response according to unit of the sport
             if (response.data[0].sport.unit === 'temps') {
-                //If unit is 'temps' we filter the response to remove all best_score = 0
-                const FilteredResponse = response.data.filter((item: RankingProps) => item.best_score !== 0);
-                //then we sort by ascending order
-                const SortedResponse = FilteredResponse.sort((a: RankingProps, b: RankingProps) => a.best_score - b.best_score);
-                // we set the state with the sorted response
-                setRanking(SortedResponse);
+                //If unit is 'temps' we sort by ascending order                
+                const sortedResponse = filteredResponse.sort((a: RankingProps, b: RankingProps) => a.best_score - b.best_score);
+                setRanking(sortedResponse);
 
             } else { 
                 //If unit is 'Kg' we sort by descending order
-                const rank = response.data.sort((a: RankingProps, b: RankingProps) => (a.best_score > b.best_score) ? -1 : 1)
-                //We set the state with the sorted response
-                setRanking(rank);
-
-            }
-
-            
+                const sortedResponse = filteredResponse.sort((a: RankingProps, b: RankingProps) => (a.best_score > b.best_score) ? -1 : 1)
+                setRanking(sortedResponse);
+            } 
         }
 
-        catch(error) {
-            setIsLoading(false);
-            
+        catch(error) {            
             if (axios.isAxiosError(error)) { //== Case if axios error
                 if (error.response) {
                     setError({status:error.response.status, message:error.response.data.error});
 
                 } else { //== Case if no response from server
-                    setError({status:500, message:'Internal Server Error / Erreur interne du serveur (1)'})
+                    setError({status:500, message:'Erreur interne du serveur.'})
                 }
 
             } else { //== Case if not axios error
-                setError({status:500, message:'Internal Server Error / Erreur interne du serveur (2)'})
+                setError({status:500, message:'Une erreur inattendue est survenue.'})
                 console.error(error);
-            }                 
+            }         
 
         } finally {
             setIsLoading(false);
         }
     }, [token]);
-
-
 
     const getUserInfos = async () => {
 
@@ -154,15 +160,15 @@ const RankingPage = () => {
                 return 
             }
             
-            console.log('userInfos :' , response.data);
-            setIsShared(response.data.is_shared);
-            setUserSports(response.data.sports);
-            setQueryParams({
+            // Set the state with the response data
+            setIsShared(response.data.is_shared); //Get info if user is sharing his performances
+            setUserSports(response.data.sports); //Get the sports of the user
+            setQueryParams({ //Set the queryParams with the first sport of the user
                 ...queryParams,
                 sportId: response.data.sports[0].id,
                 gender: response.data.gender
             })
-            getBestScores({
+            getBestScores({ //Get the ranking with the first sport of the user
                 ...queryParams,
                 sportId: response.data.sports[0].id,
                 gender: response.data.gender
@@ -190,16 +196,6 @@ const RankingPage = () => {
         }
     };
 
-    useEffect(() => {
-        if (!isAuthenticated()) {
-            navigate('/');
-
-        } else {
-            getUserInfos();
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[isAuthenticated, navigate, token, userId]);
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         e.preventDefault();
         const name = e.target.name;
@@ -215,9 +211,7 @@ const RankingPage = () => {
         e.preventDefault();
 
         if (queryParams.weightMin > queryParams.weightMax) {
-            //! Afficher un message d'erreur sur le front
-            console.log('Erreur !') 
-            return setError({status:0, message:'Le poids maximum doit etre supérieur au poids minimum !'}) 
+            return setErrorMessage('Le poids minimum doit être inférieur au poids maximum !');
         }
 
         queryParams.weightMin = queryParams.weightMin === 0 ? '' : queryParams.weightMin;
@@ -225,23 +219,6 @@ const RankingPage = () => {
 
         getBestScores(queryParams)
     };
-    
-    // Find Function to get the SVG corresponding image of the country name
-    const getCountrySvg = (countryName : string) => {
-        const country = Object.values(countryNames).find(country => country.name === countryName);
-        return country ? country.svg : null;
-      }
-
-    // Pagination
-    const indexOfLastItem = currentPage * rowsPerPage;
-    const indexOfFirstItem = indexOfLastItem - rowsPerPage;
-    const currentItems = ranking.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(ranking.length / rowsPerPage);
-
-    const goToNextPage = () => setCurrentPage(page => Math.min(page + 1, totalPages));
-    const goToPreviousPage = () => setCurrentPage(page => Math.max(page - 1, 1));
-
-    
 
     if (error) {
         return <ErrorPage status={error.status} message={error.message} />
@@ -262,14 +239,15 @@ const RankingPage = () => {
                             <main className='ranking-main'>
                                 {isShared === false && (
                                     <div className="ranking-notshared__title">
-                                        <p className='ranking-notshared__text'>Vos performances ne sont pas partagées, vous pouvez éditer votre profil et cocher la case</p>
-                                        <p className='ranking-notshared__text'><strong>"Partager mes performances"</strong> dans le Profil si vous souhaitez apparaître dans les classements !</p>
+                                        <p className='ranking-notshared__text'>Vos performances ne sont pas partagées, vous pouvez éditer votre profil et cocher la case <strong>"Partager mes performances"</strong> si vous souhaitez apparaître dans les classements !</p>
                                      </div>
                                 )}
                                 <Container> 
-                                    
                                     <div className="container__header">
                                         <h3> Sélectionner un classement </h3>
+                                    </div>
+                                    <div className="container__errors">
+                                        {errorMessage && <p className='error-message'>{errorMessage}</p>}
                                     </div>
                                     <form action="" onSubmit={handleSubmit}>
                                         <div className="container__fields">
@@ -313,45 +291,7 @@ const RankingPage = () => {
                                         </div>
                                     </form>
                                 </Container>
-                                
-                                <table className='board'>
-                                    <thead>
-                                        <tr>
-                                            <th>Rang</th>
-                                            <th>Pays</th>
-                                            <th>Nom Prénom</th>
-                                            <th>Best Score</th>
-                                            <th>Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    {ranking.length > 0 ? (
-                                        currentItems.map((item: RankingProps, index) => (
-                                            <tr key={index}>
-                                                <td>{index+1}</td>
-                                                <td width= "50px">
-                                                {item.user.country && (
-                                                    <img src={getCountrySvg(item.user.country) ?? " "} alt={`Drapeau ${item.user.country} `} style={{ width: '30px', height: '20px', borderRadius: '100%' }} />
-                                                )}
-                                                </td>
-                                                <td>{item.user.firstname} {item.user.lastname}</td>
-                                                <td>
-                                                    {item.sport.unit === 'temps' ? (
-                                                    convertSecondsToHMS(item.best_score)
-                                                    ) : (
-                                                        item.best_score + ' kg'
-                                                    )}
-                                                </td>
-                                                <td>{convertDateFormatToEu(item.date)}</td>
-                                            </tr>
-                                        ))) : null}
-                                    </tbody>
-                                </table>
-                                <div className="pagination-controls">
-                                    <button onClick={goToPreviousPage} disabled={currentPage === 1}>Précédent</button>
-                                    <span>Page {currentPage} sur {totalPages}</span>
-                                     <button onClick={goToNextPage} disabled={currentPage === totalPages}>Suivant</button>
-                                </div>
+                                <RankingTable ranking={ranking} />
                             </main>
                         )}
                     

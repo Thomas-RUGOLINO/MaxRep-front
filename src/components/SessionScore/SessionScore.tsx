@@ -1,5 +1,5 @@
 import './SessionScore.scss';
-import axiosInstance from '../../services/axiosInstance';
+import axios from 'axios';
 import {  useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { convertSecondsToTime , convertTimeToSeconds } from '../../utils/convertTime';
@@ -37,6 +37,7 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
 
     const {token, userId } = useAuth()!; //Hook to get token and userId from AuthContext
 
+    const [errorMessage, setErrorMessage] = useState<string>('');
     const [updatedSession, setUpdatedSession] = useState<UpdatedSessionProps>({
         user_id: userId,
         id: session.id,
@@ -49,7 +50,6 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => { 
         e.preventDefault();
-        console.log(e.target.value)
 
         setUpdatedSession({
             ...updatedSession,
@@ -78,23 +78,30 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
 
     const editScore = async (e: React.FormEvent<HTMLFormElement>) => { 
         e.preventDefault();
-
+        setErrorMessage('');
+        
         try {
-            console.log(updatedSession)
-            const response = await axiosInstance.patch(`/sessions/${updatedSession.id}` , updatedSession, {
+            const response = await axios.patch(`/sessions/${updatedSession.id}` , updatedSession, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
 
-            if (response.status === 200) {
-                onProfileUpdate();
-            }
+            onProfileUpdate();
+            return response.data;
 
         } catch (error) {
-            //! Gestion d'erreur (==> a factoriser ?)
-            console.error(error);
+            if (axios.isAxiosError(error)) { //== Case if axios error
+                if (error.response) {
+                    setErrorMessage(error.response.data.error);
 
+                } else { //== Case if no response from server
+                    setErrorMessage('Erreur interne du serveur.');
+                }
+
+            } else { //== Case if not axios error
+                setErrorMessage('Une erreur inattendue est survenue.');
+            }
         }
     }
         
@@ -154,6 +161,7 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
         }
     }
 
+    //Handle display of score or input
     const displayScoreInputOrValue = () => { 
 
         if (isScore) {
@@ -184,6 +192,9 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
                 {displayScoreInputOrValue()}
                 {!isScore && <Button text='Ajouter' color='black' type='submit' isSmall />}
             </form>
+            <div className="errors">
+                <p className='errors__message'> {errorMessage} </p>
+            </div>
         </div>
     )
 }

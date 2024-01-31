@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import Button from '../Button/Button';
 import Loader from '../Loader/Loader';
+import DOMPurify from 'dompurify';
 
 interface AddSessionFormProps { 
     onClose: () => void,
@@ -43,10 +44,10 @@ const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSession
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => { 
         e.preventDefault();
         console.log(e.target.value)
-
+        const sanitizedValue = DOMPurify.sanitize(e.target.value);
         setNewSession({
             ...newSession,
-            [e.target.name]: e.target.value
+            [e.target.name]: sanitizedValue
         })
     }
 

@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { convertSecondsToTime , convertTimeToSeconds } from '../../utils/convertTime';
 import Button from '../Button/Button';
 import Loader from '../Loader/Loader';
+import DOMPurify from 'dompurify';
 
 interface EditSessionFormProps { 
     session:SessionProps,
@@ -59,10 +60,10 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => { 
         e.preventDefault();
         console.log(e.target.value)
-
+        const sanitizedValue = DOMPurify.sanitize(e.target.value);
         setUpdatedSession({
             ...updatedSession,
-            [e.target.name]: e.target.name === 'score' ? parseInt(e.target.value) || 0 : e.target.value
+            [e.target.name]: e.target.name === 'score' ? parseInt(sanitizedValue) || 0 : sanitizedValue
         })
     }
 

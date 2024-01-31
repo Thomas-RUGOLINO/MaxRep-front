@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Header from '../../components/Header/Header'
 import { useState ,useEffect } from 'react'
+import DOMPurify from 'dompurify';
 
 const RegisterPage = () => {
 
@@ -34,11 +35,11 @@ const RegisterPage = () => {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 
         e.preventDefault();
-        
+        const sanitizedValue = DOMPurify.sanitize(e.target.value);
         //Edit userInfos with new target value for changed input
         setUserInfos({
             ...userInfos,
-            [e.target.name]: e.target.value
+            [e.target.name]: sanitizedValue
         });
     }
 

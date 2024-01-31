@@ -60,3 +60,12 @@
 
     }
 }
+
+.errors {
+    margin-top: 10px;
+
+    &__message {
+        color: $color-red;
+        font-size: 0.9rem;
+    }
+}

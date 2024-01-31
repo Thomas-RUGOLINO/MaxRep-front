@@ -16,8 +16,9 @@
     &__container {
         background-color: $color-white;
         padding: 30px 20px;
-        border-radius: 4px;
+        border-radius: 10px;
         width: 90%;
+        max-width: 700px;
     }
 
     &__header {

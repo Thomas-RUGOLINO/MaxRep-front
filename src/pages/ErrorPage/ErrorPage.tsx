@@ -7,10 +7,11 @@ interface ErrorPageProps {
 
 const ErrorPage = ({status, message}: ErrorPageProps) => {
     return (
-        <>
+        <div className='error-page'>
+            <img src="/assets/images/404.gif" alt="404" />
             <h1> Erreur {status} </h1>
-            <h3> {message} </h3>
-        </>
+            <p> {message} </p>
+        </div>
     )
 }
 

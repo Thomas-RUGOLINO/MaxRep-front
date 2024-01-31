@@ -213,12 +213,12 @@ const PerformancePage = () => {
             getUserPerformances(index);
 
             // Réinitialiser sessionToModify
-            /*setSessionToModify({
+            setSessionToModify({
                 date: '',
                 score: 0,
                 user_id: userId as number,
                 sport_id: selectedSport.id
-            });*/
+            });
 
             return sessionToUpdate.data
         // else => create session

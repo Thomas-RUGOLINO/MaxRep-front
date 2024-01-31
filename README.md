@@ -15,7 +15,7 @@ MaxRep est une application web dynamique conçue pour les passionnés de fitness
 - **Frontend**: React, TypeScript, Sass, HTML.
 - **Backend**: Node.js, Express.js, Sequelize (ORM), PostgreSQL.
 - **Authentification et Sécurité**: JWT pour l'authentification, pratiques standard de sécurisation des API REST.
-- **Déploiement**: Le frontend est déployé sur Vercel, le backend est déployé sur Render et la base de données est déployée sur xxx
+- **Déploiement**: Le frontend est déployé sur Vercel, le backend est déployé sur Render et la base de données est déployée sur Neon.
 
 ## Installation et Configuration
 

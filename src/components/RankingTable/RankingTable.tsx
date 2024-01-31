@@ -89,7 +89,11 @@ const RankingTable = ({ranking}: RankingTableProps) => {
                                 </td>
                                 <td>{convertDateFormatToEu(item.date)}</td>
                             </tr>
-                        ))) : null}
+                        ))) : (
+                            <tr > 
+                                <td className='empty-table-message' colSpan={5}> Pas d'athlètes à classer avec ce filtre !  </td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
                 <div className="pagination-controls">

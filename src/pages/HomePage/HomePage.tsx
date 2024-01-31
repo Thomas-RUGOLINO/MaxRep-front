@@ -7,8 +7,8 @@ import { useMediaQuery } from 'react-responsive';
 
 const HomePage = () => {
 
-    const navigate = useNavigate(); //Hook to navigate to another page
-    const { isAuthenticated, token, userId } = useAuth()!; //Hook to get token and userId from AuthContext if user is authenticated
+    const navigate = useNavigate();
+    const { isAuthenticated, token, userId } = useAuth()!;
     
     //Handle redirection if user is authenticated
     useEffect(() => {

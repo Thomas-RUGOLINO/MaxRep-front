@@ -7,14 +7,14 @@ import Header from '../../components/Header/Header';
 
 const LoginPage = () => {
 
-    //STATES
+    const navigate = useNavigate();
+    const { isAuthenticated, login, token, userId } = useAuth()!;
+
     const [userInfos, setUserInfos] = useState({
         email:'',
         password:'',
     });
-
-    const navigate = useNavigate(); //Hook to navigate to another page
-    const { isAuthenticated, login, token, userId } = useAuth()!; //Hook to get token and userId from AuthContext if user is authenticated
+    const [errorMessage, setErrorMessage] = useState<string>('');
 
     //Handle redirection if user is authenticated
     useEffect(() => {
@@ -24,11 +24,8 @@ const LoginPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[isAuthenticated, navigate, token, userId])
     
-    const [errorMessage, setErrorMessage] = useState<string>('');
 
-    //UTILS
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-
         e.preventDefault();
         
         //Edit userInfos with new target value for changed input
@@ -39,21 +36,15 @@ const LoginPage = () => {
     }
 
     const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-
         e.preventDefault();
         setErrorMessage(''); //Init empty error messages
         
-        //Push userInfos to backend
         try {
             const response = await axios.post('https://maxrep-back.onrender.com/api/login' , userInfos);
 
-            if (response.status !== 200) {
-                setErrorMessage(response.data.error);
-            }
-
-            const token = response.data;
+            const token = response.data; //Get token from response
             login(token); //Login user with token
-            navigate(`/profile`);
+            navigate(`/profile`); //Redirect to profile page
 
             return response.data;
 

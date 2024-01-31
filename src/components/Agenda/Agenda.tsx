@@ -25,7 +25,6 @@ interface SessionProps {
 
 const Agenda = ({selectedDate, filteredSessions, onOpenAddSessionModal, onOpenEditSessionModal, onProfileUpdate}: AgendaProps) => {
 
-
   return (
       <div className="agenda">
             <div className="agenda__spirals">

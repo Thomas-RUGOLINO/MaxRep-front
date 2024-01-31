@@ -34,14 +34,14 @@ interface SportProps {
 
 const RankingTable = ({ranking}: RankingTableProps) => { 
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [rowsPerPage] = useState(20)
+    const [currentPage, setCurrentPage] = useState(1); // Pagination
+    const [rowsPerPage] = useState(20) // Pagination
 
-    // Find Function to get the SVG corresponding image of the country name
+    // Get the SVG corresponding image of the country name
     const getCountrySvg = (countryName : string) => {
         const country = Object.values(countryNames).find(country => country.name === countryName);
         return country ? country.svg : null;
-      }
+    }
 
     // Pagination
     const indexOfLastItem = currentPage * rowsPerPage;
@@ -72,7 +72,11 @@ const RankingTable = ({ranking}: RankingTableProps) => {
                                 <td width= "50px">{index+1}</td>
                                 <td width= "50px">
                                 {item.user.country && (
-                                    <img src={getCountrySvg(item.user.country) ?? " "} alt={`Drapeau ${item.user.country} `} style={{ width: '30px', height: '20px', borderRadius: '100%' }} />
+                                    <img 
+                                        src={getCountrySvg(item.user.country) ?? " "} 
+                                        alt={`Drapeau ${item.user.country} `} 
+                                        style={{ width: '30px', height: '20px', borderRadius: '100%' }} 
+                                    />
                                 )}
                                 </td>
                                 <td>{item.user.firstname} {item.user.lastname}</td>
@@ -91,7 +95,7 @@ const RankingTable = ({ranking}: RankingTableProps) => {
                 <div className="pagination-controls">
                     <button onClick={goToPreviousPage} disabled={currentPage === 1}>Précédent</button>
                     <span>Page {currentPage} sur {totalPages}</span>
-                        <button onClick={goToNextPage} disabled={currentPage === totalPages}>Suivant</button>
+                    <button onClick={goToNextPage} disabled={currentPage === totalPages}>Suivant</button>
                 </div>
             </div>
         </>

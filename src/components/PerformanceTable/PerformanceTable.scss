@@ -1,66 +1,63 @@
 @import '../../styles/variables.scss';
 @import '../../styles/breakpoints.scss';
 
-
-.board {
-    width: 100%;
+.table {
     display: flex;
-    flex-direction: column;
-    @include breakpoint-small-screen {
-        width: 70%;
-        max-width: 950px;  
+    align-items: center;
+    justify-content: center;
+
+    &-title {
+        display: flex;
+        justify-content: center;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
     }
 
-    .board-table {
-        width: 100%;
+    .performance-board {
+        width: 60%;
         border-collapse: collapse;
         border-spacing: 0 10px;
         align-items: center;
-    
+
         thead {
             text-align: left;
         }
-    
+
         thead tr {
             background-color: $color-red;
             border-bottom: 2px solid $color-white;
         }
-    
+
         thead th {
             color:$color-white;
+            text-align: center;
         }
-    
+
         th, td {
             padding: 10px 5px;
             text-align: left;
             border-bottom: 1px solid #ddd;
             font-size: 0.9rem;
-            @include breakpoint-small-screen {
-                font-size: 1.2rem;
-                padding: 10px;
-            }
+            text-align: center;
         }
-    
+
         tbody tr {
             background-color: $color-white;
+            text-align: center;
         }
-    
+
         tbody tr:nth-child(2n+1) {
             background-color: $color-grey;
         }
     }
-    
-        .flag-td {
-        display: flex;
-        width: 50px;
-        align-items: center;
-    } 
-    
-    .pagination-controls {
-        display: flex;
-        justify-content: center;
-        gap : 5px;
-        margin-top: 20px;
-    }
 }
 
+.no-sessions-message {
+    background-color: $color-grey;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    text-align: center;
+    max-width: 500px;
+    margin: 20px auto 0;
+}

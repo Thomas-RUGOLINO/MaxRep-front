@@ -39,6 +39,7 @@ const ChartDesktop = ({sport}: ChartDesktopProps) => {
 
     const [redraw, setRedraw] = useState(false);
 
+    //Prepare data for chart
     const prepareChartData = (sport: SportProps) => {
         const sortedSessions = sport.sessions.sort((a: SessionProps, b: SessionProps) => new Date(a.date).getTime() - new Date(b.date).getTime());
         const dataPoints = sortedSessions.map(session => ({
@@ -69,6 +70,7 @@ const ChartDesktop = ({sport}: ChartDesktopProps) => {
         };
     }, []);
 
+    //Chart options for unit 'kg' & 'reps'
     const chartOptions = {
         responsive: true,
         scales: {
@@ -101,6 +103,7 @@ const ChartDesktop = ({sport}: ChartDesktopProps) => {
         
     };
 
+    //Chart options for unit 'temps'
     const chartOptionsTime = {
         responsive: true,
         scales: {

@@ -8,7 +8,9 @@ import DOMPurify from 'dompurify';
 
 const RegisterPage = () => {
 
-    //STATES
+    const navigate = useNavigate();
+    const { isAuthenticated,  token, userId } = useAuth()!;
+
     const [userInfos, setUserInfos] = useState({
         email:'',
         password:'',
@@ -20,9 +22,6 @@ const RegisterPage = () => {
     });
     const [errorMessage, setErrorMessage] = useState<string>('');
 
-    const navigate = useNavigate(); //Hook to navigate to another page
-    const { isAuthenticated,  token, userId } = useAuth()!; //Hook to get token and userId from AuthContext if user is authenticated
-
     //Handle redirection if user is authenticated
     useEffect(() => {
         if (isAuthenticated()) {
@@ -31,7 +30,6 @@ const RegisterPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[isAuthenticated, navigate, token, userId])
 
-    //UTILS
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 
         e.preventDefault();
@@ -48,22 +46,18 @@ const RegisterPage = () => {
         e.preventDefault();
         setErrorMessage(''); //Init empty error messages
 
-        //Comparing passwords
+        //Comparing passwords before sending request
         if (userInfos.password !== userInfos.passwordConfirm) {
-            setErrorMessage('Les mots de passe ne correspondent pas !');
+            return setErrorMessage('Les mots de passe ne correspondent pas !');
         }
         
-        //Push userInfos to backend
         try {
             const response = await axios.post('https://maxrep-back.onrender.com/api/register' , userInfos);
-            console.log(response);
 
-            if (response.status !== 200) {
-                setErrorMessage(response.data.error);
-            }
-            
+            //Redirect to login page after successful registration
             navigate(`/login`);
-
+            return response.data;
+            
         } catch (error) {
             if (axios.isAxiosError(error)) { //== Case if axios error
                 if (error.response) {
@@ -170,7 +164,6 @@ const RegisterPage = () => {
                         <div className="form__buttons">
                             <button type='submit'> INSCRIPTION </button>
                         </div>
-                        
                     </form>
                 </section>
             </main>

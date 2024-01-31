@@ -28,7 +28,7 @@
             &.black {
                 background-color: $color-black;
                 &:hover {
-                    transform: scale(1.02);
+                    transform: scale(1.02); //Animation on hover
                 }
     
             }

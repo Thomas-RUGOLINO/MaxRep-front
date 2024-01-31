@@ -15,9 +15,9 @@ interface DecodedTokenProps {
     lastname: string;
 }
 
-
 const AuthContext = createContext<AuthContextProps | null>(null);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext); //Custom hook to get the context
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({children}) => { 

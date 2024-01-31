@@ -19,11 +19,19 @@ MaxRep est une application web dynamique conçue pour les passionnés de fitness
 
 ## Installation et Configuration
 
-1. **Cloner le dépôt**: git clone [URL_DU_REPO]
-2. **Installer les dépendances** (à la fois pour le frontend et le backend): npm install
+### Frontend
+1. **Cloner le dépôt**: git clone [https://github.com/O-clock-Empanadas/projet-01-maxrep-front.git](https://github.com/O-clock-Empanadas/projet-01-maxrep-front.git)
+2. **Installer les dépendances** : npm install
+5. **Lancer l'application frontend** (dans un nouveau terminal): npm run dev
+
+### Backend
+
+Le repo du backend est disponible ici : [https://github.com/O-clock-Empanadas/projet-01-maxrep-back](https://github.com/O-clock-Empanadas/projet-01-maxrep-back)
+
+1. **Cloner le dépôt**: git clone [https://github.com/O-clock-Empanadas/projet-01-maxrep-back.git](https://github.com/O-clock-Empanadas/projet-01-maxrep-back.git)
+2. **Installer les dépendances**: npm install
 3. **Configurer la base de données PostgreSQL**:
 - Configurer PostgreSQL sur votre système.
 - Créer une nouvelle base de données pour l'application.
 - Configurer les variables d'environnement pour la connexion à la base de données.
 4. **Lancer le serveur backend**: npm start
-5. **Lancer l'application frontend** (dans un nouveau terminal): cd frontend npm start

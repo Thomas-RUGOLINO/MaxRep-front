@@ -80,6 +80,10 @@ const RankingPage = () => {
     })
     const [ranking, setRanking] = useState<RankingProps[]>([]);
 
+    useEffect(() => {
+        console.log(ranking)
+    }, [ranking]);
+
     const getBestScores =  useCallback (async (queryParams: QueryParamsProps) => {
 
         try{
@@ -103,6 +107,12 @@ const RankingPage = () => {
                     'Authorization': `Bearer ${token}` //Send token to backend to verify user
                 }
             });
+
+            console.log('best scores : ', response.data);
+
+            if (response.data.length === 0) { 
+                return 
+            }
 
             // Remove the 0 values from the response
             const filteredResponse = response.data.filter((item: RankingProps) => item.best_score !== 0);
@@ -156,6 +166,8 @@ const RankingPage = () => {
                 }
             });
 
+            console.log('userInfos : ', response.data);
+
             if (response.data.sports.length === 0) {
                 return 
             }
@@ -176,20 +188,18 @@ const RankingPage = () => {
         }
 
         catch(error) {
-            setIsLoading(false);
-            
             if (axios.isAxiosError(error)) { //== Case if axios error
                 if (error.response) {
                     setError({status:error.response.status, message:error.response.data.error});
 
                 } else { //== Case if no response from server
-                    setError({status:500, message:'Internal Server Error / Erreur interne du serveur (3)'})
+                    setError({status:500, message:'Erreur interne du serveur.'})
                 }
 
             } else { //== Case if not axios error
-                setError({status:500, message:'Internal Server Error / Erreur interne du serveur (4)'})
+                setError({status:500, message:'Une erreur inattendue est survenue.'})
                 console.error(error);
-            }                 
+            }         
 
         } finally {
             setIsLoading(false);

@@ -27,16 +27,19 @@ interface UserCurrentInfosProps {
 
 const EditProfileForm = ({userCurrentInfos, onClose, onProfileUpdate}: EditProfileFormProps) => { 
 
+    const {token, userId } = useAuth()!;
+
     //Local state for handle inputs
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string>('');
     const [userNewInfos, setUserNewInfos] = useState<UserCurrentInfosProps>(userCurrentInfos);
 
-    const {token, userId } = useAuth()!; //Hook to get token and userId from AuthContext
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => {
-        
-        const value = (e.target as HTMLInputElement).type === 'checkbox' ? (e.target as HTMLInputElement).checked : (e.target as HTMLInputElement).value;  //Handle input type
+        e.preventDefault();
+
+        //Handle setting state if checkbox or input
+        const target = e.target as HTMLInputElement;
+        const value = target.type === 'checkbox' ? target.checked : target.value;  
         setUserNewInfos({
             ...userNewInfos,
             [e.target.name]: value
@@ -46,36 +49,36 @@ const EditProfileForm = ({userCurrentInfos, onClose, onProfileUpdate}: EditProfi
     const editUserProfile = async (e: React.FormEvent<HTMLFormElement>) => {  
         e.preventDefault();
 
-            try {
-                setIsLoading(true);
-                setErrorMessage('');
-                
-                const response = await axios.patch(`https://maxrep-back.onrender.com/api/profile/${userId}`, userNewInfos, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
+        try {
+            setIsLoading(true);
+            setErrorMessage('');
+            
+            const response = await axios.patch(`https://maxrep-back.onrender.com/api/profile/${userId}`, userNewInfos, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
 
-                onProfileUpdate();
-                onClose();
-                return response.data;
-    
-            } catch (error) {
-                if (axios.isAxiosError(error)) { //== Case if axios error
-                    if (error.response) {
-                        setErrorMessage(error.response.data.error);
-    
-                    } else { //== Case if no response from server
-                        setErrorMessage('Erreur interne du serveur.');
-                    }
-    
-                } else { //== Case if not axios error
-                    setErrorMessage('Une erreur inattendue est survenue.');
+            onProfileUpdate();
+            onClose();
+            return response.data;
+
+        } catch (error) {
+            if (axios.isAxiosError(error)) { //== Case if axios error
+                if (error.response) {
+                    setErrorMessage(error.response.data.error);
+
+                } else { //== Case if no response from server
+                    setErrorMessage('Erreur interne du serveur.');
                 }
 
-            }  finally {
-                setIsLoading(false);
-            }  
+            } else { //== Case if not axios error
+                setErrorMessage('Une erreur inattendue est survenue.');
+            }
+
+        }  finally {
+            setIsLoading(false);
+        }  
     }    
 
     return (

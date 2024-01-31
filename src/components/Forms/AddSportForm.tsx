@@ -24,36 +24,13 @@ interface SportsProps {
 
 const AddSportForm = ({onClose, onProfileUpdate}: AddSportFormProps) => { 
 
+    const {token, userId } = useAuth()!;
+
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string>('');
     const [sportsCategories, setSportsCategories] = useState<SportsCategoriesProps[]>([]);
     const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(1);
     const [selectedSportId, setSelectedSportId] = useState<number | null>(1);
-
-    const {token, userId } = useAuth()!; //Hook to get token and userId from AuthContext
-
-    const updateSelectedCategoryAndSport = useCallback(() => {
-        if (sportsCategories.length > 0) {
-            const newSelectedCategoryId = sportsCategories[0].id;
-            setSelectedCategoryId(newSelectedCategoryId);
-
-            const newSports = sportsCategories[0].sports;
-            if (newSports.length > 0) {
-                setSelectedSportId(newSports[0].id);
-            } else {
-                setSelectedSportId(null);
-            }
-        }
-    }, [sportsCategories]);
-
-    useEffect(() => {
-        getSportsCategories();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    useEffect(() => { 
-        updateSelectedCategoryAndSport();
-    }, [updateSelectedCategoryAndSport]);
 
     //Get sports categories for form 
     const getSportsCategories = async () => {
@@ -86,6 +63,32 @@ const AddSportForm = ({onClose, onProfileUpdate}: AddSportFormProps) => {
             setIsLoading(false);
         }
     }  
+
+    //Set first category and sport as default values
+    const updateSelectedCategoryAndSport = useCallback(() => {
+        if (sportsCategories.length > 0) {
+            const newSelectedCategoryId = sportsCategories[0].id;
+            setSelectedCategoryId(newSelectedCategoryId);
+
+            const newSports = sportsCategories[0].sports;
+            if (newSports.length > 0) {
+                setSelectedSportId(newSports[0].id);
+            } else {
+                setSelectedSportId(null);
+            }
+        }
+    }, [sportsCategories]);
+
+    //Get sports categories on component mount
+    useEffect(() => {
+        getSportsCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => { 
+        updateSelectedCategoryAndSport();
+    }, [updateSelectedCategoryAndSport]);
+
 
     const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement> ) => {
         e.preventDefault();

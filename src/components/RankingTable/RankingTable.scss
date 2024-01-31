@@ -48,6 +48,11 @@
         tbody tr:nth-child(2n+1) {
             background-color: $color-grey;
         }
+
+        .empty-table-message {
+            text-align: center;
+            margin: 10px 0;
+        }
     }
     
         .flag-td {

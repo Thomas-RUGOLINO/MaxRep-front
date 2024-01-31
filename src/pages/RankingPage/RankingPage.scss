@@ -14,6 +14,25 @@
         }
     }
 
+    .ranking-notshared {
+        display: flex;
+        justify-content: center;
+     
+        &__text {
+            text-align: justify;
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: $color-blue;
+            margin-bottom: 20px;
+            @include breakpoint-small-screen {
+                margin: 75px 0 0;
+                font-size: 1.4rem;
+                max-width: 1000px;
+            }
+        }
+        
+    }
+
     .ranking-main {
         display: flex;
         align-items: center;
@@ -26,24 +45,6 @@
             flex-direction: row;
             align-items: flex-start;
             justify-content: space-evenly;
-        }
-
-        .ranking-notshared {
-            display: flex;
-
-            &__title {
-                font-size: 1.5rem;
-                font-weight: 700;
-                color: $color-red;
-            }
-         
-            &__text {
-                text-align: justify;
-                font-size: 1.1rem;
-                font-weight: 400;
-                color: $color-blue;
-            }
-            
         }
 
         .container {

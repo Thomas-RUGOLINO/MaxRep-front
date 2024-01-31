@@ -81,7 +81,7 @@ const SessionScore = ({session, isScore, onProfileUpdate}: SessionScoreProps) =>
         setErrorMessage('');
         
         try {
-            const response = await axios.patch(`/sessions/${updatedSession.id}` , updatedSession, {
+            const response = await axios.patch(`${import.meta.env.VITE_API_URL}/sessions/${updatedSession.id}` , updatedSession, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

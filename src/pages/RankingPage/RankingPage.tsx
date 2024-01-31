@@ -236,12 +236,13 @@ const RankingPage = () => {
                     </header>
                     {userSports.length === 0 ? 
                         <NoSportMessage /> : (
-                            <main className='ranking-main'>
-                                {isShared === false && (
-                                    <div className="ranking-notshared__title">
-                                        <p className='ranking-notshared__text'>Vos performances ne sont pas partagées, vous pouvez éditer votre profil et cocher la case <strong>"Partager mes performances"</strong> si vous souhaitez apparaître dans les classements !</p>
-                                     </div>
+                            <>
+                            {isShared === false && (
+                                <div className="ranking-notshared">
+                                    <p className='ranking-notshared__text'>Vos performances ne sont pas partagées, vous pouvez éditer votre profil et cocher la case <strong>"Partager mes performances"</strong> si vous souhaitez apparaître dans les classements !</p>
+                                </div>
                                 )}
+                            <main className='ranking-main'>
                                 <Container> 
                                     <div className="container__header">
                                         <h3> Sélectionner un classement </h3>
@@ -293,6 +294,7 @@ const RankingPage = () => {
                                 </Container>
                                 <RankingTable ranking={ranking} />
                             </main>
+                            </>
                         )}
                     
                     </>

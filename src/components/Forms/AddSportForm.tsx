@@ -37,7 +37,7 @@ const AddSportForm = ({onClose, onProfileUpdate}: AddSportFormProps) => {
 
         try {
             setIsLoading(true);
-            const response = await axios.get(`https://maxrep-back.onrender.com/api/categories`, {
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/categories`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -116,7 +116,7 @@ const AddSportForm = ({onClose, onProfileUpdate}: AddSportFormProps) => {
             setIsLoading(true);
             setErrorMessage('');
             
-            const response = await axios.post(`https://maxrep-back.onrender.com/api/profile/sport/${userId}`, {sportId: selectedSportId} , {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/profile/sport/${userId}`, {sportId: selectedSportId} , {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

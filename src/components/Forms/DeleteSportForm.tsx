@@ -25,7 +25,7 @@ const DeleteSportForm = ({sportId, onClose, onProfileUpdate}: DeleteSportFormPro
             setIsLoading(true);
             setErrorMessage('');
             
-            const response = await axios.delete(`https://maxrep-back.onrender.com/api/profile/sport/${userId}/${sportId}`, {
+            const response = await axios.delete(`${import.meta.env.VITE_API_URL}/profile/sport/${userId}/${sportId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

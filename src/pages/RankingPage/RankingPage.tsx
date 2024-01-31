@@ -98,7 +98,7 @@ const RankingPage = () => {
                 `weightMin=${queryParams.weightMin}&`+
                 `weightMax=${queryParams.weightMax}`
 
-            const response = await axios.get(`https://maxrep-back.onrender.com/api/ranking?${query}` , {
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/ranking?${query}` , {
                 headers: {
                     'Authorization': `Bearer ${token}` //Send token to backend to verify user
                 }
@@ -150,7 +150,7 @@ const RankingPage = () => {
             setError(null);
 
             // Récupérer les données de la table ranking en fonction du sport de l'utilisateur
-            const response = await axios.get(`https://maxrep-back.onrender.com/api/profile/${userId}` , {
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/profile/${userId}` , {
                 headers: {
                     'Authorization': `Bearer ${token}` //Send token to backend to verify user
                 }

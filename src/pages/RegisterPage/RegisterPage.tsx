@@ -52,7 +52,7 @@ const RegisterPage = () => {
         }
         
         try {
-            const response = await axios.post('https://maxrep-back.onrender.com/api/register' , userInfos);
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/register` , userInfos);
 
             //Redirect to login page after successful registration
             navigate(`/login`);

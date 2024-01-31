@@ -95,7 +95,7 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
             setIsLoading(true);
             setErrorMessage('');
             
-            const response = await axios.patch(`https://maxrep-back.onrender.com/api/sessions/${updatedSession.id}` , updatedSession, {
+            const response = await axios.patch(`${import.meta.env.VITE_API_URL}/sessions/${updatedSession.id}` , updatedSession, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -129,7 +129,7 @@ const EditSessionForm = ({session, userSports, onProfileUpdate, onClose}: EditSe
             setIsLoading(true);
             setErrorMessage('');
 
-            const response = await axios.delete(`https://maxrep-back.onrender.com/api/sessions/${updatedSession.id}` , {
+            const response = await axios.delete(`${import.meta.env.VITE_API_URL}/sessions/${updatedSession.id}` , {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

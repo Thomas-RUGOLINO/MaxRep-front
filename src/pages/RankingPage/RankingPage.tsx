@@ -108,8 +108,6 @@ const RankingPage = () => {
                 }
             });
 
-            console.log('best scores : ', response.data);
-
             if (response.data.length === 0) { 
                 return 
             }
@@ -165,8 +163,6 @@ const RankingPage = () => {
                     'Authorization': `Bearer ${token}` //Send token to backend to verify user
                 }
             });
-
-            console.log('userInfos : ', response.data);
 
             if (response.data.sports.length === 0) {
                 return 

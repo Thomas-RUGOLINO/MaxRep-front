@@ -5,7 +5,7 @@
     
     .home-landing {
         position: relative;
-        min-height: 90vh; //because header's height = 10vh
+        min-height: 80vh; //because header's height = 10vh
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -103,9 +103,14 @@
                 width: 100%;
                 display: flex;
                 justify-content: space-around;
+                margin-bottom: 20px;
                 @include breakpoint-small-screen() {
                     justify-content: center;
                     gap: 50px;
+                }
+
+                h3 {
+                    font-size: 1.2rem;
                 }
                 
                 .screenshot__planification{
@@ -138,7 +143,7 @@
                     border: 1px solid $color-grey; 
                     transition: transform 0.3s ease-in-out;
                     &:hover {
-                        transform: scale(1.1); // Augmenter légèrement la taille de l'image
+                        transform: scale(1.14); // Augmenter légèrement la taille de l'image
                     } 
                 }
             }

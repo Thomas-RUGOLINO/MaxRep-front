@@ -40,7 +40,7 @@ const LoginPage = () => {
         setErrorMessage(''); //Init empty error messages
         
         try {
-            const response = await axios.post('https://maxrep-back.onrender.com/api/login' , userInfos);
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/login` , userInfos);
 
             const token = response.data; //Get token from response
             login(token); //Login user with token

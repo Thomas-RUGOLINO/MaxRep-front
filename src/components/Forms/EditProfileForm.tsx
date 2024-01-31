@@ -53,7 +53,7 @@ const EditProfileForm = ({userCurrentInfos, onClose, onProfileUpdate}: EditProfi
             setIsLoading(true);
             setErrorMessage('');
             
-            const response = await axios.patch(`https://maxrep-back.onrender.com/api/profile/${userId}`, userNewInfos, {
+            const response = await axios.patch(`${import.meta.env.VITE_API_URL}/profile/${userId}`, userNewInfos, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

@@ -44,6 +44,7 @@ const ChartMobile = ({sport}: ChartMobileProps) => {
     const [isGraphOpen, setIsGraphOpen] = useState<OpenStatus>({});
     const [redraw, setRedraw] = useState(false);
 
+    //Toggle graph open status
     const toggleOpen = (sportId: number) => {
         setIsGraphOpen((prevStatus: OpenStatus) => ({
             ...prevStatus,
@@ -51,6 +52,7 @@ const ChartMobile = ({sport}: ChartMobileProps) => {
         }));
     };
 
+    //Prepare data for chart
     const prepareChartData = (sport: SportProps) => {
         const sortedSessions = sport.sessions.sort((a: SessionProps, b: SessionProps) => new Date(a.date).getTime() - new Date(b.date).getTime());
         const dataPoints = sortedSessions.map(session => ({
@@ -81,6 +83,7 @@ const ChartMobile = ({sport}: ChartMobileProps) => {
         };
     }, []);
 
+    //Chart options for unit 'kg' & 'reps'
     const chartOptions = {
         responsive: true,
         scales: {
@@ -113,6 +116,7 @@ const ChartMobile = ({sport}: ChartMobileProps) => {
         
     };
 
+    //Chart options for unit 'temps'
     const chartOptionsTime = {
         responsive: true,
         scales: {

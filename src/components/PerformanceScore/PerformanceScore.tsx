@@ -42,63 +42,28 @@ const PerformanceScore = ({selectedSport, sportIndex, getUserPerformances}: Perf
         date: '',
         score: 0,
         user_id: userId as number,
-        sport_id: selectedSport.id}); 
+        sport_id: selectedSport.id
+    }); 
 
+    // Set sport_id in sessionToModify when selectedSport changes
     useEffect(() => {
-        // Cette fonction sera appelée chaque fois que selectedSport change
         setSessionToModify((prevSessionToModify) => ({
             ...prevSessionToModify,
             sport_id: selectedSport.id,
         }));
+
     }, [selectedSport]);
 
+    // Handle change in inputs with basic unit
     const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
-        
+        // Sessions inputs that can be modified are date and score
         setSessionToModify({
             ...sessionToModify,
             [e.target.name]: e.target.name === 'score' ? parseInt(e.target.value) || 0 : e.target.value
         });
-        
     }
 
-    const addScoreOrUpdate = async (e:React.FormEvent<HTMLFormElement>, sportIndex:number) => {
-        e.preventDefault();
-        
-        const filteredResponse = selectedSport.sessions.filter((session:SessionProps) => session.sport_id === selectedSport.id && session.user_id === userId && session.date === sessionToModify.date);
-        
-        // If filteredResponse is different null => update session
-        if (filteredResponse.length > 0) {
-            
-            const sessionToUpdate = await axios.patch(`https://maxrep-back.onrender.com/api/sessions/${filteredResponse[0].id}`, sessionToModify, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            
-            getUserPerformances(sportIndex);
-
-            // Réinitialiser sessionToModify
-            setSessionToModify({
-                date: '',
-                score: 0,
-                user_id: userId as number,
-                sport_id: selectedSport.id
-            });
-
-            return sessionToUpdate.data
-        
-        // else => create session
-        } else {
-            const sessionToCreate = await axios.post(`https://maxrep-back.onrender.com/api/sessions`, sessionToModify, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            console.log(sessionToCreate.data);
-            getUserPerformances(sportIndex);
-        }
-    }
-    
+    // Handle change in inputs with time unit
     const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>, unit: 'hh' | 'mm' | 'ss') => { 
         const value = parseInt(e.target.value) || 0;
         const time = convertSecondsToTime(sessionToModify.score);
@@ -112,16 +77,54 @@ const PerformanceScore = ({selectedSport, sportIndex, getUserPerformances}: Perf
             totalSeconds = convertTimeToSeconds(time.hours, time.minutes, value);
         }
 
-        console.log(totalSeconds);
-
         setSessionToModify({
             ...sessionToModify,
             score: totalSeconds || 0
         });
     }
 
-    const displayInputUnit = (unit: string) => { 
+    const addScoreOrUpdate = async (e:React.FormEvent<HTMLFormElement>, sportIndex:number) => {
+        e.preventDefault();
+        
+        // Filter sessions to get the one that matches the date and sport_id
+        const filteredResponse = selectedSport.sessions.filter((session:SessionProps) => session.sport_id === selectedSport.id && session.user_id === userId && session.date === sessionToModify.date);
+        
+        // If there is one session => update session
+        if (filteredResponse.length > 0) {
+            
+            const sessionToUpdate = await axios.patch(`https://maxrep-back.onrender.com/api/sessions/${filteredResponse[0].id}`, sessionToModify, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            getUserPerformances(sportIndex); // Get user performances to update chart of the selected sport
 
+            // Reset sessionToModify
+            setSessionToModify({
+                date: '',
+                score: 0,
+                user_id: userId as number,
+                sport_id: selectedSport.id
+            });
+
+            return sessionToUpdate.data
+        
+        // Else => create session
+        } else {
+            const sessionToCreate = await axios.post(`https://maxrep-back.onrender.com/api/sessions`, sessionToModify, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+
+            getUserPerformances(sportIndex); // Get user performances to update chart of the selected sport
+            return sessionToCreate.data
+        }
+    }
+    
+    // Display input with basic unit or time unit
+    const displayInputUnit = (unit: string) => { 
         if (unit === 'temps') {
             const { hours, minutes, secs } = convertSecondsToTime(sessionToModify.score);
 
@@ -158,8 +161,8 @@ const PerformanceScore = ({selectedSport, sportIndex, getUserPerformances}: Perf
                         placeholder='ss' 
                     />
                 </>
-                
             )
+            
         } else {
             return (
                 <input 

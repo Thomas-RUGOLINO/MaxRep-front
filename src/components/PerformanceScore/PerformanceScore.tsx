@@ -92,7 +92,7 @@ const PerformanceScore = ({selectedSport, sportIndex, getUserPerformances}: Perf
         // If there is one session => update session
         if (filteredResponse.length > 0) {
             
-            const sessionToUpdate = await axios.patch(`https://maxrep-back.onrender.com/api/sessions/${filteredResponse[0].id}`, sessionToModify, {
+            const sessionToUpdate = await axios.patch(`${import.meta.env.VITE_API_URL}/sessions/${filteredResponse[0].id}`, sessionToModify, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -112,7 +112,7 @@ const PerformanceScore = ({selectedSport, sportIndex, getUserPerformances}: Perf
         
         // Else => create session
         } else {
-            const sessionToCreate = await axios.post(`https://maxrep-back.onrender.com/api/sessions`, sessionToModify, {
+            const sessionToCreate = await axios.post(`${import.meta.env.VITE_API_URL}/sessions`, sessionToModify, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

@@ -59,7 +59,7 @@ const AddSessionForm = ({userSports, date, onClose, onProfileUpdate}: AddSession
             setIsLoading(true);
             setErrorMessage('');
             
-            const response = await axios.post(`https://maxrep-back.onrender.com/api/sessions` , newSession, {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/sessions` , newSession, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

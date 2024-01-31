@@ -73,7 +73,7 @@ const PerformancePage = () => {
             setIsLoading(true);
             setError(null);
 
-            const response = await axios.get(`https://maxrep-back.onrender.com/api/performances/${userId}` , {
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/performances/${userId}` , {
                 headers: {
                     'Authorization': `Bearer ${token}` //Send token to backend to verify user
                 }

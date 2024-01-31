@@ -88,7 +88,7 @@ const ProfilePage = () => {
             setIsLoading(true);
             setError(null);
 
-            const response = await axios.get(`https://maxrep-back.onrender.com/api/profile/${userId}` , {
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/profile/${userId}` , {
                 headers: {
                     'Authorization': `Bearer ${token}` //Send token to backend to verify user
                 }
